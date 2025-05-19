@@ -1,5 +1,12 @@
-import { Button as ShadCNButton } from "@/components/ui/button";
+import { Button as ShadCNButton, type ButtonProps } from "@/components/ui/button";
+
+interface CustomButtonProps extends ButtonProps; 
 
 export function Button({ ...props }) {
-  return <ShadCNButton className="bg-cyan-900/90" {...props} />;
+  return (
+    <ShadCNButton 
+      className={`custom-class ${className}`} 
+      {...props} 
+    />
+  );
 }
