@@ -1,7 +1,7 @@
 import logo from "@/assets/logo.svg";
 import { Button } from "@/components/ui/button";
 import LogInDialog from "@/features/auth/components/LogInDialog";
-import SignUpDialog from "@/SignUpDialog";
+import SignUpDialog from "@/features/auth/components/SignUpDialog";
 import { useState } from "react";
 
 const HomePage = () => {
@@ -28,11 +28,13 @@ const HomePage = () => {
           </Button>
           <LogInDialog
             isLogInDialogOpen={isLogInDialogOpen}
+            onSignUpDialogOpenChange={setIsSignUpDialogOpen}
             onLogInDialogOpenChange={setIsLogInDialogOpen}
           />
           <SignUpDialog
             isSignUpDialogOpen={isSignUpDialogOpen}
             onSignUpDialogOpenChange={setIsSignUpDialogOpen}
+            onLogInDialogOpenChange={setIsLogInDialogOpen}
           />
         </div>
       </div>

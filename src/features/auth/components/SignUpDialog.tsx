@@ -6,10 +6,10 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "./components/ui/card";
+} from "@/components/ui/card";
 
-import { Label } from "@radix-ui/react-label";
-import { Input } from "./components/ui/input";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import FacebookLogo from "@/assets/icons/facebook.svg?react";
@@ -17,12 +17,22 @@ import FacebookLogo from "@/assets/icons/facebook.svg?react";
 type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
   onSignUpDialogOpenChange: (open: boolean) => void;
+  onLogInDialogOpenChange: (open: boolean) => void;
 };
 
 const SignUpDialog = ({
   isSignUpDialogOpen,
   onSignUpDialogOpenChange,
+  onLogInDialogOpenChange,
 }: SignUpDialogProps) => {
+  const switchToLoginDialogHandler = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    onSignUpDialogOpenChange(false);
+    onLogInDialogOpenChange(true);
+  };
+
   return (
     <Dialog open={isSignUpDialogOpen} onOpenChange={onSignUpDialogOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -36,12 +46,18 @@ const SignUpDialog = ({
           <CardContent>
             <form>
               <div className="grid gap-4">
-                <div className="flex flex-col gap-4 text-white">
-                  <Button variant="outline" className="w-full bg-cyan-900/90">
+                <div className="flex flex-col gap-2 text-white">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-cyan-900/90 cursor-pointer"
+                  >
                     <GoogleLogo className="fill-white" />
                     Sign up with Google
                   </Button>
-                  <Button variant="outline" className="w-full bg-cyan-900/90">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-cyan-900/90 cursor-pointer"
+                  >
                     <FacebookLogo className="fill-white" />
                     Sign up with Facebook
                   </Button>
@@ -51,12 +67,12 @@ const SignUpDialog = ({
                     Or continue with
                   </span>
                 </div>
-                <div className="grid gap-1 text-sm">
-                  <div className="grid gap-2">
+                <div className="grid gap-2 text-sm">
+                  <div className="grid gap-1">
                     <Label htmlFor="username">Username</Label>
                     <Input id="username" type="text" required />
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-1">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
@@ -65,26 +81,27 @@ const SignUpDialog = ({
                       required
                     />
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-1">
                     <Label htmlFor="password">Password</Label>
                     <Input id="password" type="password" required />
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-1">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>
                     <Input id="confirmPassword" type="password" required />
                   </div>
-                  <Button type="submit" className="w-full bg-cyan-900/90">
+                  <Button type="submit" className="w-full bg-cyan-900/90 mt-2">
                     Sign up
                   </Button>
                 </div>
                 <div className="text-center text-sm">
                   Already have an account?{" "}
-                  <a
-                    href="#"
-                    className="underline underline-offset-4 font-medium"
+                  <Button
+                    variant="link"
+                    className="underline cursor-pointer p-0"
+                    onClick={switchToLoginDialogHandler}
                   >
                     Log in
-                  </a>
+                  </Button>
                 </div>
               </div>
             </form>

@@ -1,7 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import facebookIcon from "@/assets/icons/facebook.svg";
-import googleIcon from "@/assets/icons/google.svg";
 
 import {
   Card,
@@ -14,15 +12,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+import GoogleLogo from "@/assets/icons/google.svg?react";
+import FacebookLogo from "@/assets/icons/facebook.svg?react";
+
 type LogInDialogProps = {
   isLogInDialogOpen: boolean;
+  onSignUpDialogOpenChange: (open: boolean) => void;
   onLogInDialogOpenChange: (open: boolean) => void;
 };
 
 const LogInDialog = ({
   isLogInDialogOpen,
+  onSignUpDialogOpenChange,
   onLogInDialogOpenChange,
 }: LogInDialogProps) => {
+  const switchToSignUpDialogHandler = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    onLogInDialogOpenChange(false);
+    onSignUpDialogOpenChange(true);
+  };
   return (
     <Dialog open={isLogInDialogOpen} onOpenChange={onLogInDialogOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
@@ -35,18 +45,14 @@ const LogInDialog = ({
           </CardHeader>
           <CardContent>
             <form>
-              <div className="grid gap-6">
-                <div className="flex flex-col gap-4">
-                  <Button variant="outline" className="w-full">
-                    <img src={googleIcon} alt="Google Icon" className="w-4" />
+              <div className="grid gap-4">
+                <div className="flex flex-col gap-2 text-white">
+                  <Button variant="outline" className="w-full bg-cyan-900/90">
+                    <GoogleLogo className="fill-white" />
                     Log in with Google
                   </Button>
-                  <Button variant="outline" className="w-full">
-                    <img
-                      src={facebookIcon}
-                      alt="Facebook Icon"
-                      className="w-4"
-                    />
+                  <Button variant="outline" className="w-full bg-cyan-900/90">
+                    <FacebookLogo className="fill-white" />
                     Log in with Facebook
                   </Button>
                 </div>
@@ -55,8 +61,8 @@ const LogInDialog = ({
                     Or continue with
                   </span>
                 </div>
-                <div className="grid gap-6">
-                  <div className="grid gap-2">
+                <div className="grid gap-2 text-sm">
+                  <div className="grid gap-1">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
@@ -65,7 +71,7 @@ const LogInDialog = ({
                       required
                     />
                   </div>
-                  <div className="grid gap-2">
+                  <div className="grid gap-1">
                     <div className="flex items-center">
                       <Label htmlFor="password">Password</Label>
                       <a
@@ -77,18 +83,19 @@ const LogInDialog = ({
                     </div>
                     <Input id="password" type="password" required />
                   </div>
-                  <Button type="submit" className="w-full">
+                  <Button type="submit" className="w-full bg-cyan-900/90 mt-2">
                     Log in
                   </Button>
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <a
-                    href="#"
-                    className="underline underline-offset-4 font-medium"
+                  <Button
+                    variant="link"
+                    className="underline cursor-pointer p-0"
+                    onClick={switchToSignUpDialogHandler}
                   >
                     Sign up
-                  </a>
+                  </Button>
                 </div>
               </div>
             </form>
