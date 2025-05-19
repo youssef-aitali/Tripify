@@ -47,11 +47,17 @@ const LogInDialog = ({
             <form>
               <div className="grid gap-4">
                 <div className="flex flex-col gap-2 text-white">
-                  <Button variant="outline" className="w-full bg-cyan-900/90">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-cyan-900/90 hover:bg-cyan-900 hover:text-white"
+                  >
                     <GoogleLogo className="fill-white" />
                     Log in with Google
                   </Button>
-                  <Button variant="outline" className="w-full bg-cyan-900/90">
+                  <Button
+                    variant="outline"
+                    className="w-full bg-cyan-900/90 hover:bg-cyan-900 hover:text-white"
+                  >
                     <FacebookLogo className="fill-white" />
                     Log in with Facebook
                   </Button>
@@ -83,7 +89,10 @@ const LogInDialog = ({
                     </div>
                     <Input id="password" type="password" required />
                   </div>
-                  <Button type="submit" className="w-full bg-cyan-900/90 mt-2">
+                  <Button
+                    type="submit"
+                    className="w-full bg-cyan-900/90 mt-2 hover:bg-cyan-900 hover:text-white"
+                  >
                     Log in
                   </Button>
                 </div>
