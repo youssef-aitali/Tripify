@@ -1,12 +1,21 @@
-import { Button as ShadCNButton, type ButtonProps } from "@/components/ui/button";
+import type { ComponentProps } from "react";
+import { Button as ShadCNButton } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-interface CustomButtonProps extends ButtonProps; 
+type ButtonProps = ComponentProps<typeof ShadCNButton>;
 
-export function Button({ ...props }) {
+export function Button({ className, variant, ...props }: ButtonProps) {
   return (
-    <ShadCNButton 
-      className={`custom-class ${className}`} 
-      {...props} 
+    <ShadCNButton
+      variant={variant}
+      className={cn(
+        "cursor-pointer",
+        variant !== "link" &&
+          "w-full bg-cyan-900/90 hover:bg-cyan-900 hover:text-white",
+        variant === "link" && "underline cursor-pointer p-0 text-primary",
+        className
+      )}
+      {...props}
     />
   );
 }

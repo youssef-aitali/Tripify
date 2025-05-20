@@ -1,5 +1,10 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 import {
   Card,
@@ -14,6 +19,8 @@ import { Label } from "@/components/ui/label";
 
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import FacebookLogo from "@/assets/icons/facebook.svg?react";
+import { Button } from "@/components/custom/button";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 type LogInDialogProps = {
   isLogInDialogOpen: boolean;
@@ -35,8 +42,18 @@ const LogInDialog = ({
   };
   return (
     <Dialog open={isLogInDialogOpen} onOpenChange={onLogInDialogOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <Card className="border-none shadow-none">
+      <DialogContent className="sm:max-w-[425px] [&_.absolute]:cursor-pointer">
+        <DialogHeader>
+          <VisuallyHidden asChild>
+            <DialogTitle>Log in</DialogTitle>
+          </VisuallyHidden>
+          <VisuallyHidden asChild>
+            <DialogDescription>
+              Login to access your save trips
+            </DialogDescription>
+          </VisuallyHidden>
+        </DialogHeader>
+        <Card className="border-none shadow-none py-0">
           <CardHeader className="text-center">
             <CardTitle className="text-xl">Log in to Tripify</CardTitle>
             <CardDescription>
@@ -47,17 +64,11 @@ const LogInDialog = ({
             <form>
               <div className="grid gap-4">
                 <div className="flex flex-col gap-2 text-white">
-                  <Button
-                    variant="outline"
-                    className="w-full bg-cyan-900/90 hover:bg-cyan-900 hover:text-white"
-                  >
+                  <Button>
                     <GoogleLogo className="fill-white" />
                     Log in with Google
                   </Button>
-                  <Button
-                    variant="outline"
-                    className="w-full bg-cyan-900/90 hover:bg-cyan-900 hover:text-white"
-                  >
+                  <Button>
                     <FacebookLogo className="fill-white" />
                     Log in with Facebook
                   </Button>
@@ -89,20 +100,13 @@ const LogInDialog = ({
                     </div>
                     <Input id="password" type="password" required />
                   </div>
-                  <Button
-                    type="submit"
-                    className="w-full bg-cyan-900/90 mt-2 hover:bg-cyan-900 hover:text-white"
-                  >
+                  <Button type="submit" className="mt-2">
                     Log in
                   </Button>
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <Button
-                    variant="link"
-                    className="underline cursor-pointer p-0"
-                    onClick={switchToSignUpDialogHandler}
-                  >
+                  <Button variant="link" onClick={switchToSignUpDialogHandler}>
                     Sign up
                   </Button>
                 </div>
