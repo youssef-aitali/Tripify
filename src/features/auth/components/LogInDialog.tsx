@@ -1,9 +1,11 @@
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
 } from "@/components/ui/dialog";
 
 import {
@@ -18,9 +20,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 import GoogleLogo from "@/assets/icons/google.svg?react";
-import FacebookLogo from "@/assets/icons/facebook.svg?react";
-import { Button } from "@/components/custom/button";
-import { DialogDescription } from "@radix-ui/react-dialog";
+import TButton from "@/components/custom/TButton";
 
 type LogInDialogProps = {
   isLogInDialogOpen: boolean;
@@ -63,15 +63,11 @@ const LogInDialog = ({
           <CardContent>
             <form>
               <div className="grid gap-4">
-                <div className="flex flex-col gap-2 text-white">
-                  <Button>
+                <div className="flex flex-col gap-2">
+                  <TButton>
                     <GoogleLogo className="fill-white" />
                     Log in with Google
-                  </Button>
-                  <Button>
-                    <FacebookLogo className="fill-white" />
-                    Log in with Facebook
-                  </Button>
+                  </TButton>
                 </div>
                 <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                   <span className="relative z-10 bg-background px-2 text-muted-foreground">
@@ -100,15 +96,15 @@ const LogInDialog = ({
                     </div>
                     <Input id="password" type="password" required />
                   </div>
-                  <Button type="submit" className="mt-2">
+                  <TButton type="submit" className="mt-2">
                     Log in
-                  </Button>
+                  </TButton>
                 </div>
                 <div className="text-center text-sm">
                   Don&apos;t have an account?{" "}
-                  <Button variant="link" onClick={switchToSignUpDialogHandler}>
+                  <TButton variant="link" onClick={switchToSignUpDialogHandler}>
                     Sign up
-                  </Button>
+                  </TButton>
                 </div>
               </div>
             </form>
