@@ -1,15 +1,20 @@
-// features/auth/services/firebaseAuth.ts
 import { auth, db } from "@/lib/firebase/firebaseConfig";
 import { createUserWithEmailAndPassword, type AuthError } from "firebase/auth";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, type FirestoreError } from "firebase/firestore";
 
-export const registerWithEmailAndPassword = async (
-  username: string,
+export const signUpWithEmailAndPassword = async (
   email: string,
-  password: string
+  password: string,
+  username: string
 ) => {
   try {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const user = userCredential.user;
 
     const userProfile = {
       username,
@@ -22,37 +27,40 @@ export const registerWithEmailAndPassword = async (
       },
     };
 
-    const docRef = await addDoc(collection(db, "users"), userProfile);
-    console.log("Document written with ID: ", docRef.id);
-  } catch (error) {
-    // Type guard to ensure it's an AuthError
-    if (typeof error === "object" && error !== null && "code" in error) {
-      const authError = error as AuthError;
+    await addDoc(collection(db, "users"), userProfile);
 
-      console.error(
-        `Authentication Error (${authError.code}): ${authError.message}`
-      );
+    return { user };
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const firebaseError = error as AuthError | FirestoreError;
+
+      return { firebaseError };
     }
 
-    // Handle non-AuthError cases
-    console.error("Unexpected error during Sign up:", error);
+    // Fallback for unknown errors
+    return {
+      unknownError: {
+        code: "auth/unknown-error",
+        message: "An unknown error occurred",
+      },
+    };
   }
 };
-/* 
-const getFriendlyErrorMessage = (code: string): string => {
+
+export const getFriendlyErrorMessage = (code: string) => {
   switch (code) {
-    case 'auth/email-already-in-use':
-      return 'This email is already registered';
-    case 'auth/weak-password':
-      return 'Password should be at least 6 characters';
-    case 'auth/invalid-email':
-      return 'Please enter a valid email';
-    case 'firestore/permission-denied':
-      return 'Failed to create user profile';
+    case "auth/email-already-in-use":
+      return "This email is already registered!";
+    case "auth/weak-password":
+      return "Password should be at least 6 characters!";
+    case "auth/invalid-email":
+      return "Please enter a valid email!";
+    case "firestore/permission-denied":
+      return "Failed to create user profile!";
     default:
-      return 'Registration failed. Please try again';
+      return "Registration failed. Please try again!";
   }
-}; */
+};
 
 /*  export const loginWithEmailAndPassword = async (
   email: string,

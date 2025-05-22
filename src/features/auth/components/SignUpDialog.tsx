@@ -23,7 +23,9 @@ import { Label } from "@/components/ui/label";
 
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import TButton from "@/components/custom/TButton";
-import { registerWithEmailAndPassword } from "../services/authService";
+
+import { useAuth } from "../hooks/useAuth";
+import { toast } from "sonner";
 
 type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
@@ -44,6 +46,7 @@ const SignUpDialog = ({
   onLogInDialogOpenChange,
 }: SignUpDialogProps) => {
   const [userData, setUserData] = useState(initialUserData);
+  const { registerUser, loading } = useAuth();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -52,11 +55,17 @@ const SignUpDialog = ({
 
   const handleSignUpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    await registerWithEmailAndPassword(
-      userData.username,
+    const result = await registerUser(
       userData.email,
-      userData.password
+      userData.password,
+      userData.username
     );
+    if (result.success) {
+      // Redirect or show success message
+      console.log("User created:", result.user);
+    } else {
+      toast(result.errorMessage);
+    }
   };
 
   const switchToLoginDialogHandler = (
@@ -126,6 +135,7 @@ const SignUpDialog = ({
                     <Input
                       id="password"
                       type="password"
+                      minLength={6}
                       value={userData.password}
                       onChange={handleInputChange}
                       required
@@ -136,12 +146,13 @@ const SignUpDialog = ({
                     <Input
                       id="confirmPassword"
                       type="password"
+                      minLength={6}
                       value={userData.confirmPassword}
                       onChange={handleInputChange}
                       required
                     />
                   </div>
-                  <TButton type="submit" className="mt-2">
+                  <TButton type="submit" className="mt-2" disabled={loading}>
                     Sign up
                   </TButton>
                 </div>

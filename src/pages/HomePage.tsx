@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import LogInDialog from "@/features/auth/components/LogInDialog";
 import SignUpDialog from "@/features/auth/components/SignUpDialog";
 import { useState } from "react";
+import { Toaster } from "sonner";
 
 const HomePage = () => {
   const [isLogInDialogOpen, setIsLogInDialogOpen] = useState(false);
@@ -39,6 +40,7 @@ const HomePage = () => {
         </div>
       </div>
       <div className="bg-gray-200 grow">Content</div>
+      <Toaster />
     </div>
   );
 };
