@@ -26,6 +26,7 @@ import TButton from "@/components/custom/TButton";
 
 import { useAuth } from "../hooks/useAuth";
 import { toast } from "sonner";
+import { useNavigate } from "react-router";
 
 type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
@@ -47,6 +48,7 @@ const SignUpDialog = ({
 }: SignUpDialogProps) => {
   const [userData, setUserData] = useState(initialUserData);
   const { registerUser, loading } = useAuth();
+  const navigate = useNavigate();
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
@@ -63,6 +65,8 @@ const SignUpDialog = ({
     if (result.success) {
       // Redirect or show success message
       console.log("User created:", result.user);
+      onSignUpDialogOpenChange(false);
+      navigate("/dashboard");
     } else {
       toast(result.errorMessage);
     }
