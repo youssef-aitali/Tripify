@@ -23,7 +23,7 @@ import { Label } from "@/components/ui/label";
 
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import TButton from "@/components/custom/TButton";
-import { registerWithEmailAndPassword } from "../services/firebaseAuth";
+import { registerWithEmailAndPassword } from "../services/authService";
 
 type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
@@ -50,10 +50,13 @@ const SignUpDialog = ({
     setUserData({ ...userData, [id]: value });
   };
 
-  const handleSignUpSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSignUpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    registerWithEmailAndPassword(userData.email, userData.password);
-    console.log(userData);
+    await registerWithEmailAndPassword(
+      userData.username,
+      userData.email,
+      userData.password
+    );
   };
 
   const switchToLoginDialogHandler = (
