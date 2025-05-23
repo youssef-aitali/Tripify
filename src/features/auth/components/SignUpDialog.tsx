@@ -28,29 +28,38 @@ import { useAuth } from "../hooks/useAuth";
 import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
+import { useForm, type SubmitHandler } from "react-hook-form";
+
+type SignUpInputs = {
+  username: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
+};
+
 type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
   onSignUpDialogOpenChange: (open: boolean) => void;
   onLogInDialogOpenChange: (open: boolean) => void;
 };
 
-const initialUserData = {
+/* const initialUserData = {
   username: "",
   email: "",
   password: "",
   confirmPassword: "",
-};
+}; */
 
 const SignUpDialog = ({
   isSignUpDialogOpen,
   onSignUpDialogOpenChange,
   onLogInDialogOpenChange,
 }: SignUpDialogProps) => {
-  const [userData, setUserData] = useState(initialUserData);
+  //const [userData, setUserData] = useState(initialUserData);
   const { registerUser, loading } = useAuth();
   const navigate = useNavigate();
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  /* const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setUserData({ ...userData, [id]: value });
   };
@@ -70,7 +79,7 @@ const SignUpDialog = ({
     } else {
       toast(result.errorMessage);
     }
-  };
+  }; */
 
   const switchToLoginDialogHandler = (
     e: React.MouseEvent<HTMLButtonElement>
@@ -79,6 +88,30 @@ const SignUpDialog = ({
     onSignUpDialogOpenChange(false);
     onLogInDialogOpenChange(true);
   };
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignUpInputs>();
+
+  const onSubmit: SubmitHandler<SignUpInputs> = async ({
+    email,
+    password,
+    username,
+  }) => {
+    const result = await registerUser(email, password, username);
+    if (result.success) {
+      // Redirect or show success message
+      console.log("User created:", result.user);
+      onSignUpDialogOpenChange(false);
+      navigate("/dashboard");
+    } else {
+      toast(result.errorMessage);
+    }
+  };
+  const password = watch("password");
 
   return (
     <Dialog open={isSignUpDialogOpen} onOpenChange={onSignUpDialogOpenChange}>
@@ -99,7 +132,9 @@ const SignUpDialog = ({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSignUpSubmit}>
+            {/* "handleSubmit" will validate your inputs before invoking
+            "onSubmit" */}
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid gap-4">
                 <div className="flex flex-col gap-2">
                   <TButton>
@@ -118,43 +153,75 @@ const SignUpDialog = ({
                     <Input
                       id="username"
                       type="text"
-                      value={userData.username}
-                      onChange={handleInputChange}
-                      required
+                      {...register("username", {
+                        required: "Username is required",
+                      })}
                     />
+                    {errors.username && (
+                      <p className="text-sm font-medium text-destructive">
+                        {errors.username.message}
+                      </p>
+                    )}
                   </div>
                   <div className="grid gap-1">
                     <Label htmlFor="email">Email</Label>
                     <Input
                       id="email"
-                      type="email"
-                      placeholder="m@example.com"
-                      value={userData.email}
-                      onChange={handleInputChange}
-                      required
+                      type="text"
+                      placeholder="your@email.com"
+                      {...register("email", {
+                        required: "Email is required",
+                        pattern: {
+                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                          message: "Invalid email address",
+                        },
+                      })}
                     />
+                    {errors.email && (
+                      <p className="text-sm font-medium text-destructive">
+                        {errors.email.message}
+                      </p>
+                    )}
                   </div>
                   <div className="grid gap-1">
                     <Label htmlFor="password">Password</Label>
                     <Input
                       id="password"
                       type="password"
-                      minLength={6}
-                      value={userData.password}
-                      onChange={handleInputChange}
-                      required
+                      {...register("password", {
+                        required: "Password is required",
+                        minLength: {
+                          value: 8,
+                          message: "Password must be at least 8 characters",
+                        },
+                      })}
                     />
+                    {errors.password && (
+                      <p className="text-sm font-medium text-destructive">
+                        {errors.password.message}
+                      </p>
+                    )}
                   </div>
                   <div className="grid gap-1">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>
                     <Input
                       id="confirmPassword"
                       type="password"
-                      minLength={6}
-                      value={userData.confirmPassword}
-                      onChange={handleInputChange}
-                      required
+                      {...register("confirmPassword", {
+                        required: "Please confirm your password!",
+                        minLength: {
+                          value: 8,
+                          message: "Password must be at least 8 characters",
+                        },
+                        validate: (value) =>
+                          value === password || "Password do not match",
+                      })}
                     />
+                    {errors.confirmPassword && (
+                      <p className="text-sm font-medium text-destructive">
+                        {errors.confirmPassword.message}
+                      </p>
+                    )}
                   </div>
                   <TButton type="submit" className="mt-2" disabled={loading}>
                     Sign up
