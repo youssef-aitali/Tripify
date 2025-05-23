@@ -1,6 +1,21 @@
-import { auth, db } from "@/lib/firebase/firebaseConfig";
-import { createUserWithEmailAndPassword, type AuthError } from "firebase/auth";
-import { collection, addDoc, type FirestoreError } from "firebase/firestore";
+import { auth, db, googleProvider } from "@/lib/firebase/firebaseConfig";
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  type AuthError,
+} from "firebase/auth";
+import {
+  collection,
+  addDoc,
+  type FirestoreError,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
+
+interface CustomError extends Error {
+  code: string;
+}
 
 export const signUpWithEmailAndPassword = async (
   email: string,
@@ -34,6 +49,55 @@ export const signUpWithEmailAndPassword = async (
     if (typeof error === "object" && error !== null && "code" in error) {
       const firebaseError = error as AuthError | FirestoreError;
 
+      return { firebaseError };
+    }
+
+    // Fallback for unknown errors
+    return {
+      unknownError: {
+        code: "auth/unknown-error",
+        message: "An unknown error occurred",
+      },
+    };
+  }
+};
+
+export const signUpWithGoogle = async () => {
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+
+    const user = userCredential.user;
+
+    // Check if user document already exists
+    const usersRef = collection(db, "users");
+    const q = query(usersRef, where("email", "==", user.email));
+    const querySnapshot = await getDocs(q);
+
+    if (!querySnapshot.empty) {
+      const error = new Error(
+        "User with this email already exists"
+      ) as CustomError;
+      error.code = "custom/email-already-exists"; // Add a code
+      throw error;
+    }
+
+    const userProfile = {
+      username: user.displayName,
+      email: user.email,
+      avatarUrl: "",
+      preferences: {
+        language: "English",
+        appearance: "Light",
+        notifications: true,
+      },
+    };
+
+    await addDoc(collection(db, "users"), userProfile);
+
+    return { user };
+  } catch (error) {
+    if (typeof error === "object" && error !== null && "code" in error) {
+      const firebaseError = error as AuthError | FirestoreError | CustomError;
       return { firebaseError };
     }
 

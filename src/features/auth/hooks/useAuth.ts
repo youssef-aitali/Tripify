@@ -2,21 +2,23 @@ import { useState } from "react";
 import {
   getFriendlyErrorMessage,
   signUpWithEmailAndPassword,
+  signUpWithGoogle,
 } from "../services/authService";
 
 export const useAuth = () => {
-  const [loading, setLoading] = useState(false);
+  const [emailSignUpLoading, SetEmailSignUpLoading] = useState(false);
+  const [googleSignUpLoading, SetGoogleSignUpLoading] = useState(false);
 
-  const registerUser = async (
+  const emailSignUp = async (
     email: string,
     password: string,
     username: string
   ) => {
-    setLoading(true);
+    SetEmailSignUpLoading(true);
 
     const result = await signUpWithEmailAndPassword(email, password, username);
 
-    setLoading(false);
+    SetEmailSignUpLoading(false);
 
     if (result.firebaseError) {
       return {
@@ -28,5 +30,22 @@ export const useAuth = () => {
     return { success: true, user: result.user };
   };
 
-  return { registerUser, loading };
+  const googleSginUp = async () => {
+    SetGoogleSignUpLoading(true);
+
+    const result = await signUpWithGoogle();
+
+    SetGoogleSignUpLoading(false);
+
+    if (result.firebaseError) {
+      return {
+        success: false,
+        errorMessage: getFriendlyErrorMessage(result.firebaseError.code),
+      };
+    }
+
+    return { success: true, user: result.user };
+  };
+
+  return { emailSignUp, emailSignUpLoading, googleSginUp, googleSignUpLoading };
 };

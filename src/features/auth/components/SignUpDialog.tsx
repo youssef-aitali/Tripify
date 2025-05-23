@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
@@ -29,6 +29,7 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { signUpWithGoogle } from "../services/authService";
 
 type SignUpInputs = {
   username: string;
@@ -43,43 +44,20 @@ type SignUpDialogProps = {
   onLogInDialogOpenChange: (open: boolean) => void;
 };
 
-/* const initialUserData = {
-  username: "",
-  email: "",
-  password: "",
-  confirmPassword: "",
-}; */
-
 const SignUpDialog = ({
   isSignUpDialogOpen,
   onSignUpDialogOpenChange,
   onLogInDialogOpenChange,
 }: SignUpDialogProps) => {
-  //const [userData, setUserData] = useState(initialUserData);
-  const { registerUser, loading } = useAuth();
+  const { emailSignUp, emailSignUpLoading, googleSginUp, googleSignUpLoading } =
+    useAuth();
   const navigate = useNavigate();
-
-  /* const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target;
-    setUserData({ ...userData, [id]: value });
-  };
-
-  const handleSignUpSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const result = await registerUser(
-      userData.email,
-      userData.password,
-      userData.username
-    );
-    if (result.success) {
-      // Redirect or show success message
-      console.log("User created:", result.user);
-      onSignUpDialogOpenChange(false);
-      navigate("/dashboard");
-    } else {
-      toast(result.errorMessage);
-    }
-  }; */
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm<SignUpInputs>();
 
   const switchToLoginDialogHandler = (
     e: React.MouseEvent<HTMLButtonElement>
@@ -89,19 +67,25 @@ const SignUpDialog = ({
     onLogInDialogOpenChange(true);
   };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    watch,
-  } = useForm<SignUpInputs>();
+  const handleGoogleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const result = await googleSginUp();
+    if (result.success) {
+      // Redirect or show success message
+      console.log("User created:", result.user);
+      onSignUpDialogOpenChange(false);
+      navigate("/dashboard");
+    } else {
+      toast(result.errorMessage);
+    }
+  };
 
   const onSubmit: SubmitHandler<SignUpInputs> = async ({
     email,
     password,
     username,
   }) => {
-    const result = await registerUser(email, password, username);
+    const result = await emailSignUp(email, password, username);
     if (result.success) {
       // Redirect or show success message
       console.log("User created:", result.user);
@@ -132,12 +116,13 @@ const SignUpDialog = ({
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {/* "handleSubmit" will validate your inputs before invoking
-            "onSubmit" */}
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="grid gap-4">
                 <div className="flex flex-col gap-2">
-                  <TButton>
+                  <TButton
+                    onClick={handleGoogleSignUp}
+                    disabled={googleSignUpLoading}
+                  >
                     <GoogleLogo className="fill-white" />
                     Sign up with Google
                   </TButton>
@@ -158,7 +143,7 @@ const SignUpDialog = ({
                       })}
                     />
                     {errors.username && (
-                      <p className="text-sm font-medium text-destructive">
+                      <p className="text-xs font-medium text-destructive">
                         {errors.username.message}
                       </p>
                     )}
@@ -178,7 +163,7 @@ const SignUpDialog = ({
                       })}
                     />
                     {errors.email && (
-                      <p className="text-sm font-medium text-destructive">
+                      <p className="text-xs font-medium text-destructive">
                         {errors.email.message}
                       </p>
                     )}
@@ -197,7 +182,7 @@ const SignUpDialog = ({
                       })}
                     />
                     {errors.password && (
-                      <p className="text-sm font-medium text-destructive">
+                      <p className="text-xs font-medium text-destructive">
                         {errors.password.message}
                       </p>
                     )}
@@ -218,12 +203,16 @@ const SignUpDialog = ({
                       })}
                     />
                     {errors.confirmPassword && (
-                      <p className="text-sm font-medium text-destructive">
+                      <p className="text-xs font-medium text-destructive">
                         {errors.confirmPassword.message}
                       </p>
                     )}
                   </div>
-                  <TButton type="submit" className="mt-2" disabled={loading}>
+                  <TButton
+                    type="submit"
+                    className="mt-2"
+                    disabled={emailSignUpLoading}
+                  >
                     Sign up
                   </TButton>
                 </div>
