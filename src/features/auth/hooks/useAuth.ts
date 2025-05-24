@@ -1,51 +1,87 @@
 import { useState } from "react";
 import {
-  getFriendlyErrorMessage,
   signUpWithEmailAndPassword,
   signUpWithGoogle,
-} from "../services/authService";
+} from "@/features/auth/services/authService";
+
+import { getFirebaseErrorMessage } from "@/features/auth/services/authErrors";
+import type { AuthResult } from "../authTypes";
 
 export const useAuth = () => {
-  const [emailSignUpLoading, SetEmailSignUpLoading] = useState(false);
-  const [googleSignUpLoading, SetGoogleSignUpLoading] = useState(false);
+  const [authLoading, setAuthLoading] = useState({
+    emailAuthLoading: false,
+    googleAuthLoading: false,
+  });
 
-  const emailSignUp = async (
-    email: string,
-    password: string,
-    username: string
+  const handleAuthFlow = async (
+    authFn: () => Promise<AuthResult>,
+    type: "email" | "google"
   ) => {
-    SetEmailSignUpLoading(true);
+    setAuthLoading({ ...authLoading, [`${type}AuthLoading`]: true });
 
-    const result = await signUpWithEmailAndPassword(email, password, username);
+    const result = await authFn();
 
-    SetEmailSignUpLoading(false);
-
-    if (result.firebaseError) {
-      return {
-        success: false,
-        errorMessage: getFriendlyErrorMessage(result.firebaseError.code),
-      };
-    }
-
-    return { success: true, user: result.user };
-  };
-
-  const googleSginUp = async () => {
-    SetGoogleSignUpLoading(true);
-
-    const result = await signUpWithGoogle();
-
-    SetGoogleSignUpLoading(false);
+    setAuthLoading({ ...authLoading, [`${type}AuthLoading`]: false });
 
     if (result.firebaseError) {
       return {
         success: false,
-        errorMessage: getFriendlyErrorMessage(result.firebaseError.code),
+        errorMessage: getFirebaseErrorMessage(result.firebaseError.code),
       };
     }
-
     return { success: true, user: result.user };
   };
 
-  return { emailSignUp, emailSignUpLoading, googleSginUp, googleSignUpLoading };
+  const emailSignUp = (email: string, password: string, username: string) =>
+    handleAuthFlow(
+      () => signUpWithEmailAndPassword(email, password, username),
+      "email"
+    );
+
+  const googleSignUp = () => handleAuthFlow(signUpWithGoogle, "google");
+
+  return { emailSignUp, googleSignUp, authLoading };
+
+  // const [emailSignUpLoading, setEmailSignUpLoading] = useState(false);
+  // const [googleSignUpLoading, setGoogleSignUpLoading] = useState(false);
+
+  // const emailSignUp = async (
+  //   email: string,
+  //   password: string,
+  //   username: string
+  // ) => {
+  //   setEmailSignUpLoading(true);
+
+  //   const result = await signUpWithEmailAndPassword(email, password, username);
+
+  //   setEmailSignUpLoading(false);
+
+  //   if (result.firebaseError) {
+  //     return {
+  //       success: false,
+  //       errorMessage: getFirebaseErrorMessage(result.firebaseError.code),
+  //     };
+  //   }
+
+  //   return { success: true, user: result.user };
+  // };
+
+  // const googleSignUp = async () => {
+  //   setGoogleSignUpLoading(true);
+
+  //   const result = await signUpWithGoogle();
+
+  //   setGoogleSignUpLoading(false);
+
+  //   if (result.firebaseError) {
+  //     return {
+  //       success: false,
+  //       errorMessage: getFirebaseErrorMessage(result.firebaseError.code),
+  //     };
+  //   }
+
+  //   return { success: true, user: result.user };
+  // };
+
+  // return { emailSignUp, emailSignUpLoading, googleSignUp, googleSignUpLoading };
 };

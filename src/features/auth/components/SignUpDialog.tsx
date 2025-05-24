@@ -29,7 +29,6 @@ import { toast } from "sonner";
 import { useNavigate } from "react-router";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { signUpWithGoogle } from "../services/authService";
 
 type SignUpInputs = {
   username: string;
@@ -49,8 +48,11 @@ const SignUpDialog = ({
   onSignUpDialogOpenChange,
   onLogInDialogOpenChange,
 }: SignUpDialogProps) => {
-  const { emailSignUp, emailSignUpLoading, googleSginUp, googleSignUpLoading } =
-    useAuth();
+  const {
+    emailSignUp,
+    googleSignUp,
+    authLoading: { emailAuthLoading, googleAuthLoading },
+  } = useAuth();
   const navigate = useNavigate();
   const {
     register,
@@ -69,7 +71,7 @@ const SignUpDialog = ({
 
   const handleGoogleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const result = await googleSginUp();
+    const result = await googleSignUp();
     if (result.success) {
       // Redirect or show success message
       console.log("User created:", result.user);
@@ -121,7 +123,7 @@ const SignUpDialog = ({
                 <div className="flex flex-col gap-2">
                   <TButton
                     onClick={handleGoogleSignUp}
-                    disabled={googleSignUpLoading}
+                    disabled={googleAuthLoading}
                   >
                     <GoogleLogo className="fill-white" />
                     Sign up with Google
@@ -211,7 +213,7 @@ const SignUpDialog = ({
                   <TButton
                     type="submit"
                     className="mt-2"
-                    disabled={emailSignUpLoading}
+                    disabled={emailAuthLoading}
                   >
                     Sign up
                   </TButton>

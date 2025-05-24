@@ -54,7 +54,7 @@ export const signUpWithEmailAndPassword = async (
 
     // Fallback for unknown errors
     return {
-      unknownError: {
+      firebaseError: {
         code: "auth/unknown-error",
         message: "An unknown error occurred",
       },
@@ -103,26 +103,11 @@ export const signUpWithGoogle = async () => {
 
     // Fallback for unknown errors
     return {
-      unknownError: {
+      firebaseError: {
         code: "auth/unknown-error",
         message: "An unknown error occurred",
       },
     };
-  }
-};
-
-export const getFriendlyErrorMessage = (code: string) => {
-  switch (code) {
-    case "auth/email-already-in-use":
-      return "This email is already registered!";
-    case "auth/weak-password":
-      return "Password should be at least 6 characters!";
-    case "auth/invalid-email":
-      return "Please enter a valid email!";
-    case "firestore/permission-denied":
-      return "Failed to create user profile!";
-    default:
-      return "Registration failed. Please try again!";
   }
 };
 
