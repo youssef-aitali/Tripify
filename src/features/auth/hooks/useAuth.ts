@@ -4,8 +4,8 @@ import {
   signUpWithGoogle,
 } from "@/features/auth/services/authService";
 
-import { getFirebaseErrorMessage } from "@/features/auth/services/authErrors";
-import type { AuthResult } from "../authTypes";
+import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
+import type { AuthResult } from "@/features/auth/authTypes";
 
 export const useAuth = () => {
   const [authLoading, setAuthLoading] = useState({
@@ -23,10 +23,10 @@ export const useAuth = () => {
 
     setAuthLoading({ ...authLoading, [`${type}AuthLoading`]: false });
 
-    if (result.firebaseError) {
+    if (result.error) {
       return {
         success: false,
-        errorMessage: getFirebaseErrorMessage(result.firebaseError.code),
+        errorMessage: getFirebaseErrorMessage(result.error.code),
       };
     }
     return { success: true, user: result.user };
@@ -41,47 +41,4 @@ export const useAuth = () => {
   const googleSignUp = () => handleAuthFlow(signUpWithGoogle, "google");
 
   return { emailSignUp, googleSignUp, authLoading };
-
-  // const [emailSignUpLoading, setEmailSignUpLoading] = useState(false);
-  // const [googleSignUpLoading, setGoogleSignUpLoading] = useState(false);
-
-  // const emailSignUp = async (
-  //   email: string,
-  //   password: string,
-  //   username: string
-  // ) => {
-  //   setEmailSignUpLoading(true);
-
-  //   const result = await signUpWithEmailAndPassword(email, password, username);
-
-  //   setEmailSignUpLoading(false);
-
-  //   if (result.firebaseError) {
-  //     return {
-  //       success: false,
-  //       errorMessage: getFirebaseErrorMessage(result.firebaseError.code),
-  //     };
-  //   }
-
-  //   return { success: true, user: result.user };
-  // };
-
-  // const googleSignUp = async () => {
-  //   setGoogleSignUpLoading(true);
-
-  //   const result = await signUpWithGoogle();
-
-  //   setGoogleSignUpLoading(false);
-
-  //   if (result.firebaseError) {
-  //     return {
-  //       success: false,
-  //       errorMessage: getFirebaseErrorMessage(result.firebaseError.code),
-  //     };
-  //   }
-
-  //   return { success: true, user: result.user };
-  // };
-
-  // return { emailSignUp, emailSignUpLoading, googleSignUp, googleSignUpLoading };
 };

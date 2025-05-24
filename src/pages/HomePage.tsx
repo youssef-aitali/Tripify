@@ -40,7 +40,15 @@ const HomePage = () => {
         </div>
       </div>
       <div className="bg-gray-200 grow">Content</div>
-      <Toaster />
+      <Toaster
+        toastOptions={{
+          style: {
+            background: "hsl(0, 72%, 51%)",
+            color: "white",
+            border: "1px solid hsl(0, 85%, 35%)",
+          },
+        }}
+      />
     </div>
   );
 };

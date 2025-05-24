@@ -1,21 +1,12 @@
-import { auth, db, googleProvider } from "@/lib/firebase/firebaseConfig";
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  type AuthError,
-} from "firebase/auth";
-import {
-  collection,
-  addDoc,
-  type FirestoreError,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { auth, googleProvider } from "@/lib/firebase/firebaseConfig";
 
-interface CustomError extends Error {
-  code: string;
-}
+import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+
+import {
+  handleAuthErrors,
+  isUserEmailAlreadyUsed,
+  registerNewUser,
+} from "../utils/authUtils";
 
 export const signUpWithEmailAndPassword = async (
   email: string,
@@ -31,34 +22,19 @@ export const signUpWithEmailAndPassword = async (
 
     const user = userCredential.user;
 
-    const userProfile = {
-      username,
-      email,
-      avatarUrl: "",
-      preferences: {
-        language: "English",
-        appearance: "Light",
-        notifications: true,
-      },
-    };
+    const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
 
-    await addDoc(collection(db, "users"), userProfile);
+    if (isEmailUsed) {
+      throw {
+        code: "auth/email-already-in-use",
+      };
+    }
+
+    await registerNewUser(username, email);
 
     return { user };
   } catch (error) {
-    if (typeof error === "object" && error !== null && "code" in error) {
-      const firebaseError = error as AuthError | FirestoreError;
-
-      return { firebaseError };
-    }
-
-    // Fallback for unknown errors
-    return {
-      firebaseError: {
-        code: "auth/unknown-error",
-        message: "An unknown error occurred",
-      },
-    };
+    return handleAuthErrors(error);
   }
 };
 
@@ -68,46 +44,18 @@ export const signUpWithGoogle = async () => {
 
     const user = userCredential.user;
 
-    // Check if user document already exists
-    const usersRef = collection(db, "users");
-    const q = query(usersRef, where("email", "==", user.email));
-    const querySnapshot = await getDocs(q);
-
-    if (!querySnapshot.empty) {
-      const error = new Error(
-        "User with this email already exists"
-      ) as CustomError;
-      error.code = "custom/email-already-exists"; // Add a code
-      throw error;
+    const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
+    if (isEmailUsed) {
+      throw {
+        code: "auth/email-already-in-use",
+      };
     }
 
-    const userProfile = {
-      username: user.displayName,
-      email: user.email,
-      avatarUrl: "",
-      preferences: {
-        language: "English",
-        appearance: "Light",
-        notifications: true,
-      },
-    };
-
-    await addDoc(collection(db, "users"), userProfile);
+    await registerNewUser(user.displayName, user.email!);
 
     return { user };
   } catch (error) {
-    if (typeof error === "object" && error !== null && "code" in error) {
-      const firebaseError = error as AuthError | FirestoreError | CustomError;
-      return { firebaseError };
-    }
-
-    // Fallback for unknown errors
-    return {
-      firebaseError: {
-        code: "auth/unknown-error",
-        message: "An unknown error occurred",
-      },
-    };
+    return handleAuthErrors(error);
   }
 };
 

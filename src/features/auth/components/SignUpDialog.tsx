@@ -78,7 +78,7 @@ const SignUpDialog = ({
       onSignUpDialogOpenChange(false);
       navigate("/dashboard");
     } else {
-      toast(result.errorMessage);
+      toast.error(result.errorMessage);
     }
   };
 
@@ -94,7 +94,7 @@ const SignUpDialog = ({
       onSignUpDialogOpenChange(false);
       navigate("/dashboard");
     } else {
-      toast(result.errorMessage);
+      toast.error(result.errorMessage);
     }
   };
   const password = watch("password");

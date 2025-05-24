@@ -26,3 +26,4 @@ export const db = getFirestore(app);
 
 // Initialize Google Auth Provider and get a reference to the service
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.setCustomParameters({ prompt: "select_account" });
