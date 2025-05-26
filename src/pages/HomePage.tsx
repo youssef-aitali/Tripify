@@ -1,8 +1,10 @@
+import { useState } from "react";
+
 import logo from "@/assets/logo.svg";
-import { Button } from "@/components/ui/button";
 import LogInDialog from "@/features/auth/components/LogInDialog";
 import SignUpDialog from "@/features/auth/components/SignUpDialog";
-import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import { Toaster } from "sonner";
 
 const HomePage = () => {

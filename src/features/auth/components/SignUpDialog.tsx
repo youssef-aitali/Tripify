@@ -1,7 +1,9 @@
 import React from "react";
 
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { useNavigate } from "react-router";
+import { useForm, type SubmitHandler } from "react-hook-form";
 
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import {
   Dialog,
   DialogContent,
@@ -9,7 +11,6 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-
 import {
   Card,
   CardContent,
@@ -17,31 +18,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-
-import GoogleLogo from "@/assets/icons/google.svg?react";
-import TButton from "@/components/custom/TButton";
-
-import { useAuth } from "../hooks/useAuth";
+import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { useNavigate } from "react-router";
 
-import { useForm, type SubmitHandler } from "react-hook-form";
-
-type SignUpInputs = {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-type SignUpDialogProps = {
-  isSignUpDialogOpen: boolean;
-  onSignUpDialogOpenChange: (open: boolean) => void;
-  onLogInDialogOpenChange: (open: boolean) => void;
-};
+import TButton from "@/components/custom/TButton";
+import GoogleLogo from "@/assets/icons/google.svg?react";
+import type {
+  SignUpDialogProps,
+  SignUpInputs,
+} from "@/features/auth/authTypes";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const SignUpDialog = ({
   isSignUpDialogOpen,
@@ -97,6 +84,7 @@ const SignUpDialog = ({
       toast.error(result.errorMessage);
     }
   };
+
   const password = watch("password");
 
   return (
@@ -141,7 +129,7 @@ const SignUpDialog = ({
                       id="username"
                       type="text"
                       {...register("username", {
-                        required: "Username is required",
+                        required: "Username is required!",
                       })}
                     />
                     {errors.username && (
@@ -157,10 +145,10 @@ const SignUpDialog = ({
                       type="text"
                       placeholder="your@email.com"
                       {...register("email", {
-                        required: "Email is required",
+                        required: "Email is required!",
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: "Invalid email address",
+                          message: "Invalid email address!",
                         },
                       })}
                     />
@@ -176,10 +164,10 @@ const SignUpDialog = ({
                       id="password"
                       type="password"
                       {...register("password", {
-                        required: "Password is required",
+                        required: "Password is required!",
                         minLength: {
                           value: 8,
-                          message: "Password must be at least 8 characters",
+                          message: "Password must be at least 8 characters!",
                         },
                       })}
                     />
@@ -198,10 +186,10 @@ const SignUpDialog = ({
                         required: "Please confirm your password!",
                         minLength: {
                           value: 8,
-                          message: "Password must be at least 8 characters",
+                          message: "Password must be at least 8 characters!",
                         },
                         validate: (value) =>
-                          value === password || "Password do not match",
+                          value === password || "Password do not match!",
                       })}
                     />
                     {errors.confirmPassword && (
