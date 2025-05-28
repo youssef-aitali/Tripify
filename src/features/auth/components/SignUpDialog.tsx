@@ -49,7 +49,7 @@ const formSchema = z
       .min(1, {
         message: "Email is required!",
       })
-      .regex(/[A-Z]/, "Invalid email address!"),
+      .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address!"),
     password: z.string().min(8, {
       message: "Password must be at least 8 characters!",
     }),
@@ -83,16 +83,6 @@ const SignUpDialog = ({
       confirmPassword: "",
     },
   });
-
-  useEffect(() => {
-    const debounced = debounce(() => form.trigger("confirmPassword"), 500);
-    const subscription = form.watch((values, { name }) => {
-      if (name === "confirmPassword" || name === "password") {
-        debounced();
-      }
-    });
-    return () => subscription.unsubscribe();
-  }, [form]);
 
   const handleGoogleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
