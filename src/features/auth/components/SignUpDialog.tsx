@@ -123,7 +123,12 @@ const SignUpDialog = ({
 
   return (
     <Dialog open={isSignUpDialogOpen} onOpenChange={onSignUpDialogOpenChange}>
-      <DialogContent className="sm:max-w-[425px] [&_.absolute]:cursor-pointer">
+      <DialogContent
+        className="sm:max-w-[425px] [&_.absolute]:cursor-pointer"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <VisuallyHidden asChild>
             <DialogTitle>Sign up</DialogTitle>
@@ -141,7 +146,7 @@ const SignUpDialog = ({
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
+              <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
                 <div className="grid gap-4">
                   <div className="flex flex-col gap-2">
                     <TButton
@@ -181,7 +186,11 @@ const SignUpDialog = ({
                           <FormItem>
                             <FormLabel>Email</FormLabel>
                             <FormControl>
-                              <Input type="text" {...field} />
+                              <Input
+                                type="email"
+                                placeholder="your@email.com"
+                                {...field}
+                              />
                             </FormControl>
                             <FormMessage />
                           </FormItem>

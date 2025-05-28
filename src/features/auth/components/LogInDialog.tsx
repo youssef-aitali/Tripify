@@ -42,7 +42,12 @@ const LogInDialog = ({
   };
   return (
     <Dialog open={isLogInDialogOpen} onOpenChange={onLogInDialogOpenChange}>
-      <DialogContent className="sm:max-w-[425px] [&_.absolute]:cursor-pointer">
+      <DialogContent
+        className="sm:max-w-[425px] [&_.absolute]:cursor-pointer"
+        onInteractOutside={(e) => {
+          e.preventDefault();
+        }}
+      >
         <DialogHeader>
           <VisuallyHidden asChild>
             <DialogTitle>Log in</DialogTitle>
@@ -80,7 +85,7 @@ const LogInDialog = ({
                     <Input
                       id="email"
                       type="email"
-                      placeholder="m@example.com"
+                      placeholder="your@email.com"
                       required
                     />
                   </div>
