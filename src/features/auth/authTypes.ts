@@ -1,14 +1,20 @@
 import { type User } from "firebase/auth";
 
-export type SignUpInputs = {
-  username: string;
+export type AuthInputs = {
+  username?: string;
   email: string;
   password: string;
-  confirmPassword: string;
+  confirmPassword?: string;
 };
 
 export type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
+  onSignUpDialogOpenChange: (open: boolean) => void;
+  onLogInDialogOpenChange: (open: boolean) => void;
+};
+
+export type LogInDialogProps = {
+  isLogInDialogOpen: boolean;
   onSignUpDialogOpenChange: (open: boolean) => void;
   onLogInDialogOpenChange: (open: boolean) => void;
 };

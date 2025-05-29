@@ -30,12 +30,8 @@ import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import debounce from "lodash.debounce";
 
-import type {
-  SignUpDialogProps,
-  SignUpInputs,
-} from "@/features/auth/authTypes";
+import type { SignUpDialogProps, AuthInputs } from "@/features/auth/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
@@ -72,6 +68,7 @@ const SignUpDialog = ({
     googleSignUp,
     authLoading: { emailAuthLoading, googleAuthLoading },
   } = useAuth();
+
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -97,12 +94,12 @@ const SignUpDialog = ({
     }
   };
 
-  const onSubmit: SubmitHandler<SignUpInputs> = async ({
+  const onSubmit: SubmitHandler<AuthInputs> = async ({
     email,
     password,
     username,
   }) => {
-    const result = await emailSignUp(email, password, username);
+    const result = await emailSignUp(email, password, username!);
     if (result.success) {
       // Redirect or show success message
       console.log("User created:", result.user);
@@ -117,12 +114,18 @@ const SignUpDialog = ({
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
+    form.reset();
     onSignUpDialogOpenChange(false);
     onLogInDialogOpenChange(true);
   };
 
+  const onDialogOpenChange = () => {
+    onSignUpDialogOpenChange(!isSignUpDialogOpen);
+    form.reset();
+  };
+
   return (
-    <Dialog open={isSignUpDialogOpen} onOpenChange={onSignUpDialogOpenChange}>
+    <Dialog open={isSignUpDialogOpen} onOpenChange={onDialogOpenChange}>
       <DialogContent
         className="sm:max-w-[425px] [&_.absolute]:cursor-pointer"
         onInteractOutside={(e) => {
@@ -240,6 +243,7 @@ const SignUpDialog = ({
                     <TButton
                       variant="link"
                       onClick={switchToLoginDialogHandler}
+                      disabled={emailAuthLoading || googleAuthLoading}
                     >
                       Log in
                     </TButton>

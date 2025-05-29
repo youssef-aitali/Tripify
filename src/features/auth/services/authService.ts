@@ -1,6 +1,10 @@
 import { auth, googleProvider } from "@/lib/firebase/firebaseConfig";
 
-import { createUserWithEmailAndPassword, signInWithPopup } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+} from "firebase/auth";
 
 import {
   handleAuthErrors,
@@ -38,6 +42,25 @@ export const signUpWithEmailAndPassword = async (
   }
 };
 
+export const loginWithEmailAndPassword = async (
+  email: string,
+  password: string
+) => {
+  try {
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+    const user = userCredential.user;
+    console.log(user);
+    return { user };
+  } catch (error) {
+    return handleAuthErrors(error);
+  }
+};
+
 export const signUpWithGoogle = async () => {
   try {
     const userCredential = await signInWithPopup(auth, googleProvider);
@@ -52,6 +75,18 @@ export const signUpWithGoogle = async () => {
     }
 
     await registerNewUser(user.displayName, user.email!);
+
+    return { user };
+  } catch (error) {
+    return handleAuthErrors(error);
+  }
+};
+
+export const signInWithGoogle = async () => {
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+
+    const user = userCredential.user;
 
     return { user };
   } catch (error) {

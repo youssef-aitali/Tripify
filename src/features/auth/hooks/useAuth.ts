@@ -1,5 +1,7 @@
 import { useState } from "react";
 import {
+  loginWithEmailAndPassword,
+  signInWithGoogle,
   signUpWithEmailAndPassword,
   signUpWithGoogle,
 } from "@/features/auth/services/authService";
@@ -29,6 +31,7 @@ export const useAuth = () => {
         errorMessage: getFirebaseErrorMessage(result.error.code),
       };
     }
+
     return { success: true, user: result.user };
   };
 
@@ -38,7 +41,12 @@ export const useAuth = () => {
       "email"
     );
 
+  const emailLogIn = (email: string, password: string) =>
+    handleAuthFlow(() => loginWithEmailAndPassword(email, password), "email");
+
   const googleSignUp = () => handleAuthFlow(signUpWithGoogle, "google");
 
-  return { emailSignUp, googleSignUp, authLoading };
+  const googleSignIn = () => handleAuthFlow(signInWithGoogle, "google");
+
+  return { emailSignUp, googleSignUp, emailLogIn, googleSignIn, authLoading };
 };
