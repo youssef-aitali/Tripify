@@ -12,7 +12,8 @@ const TButton = ({ className, variant, ...props }: ButtonProps) => {
         "cursor-pointer",
         variant !== "link" &&
           "w-full bg-cyan-900/90 hover:bg-cyan-900 text-white",
-        variant === "link" && "underline cursor-pointer p-0 text-primary",
+        variant === "link" &&
+          "cursor-pointer p-0 hover:underline font-normal h-[14px]",
         className
       )}
       {...props}

@@ -178,14 +178,10 @@ const LogInDialog = ({
                           <FormItem>
                             <div className="flex items-center">
                               <FormLabel>Password</FormLabel>
-                              <a
-                                href="#"
-                                className="ml-auto text-sm underline-offset-4 hover:underline"
-                              >
+                              <TButton variant="link" className="ml-auto">
                                 Forgot your password?
-                              </a>
+                              </TButton>
                             </div>
-
                             <FormControl>
                               <Input type="password" {...field} />
                             </FormControl>
@@ -206,6 +202,7 @@ const LogInDialog = ({
                     Don't have an account?{" "}
                     <TButton
                       variant="link"
+                      className="font-semibold"
                       onClick={switchToSignUpDialogHandler}
                       disabled={emailAuthLoading || googleAuthLoading}
                     >
