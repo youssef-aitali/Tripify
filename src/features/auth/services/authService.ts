@@ -2,6 +2,7 @@ import { auth, googleProvider } from "@/lib/firebase/firebaseConfig";
 
 import {
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
 } from "firebase/auth";
@@ -91,6 +92,14 @@ export const signInWithGoogle = async () => {
     return { user };
   } catch (error) {
     return handleAuthErrors(error);
+  }
+};
+
+export const sendResetPasswordEmail = async (email: string) => {
+  try {
+    sendPasswordResetEmail(auth, email);
+  } catch (error) {
+    console.log(error);
   }
 };
 

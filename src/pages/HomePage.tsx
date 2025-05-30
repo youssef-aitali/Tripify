@@ -6,10 +6,13 @@ import SignUpDialog from "@/features/auth/components/SignUpDialog";
 
 import { Button } from "@/components/ui/button";
 import { Toaster } from "sonner";
+import SendResetPasswordDialog from "@/features/auth/components/SendResetPasswordDialog";
 
 const HomePage = () => {
   const [isLogInDialogOpen, setIsLogInDialogOpen] = useState(false);
   const [isSignUpDialogOpen, setIsSignUpDialogOpen] = useState(false);
+  const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
+    useState(false);
 
   return (
     <div className="flex flex-col min-h-svh px-[20%]">
@@ -33,10 +36,20 @@ const HomePage = () => {
             isLogInDialogOpen={isLogInDialogOpen}
             onSignUpDialogOpenChange={setIsSignUpDialogOpen}
             onLogInDialogOpenChange={setIsLogInDialogOpen}
+            onSendResetPasswordDialogOpenChange={
+              setIsSendResetPasswordDialogOpen
+            }
           />
           <SignUpDialog
             isSignUpDialogOpen={isSignUpDialogOpen}
             onSignUpDialogOpenChange={setIsSignUpDialogOpen}
+            onLogInDialogOpenChange={setIsLogInDialogOpen}
+          />
+          <SendResetPasswordDialog
+            isSendResetPasswordDialogOpen={isSendResetPasswordDialogOpen}
+            onSendResetPasswordDialogOpenChange={
+              setIsSendResetPasswordDialogOpen
+            }
             onLogInDialogOpenChange={setIsLogInDialogOpen}
           />
         </div>

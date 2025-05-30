@@ -143,9 +143,7 @@ const SignUpDialog = ({
         <Card className="border-none shadow-none py-0">
           <CardHeader className="text-center">
             <CardTitle className="text-xl">Sign up to Tripify</CardTitle>
-            <CardDescription>
-              Sign up with your Google or Facebook account
-            </CardDescription>
+            <CardDescription>Sign up with your Google account</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -242,6 +240,7 @@ const SignUpDialog = ({
                     Already have an account?{" "}
                     <TButton
                       variant="link"
+                      className="font-semibold"
                       onClick={switchToLoginDialogHandler}
                       disabled={emailAuthLoading || googleAuthLoading}
                     >

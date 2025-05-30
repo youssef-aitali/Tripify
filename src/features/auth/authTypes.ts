@@ -17,6 +17,13 @@ export type LogInDialogProps = {
   isLogInDialogOpen: boolean;
   onSignUpDialogOpenChange: (open: boolean) => void;
   onLogInDialogOpenChange: (open: boolean) => void;
+  onSendResetPasswordDialogOpenChange: (open: boolean) => void;
+};
+
+export type SendResetPasswordDialogProps = {
+  isSendResetPasswordDialogOpen: boolean;
+  onSendResetPasswordDialogOpenChange: (open: boolean) => void;
+  onLogInDialogOpenChange: (open: boolean) => void;
 };
 
 export type AuthResult =

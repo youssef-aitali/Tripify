@@ -51,6 +51,7 @@ const LogInDialog = ({
   isLogInDialogOpen,
   onSignUpDialogOpenChange,
   onLogInDialogOpenChange,
+  onSendResetPasswordDialogOpenChange,
 }: LogInDialogProps) => {
   const {
     emailLogIn,
@@ -102,6 +103,15 @@ const LogInDialog = ({
     onSignUpDialogOpenChange(true);
   };
 
+  const switchToSendResetPasswordDialogHandler = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    form.reset();
+    onLogInDialogOpenChange(false);
+    onSendResetPasswordDialogOpenChange(true);
+  };
+
   const onDialogOpenChange = () => {
     onLogInDialogOpenChange(!isLogInDialogOpen);
     form.reset();
@@ -128,9 +138,7 @@ const LogInDialog = ({
         <Card className="border-none shadow-none py-0">
           <CardHeader className="text-center">
             <CardTitle className="text-xl">Log in to Tripify</CardTitle>
-            <CardDescription>
-              Log in with your Google or Facebook account
-            </CardDescription>
+            <CardDescription>Log in with your Google account</CardDescription>
           </CardHeader>
           <CardContent>
             <Form {...form}>
@@ -178,7 +186,11 @@ const LogInDialog = ({
                           <FormItem>
                             <div className="flex items-center">
                               <FormLabel>Password</FormLabel>
-                              <TButton variant="link" className="ml-auto">
+                              <TButton
+                                variant="link"
+                                className="ml-auto"
+                                onClick={switchToSendResetPasswordDialogHandler}
+                              >
                                 Forgot your password?
                               </TButton>
                             </div>
