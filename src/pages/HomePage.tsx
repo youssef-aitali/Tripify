@@ -1,59 +1,10 @@
-import { useState } from "react";
-
-import logo from "@/assets/logo.svg";
-import LogInDialog from "@/features/auth/components/LogInDialog";
-import SignUpDialog from "@/features/auth/components/SignUpDialog";
-
-import { Button } from "@/components/ui/button";
+import Navbar from "@/components/custom/Navbar/Navbar";
 import { Toaster } from "sonner";
-import SendResetPasswordDialog from "@/features/auth/components/SendResetPasswordDialog";
 
 const HomePage = () => {
-  const [isLogInDialogOpen, setIsLogInDialogOpen] = useState(false);
-  const [isSignUpDialogOpen, setIsSignUpDialogOpen] = useState(false);
-  const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
-    useState(false);
-
   return (
     <div className="flex flex-col min-h-svh px-[20%]">
-      <div className="flex justify-between items-center h-16 w-full">
-        <img className="w-24" src={logo} alt="Tripify logo" />
-        <div className="flex gap-4">
-          <Button
-            variant="ghost"
-            className="hover:bg-gray-200/50 cursor-pointer"
-            onClick={() => setIsLogInDialogOpen(true)}
-          >
-            Login
-          </Button>
-          <Button
-            className="bg-cyan-900/90 hover:bg-cyan-900 cursor-pointer"
-            onClick={() => setIsSignUpDialogOpen(true)}
-          >
-            Sign up
-          </Button>
-          <LogInDialog
-            isLogInDialogOpen={isLogInDialogOpen}
-            onSignUpDialogOpenChange={setIsSignUpDialogOpen}
-            onLogInDialogOpenChange={setIsLogInDialogOpen}
-            onSendResetPasswordDialogOpenChange={
-              setIsSendResetPasswordDialogOpen
-            }
-          />
-          <SignUpDialog
-            isSignUpDialogOpen={isSignUpDialogOpen}
-            onSignUpDialogOpenChange={setIsSignUpDialogOpen}
-            onLogInDialogOpenChange={setIsLogInDialogOpen}
-          />
-          <SendResetPasswordDialog
-            isSendResetPasswordDialogOpen={isSendResetPasswordDialogOpen}
-            onSendResetPasswordDialogOpenChange={
-              setIsSendResetPasswordDialogOpen
-            }
-            onLogInDialogOpenChange={setIsLogInDialogOpen}
-          />
-        </div>
-      </div>
+      <Navbar />
       <div className="bg-gray-200 grow">Content</div>
       <Toaster richColors />
     </div>
