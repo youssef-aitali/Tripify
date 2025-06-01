@@ -61,12 +61,16 @@ const SendResetPasswordDialog = ({
     email,
   }) => {
     await sendResetPasswordEmail(email);
+    toast.info("If this email exists, you’ll receive a link shortly.", {
+      className: "bg-green-500 text-white border-0",
+    });
   };
 
   const switchToLoginDialogHandler = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
+    form.reset();
     onSendResetPasswordDialogOpenChange(false);
     onLogInDialogOpenChange(true);
   };
@@ -93,7 +97,7 @@ const SendResetPasswordDialog = ({
           </VisuallyHidden>
           <VisuallyHidden asChild>
             <DialogDescription>
-              Get an email of password reset instructions
+              Get a secure link to create a new password
             </DialogDescription>
           </VisuallyHidden>
         </DialogHeader>
