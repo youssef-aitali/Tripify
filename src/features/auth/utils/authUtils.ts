@@ -22,6 +22,10 @@ export const getFirebaseErrorMessage = (code: string) => {
       return "Failed to create user profile!";
     case "auth/requires-recent-login":
       return "Please sign in again before changing your password!";
+    case "auth/invalid-action-code":
+      return "Your password reset link is invalid or has already been used. Please request a new reset link!";
+    case "auth/expired-action-code":
+      return "Your password reset link has expired. Please request a new one!";
     default:
       return "Authentication failed. Please try again!";
   }

@@ -1,14 +1,15 @@
 import { auth, googleProvider } from "@/lib/firebase/firebaseConfig";
 
 import {
+  confirmPasswordReset,
   createUserWithEmailAndPassword,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
-  updatePassword,
 } from "firebase/auth";
 
 import {
+  getFirebaseErrorMessage,
   handleAuthErrors,
   isUserEmailAlreadyUsed,
   registerNewUser,
@@ -98,24 +99,26 @@ export const signInWithGoogle = async () => {
 
 export const sendResetPasswordEmail = async (email: string) => {
   try {
-    const result = await sendPasswordResetEmail(auth, email);
-    console.log(result);
+    await sendPasswordResetEmail(auth, email);
   } catch (error) {
     console.log(error);
   }
 };
 
-export const setNewPassword = async (newPassword: string) => {
-  const user = auth.currentUser;
-  console.log(user);
-  if (!user) {
-    throw new Error("No user is signed in. Please sign in first.");
-  }
-
+export const setNewPassword = async (
+  actionCode: string,
+  newPassword: string
+) => {
   try {
-    await updatePassword(user, newPassword);
+    await confirmPasswordReset(auth, actionCode, newPassword);
+    return {
+      success: true,
+    };
   } catch (error) {
-    return handleAuthErrors(error);
+    return {
+      success: false,
+      errorMessage: getFirebaseErrorMessage(handleAuthErrors(error).error.code),
+    };
   }
 };
 

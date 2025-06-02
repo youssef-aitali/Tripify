@@ -1,4 +1,3 @@
-import Navbar from "@/components/custom/Navbar/Navbar";
 import {
   Form,
   FormControl,
@@ -11,12 +10,11 @@ import TButton from "@/components/custom/TButton";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type {
-  AuthInputs,
-  SendResetPasswordDialogProps,
-} from "@/features/auth/authTypes";
+import type { AuthInputs } from "@/features/auth/authTypes";
 import { Input } from "@/components/ui/input";
 import { setNewPassword } from "@/features/auth/services/authService";
+import { useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 const formSchema = z
   .object({
@@ -33,6 +31,8 @@ const formSchema = z
   });
 
 const ResetPasswordPage = () => {
+  const [searchParams] = useSearchParams();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,7 +44,15 @@ const ResetPasswordPage = () => {
   const onSubmit: SubmitHandler<Pick<AuthInputs, "password">> = async ({
     password,
   }) => {
-    await setNewPassword(password);
+    const oobCode = searchParams.get("oobCode");
+    if (oobCode) {
+      const result = await setNewPassword(oobCode, password);
+      if (result.success) {
+        toast.success("Password reset successful!");
+      } else {
+        toast.error(result.errorMessage);
+      }
+    }
   };
 
   return (
