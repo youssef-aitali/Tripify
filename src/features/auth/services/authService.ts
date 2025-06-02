@@ -107,15 +107,15 @@ export const sendResetPasswordEmail = async (email: string) => {
 
 export const setNewPassword = async (newPassword: string) => {
   const user = auth.currentUser;
+  console.log(user);
   if (!user) {
     throw new Error("No user is signed in. Please sign in first.");
   }
 
   try {
-    console.log(newPassword);
     await updatePassword(user, newPassword);
   } catch (error) {
-    console.log(error);
+    return handleAuthErrors(error);
   }
 };
 

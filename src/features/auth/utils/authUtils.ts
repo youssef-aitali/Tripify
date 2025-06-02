@@ -20,6 +20,8 @@ export const getFirebaseErrorMessage = (code: string) => {
       return "Please enter a valid email!";
     case "firestore/permission-denied":
       return "Failed to create user profile!";
+    case "auth/requires-recent-login":
+      return "Please sign in again before changing your password!";
     default:
       return "Authentication failed. Please try again!";
   }
