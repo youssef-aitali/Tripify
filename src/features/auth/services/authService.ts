@@ -6,6 +6,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  verifyPasswordResetCode,
 } from "firebase/auth";
 
 import {
@@ -102,6 +103,16 @@ export const sendResetPasswordEmail = async (email: string) => {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
     console.log(error);
+  }
+};
+
+export const checkResetLinkValidity = async (actionCode: string) => {
+  try {
+    // If this succeeds, the link is still valid
+    const email = await verifyPasswordResetCode(auth, actionCode);
+    return email;
+  } catch (error) {
+    console.log(false);
   }
 };
 
