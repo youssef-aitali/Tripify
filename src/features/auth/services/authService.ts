@@ -5,6 +5,7 @@ import {
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
+  updatePassword,
 } from "firebase/auth";
 
 import {
@@ -99,6 +100,20 @@ export const sendResetPasswordEmail = async (email: string) => {
   try {
     const result = await sendPasswordResetEmail(auth, email);
     console.log(result);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const setNewPassword = async (newPassword: string) => {
+  const user = auth.currentUser;
+  if (!user) {
+    throw new Error("No user is signed in. Please sign in first.");
+  }
+
+  try {
+    console.log(newPassword);
+    await updatePassword(user, newPassword);
   } catch (error) {
     console.log(error);
   }

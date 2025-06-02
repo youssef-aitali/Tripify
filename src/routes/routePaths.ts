@@ -1,6 +1,5 @@
 export const ROUTE_PATHS = {
-  HOME: "/",
-  DASHBOARD: "/dashboard",
   PASSWORD_RESET: "/passwordreset",
+  DASHBOARD: "/dashboard",
   // Add more paths here
 };

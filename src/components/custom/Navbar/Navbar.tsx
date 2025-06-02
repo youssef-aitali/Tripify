@@ -15,7 +15,7 @@ const Navbar = () => {
     useState(false);
 
   return (
-    <div className="flex justify-between items-center h-16 w-full">
+    <div className="flex justify-between items-center h-16 border-b-1 border-gray-200 px-[20%]">
       <img className="w-24" src={logo} alt="Tripify logo" />
       <div className="flex gap-4">
         <Button
