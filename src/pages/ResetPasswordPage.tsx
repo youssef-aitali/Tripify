@@ -20,6 +20,7 @@ import {
   setNewPassword,
 } from "@/features/auth/services/authService";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const formSchema = z
   .object({
@@ -37,14 +38,14 @@ const formSchema = z
 
 const ResetPasswordPage = () => {
   const [isValidLink, setIsValidLink] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSuccess, setIsSuccess] = useState(false);
+
   const [searchParams] = useSearchParams();
   const oobCode = searchParams.get("oobCode");
 
   useEffect(() => {
     const checkLinkValidity = async () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const oobCode = urlParams.get("oobCode");
-
       if (!oobCode) {
         return;
       }
@@ -53,6 +54,7 @@ const ResetPasswordPage = () => {
         // If this succeeds, the link is still valid
         const email = await checkResetLinkValidity(oobCode);
         email ? setIsValidLink(true) : setIsValidLink(false);
+        setIsLoading(false);
       } catch (error) {
         console.log(false);
       }
@@ -76,11 +78,23 @@ const ResetPasswordPage = () => {
       const result = await setNewPassword(oobCode, password);
       if (result.success) {
         toast.success("Password reset successful!");
+        setIsSuccess(true);
       } else {
         toast.error(result.errorMessage);
       }
     }
   };
+
+  const isDisabled = form.formState.isSubmitting || isSuccess;
+
+  if (isLoading)
+    return (
+      <div className="space-y-2 px-[30%]">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-[200px]" />
+      </div>
+    );
 
   return (
     <div className="px-[30%]">
@@ -92,6 +106,7 @@ const ResetPasswordPage = () => {
               <div className="grid gap-2 text-sm">
                 <div className="grid gap-1">
                   <FormField
+                    disabled={isDisabled}
                     control={form.control}
                     name="password"
                     render={({ field }) => (
@@ -107,6 +122,7 @@ const ResetPasswordPage = () => {
                 </div>
                 <div className="grid gap-1">
                   <FormField
+                    disabled={isDisabled}
                     control={form.control}
                     name="confirmPassword"
                     render={({ field }) => (
@@ -120,7 +136,7 @@ const ResetPasswordPage = () => {
                     )}
                   />
                 </div>
-                <TButton type="submit" className="mt-2">
+                <TButton type="submit" className="mt-2" disabled={isDisabled}>
                   Set new password
                 </TButton>
               </div>
