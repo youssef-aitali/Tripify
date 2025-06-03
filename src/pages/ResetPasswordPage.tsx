@@ -10,7 +10,7 @@ import {
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useSearchParams } from "react-router";
+import { useOutletContext, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -40,6 +40,8 @@ const ResetPasswordPage = () => {
   const [isValidLink, setIsValidLink] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const setIsLogInDialogOpen: (open: boolean) => void = useOutletContext();
 
   const [searchParams] = useSearchParams();
   const oobCode = searchParams.get("oobCode");
@@ -107,7 +109,15 @@ const ResetPasswordPage = () => {
           Password Reset Successful!
         </p>
         <p className="text-sm text-green-600">
-          You can now log in with your new password.
+          You can now{" "}
+          <TButton
+            variant="link"
+            className="font-semibold text-green-900"
+            onClick={() => setIsLogInDialogOpen(true)}
+          >
+            Log In
+          </TButton>{" "}
+          in with your new password.
         </p>
       </div>
     );

@@ -36,3 +36,8 @@ export type AuthErrorResponse = {
     message?: string;
   };
 };
+
+export type OutletProps = {
+  isLogInDialogOpen: boolean;
+  setIsLogInDialogOpen: (isDialogOpen: boolean) => void;
+};

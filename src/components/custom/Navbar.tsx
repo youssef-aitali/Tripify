@@ -7,9 +7,9 @@ import SignUpDialog from "@/features/auth/components/SignUpDialog";
 import { Button } from "@/components/ui/button";
 
 import SendResetPasswordDialog from "@/features/auth/components/SendResetPasswordDialog";
+import type { OutletProps } from "@/features/auth/authTypes";
 
-const Navbar = () => {
-  const [isLogInDialogOpen, setIsLogInDialogOpen] = useState(false);
+const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSignUpDialogOpen, setIsSignUpDialogOpen] = useState(false);
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
