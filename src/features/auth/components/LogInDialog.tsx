@@ -83,6 +83,7 @@ const LogInDialog = ({
   };
 
   const onSubmit: SubmitHandler<AuthInputs> = async ({ email, password }) => {
+    console.log(email, password);
     const result = await emailLogIn(email, password);
     if (result.success) {
       // Redirect or show success message

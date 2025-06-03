@@ -58,7 +58,6 @@ export const loginWithEmailAndPassword = async (
     );
 
     const user = userCredential.user;
-    console.log(user);
     return { user };
   } catch (error) {
     return handleAuthErrors(error);
@@ -108,7 +107,6 @@ export const sendResetPasswordEmail = async (email: string) => {
 
 export const checkResetLinkValidity = async (actionCode: string) => {
   try {
-    // If this succeeds, the link is still valid
     const email = await verifyPasswordResetCode(auth, actionCode);
     return email;
   } catch (error) {

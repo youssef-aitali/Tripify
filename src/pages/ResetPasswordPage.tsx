@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   Form,
   FormControl,
@@ -11,16 +12,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useSearchParams } from "react-router";
 import { toast } from "sonner";
-
-import type { AuthInputs } from "@/features/auth/authTypes";
-import TButton from "@/components/custom/TButton";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
+
+import TButton from "@/components/custom/TButton";
 import {
   checkResetLinkValidity,
   setNewPassword,
 } from "@/features/auth/services/authService";
-import { useEffect, useState } from "react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Loader2Icon } from "lucide-react";
 
 const formSchema = z
   .object({
@@ -44,25 +44,6 @@ const ResetPasswordPage = () => {
   const [searchParams] = useSearchParams();
   const oobCode = searchParams.get("oobCode");
 
-  useEffect(() => {
-    const checkLinkValidity = async () => {
-      if (!oobCode) {
-        return;
-      }
-
-      try {
-        // If this succeeds, the link is still valid
-        const email = await checkResetLinkValidity(oobCode);
-        email ? setIsValidLink(true) : setIsValidLink(false);
-        setIsLoading(false);
-      } catch (error) {
-        console.log(false);
-      }
-    };
-
-    checkLinkValidity();
-  }, []);
-
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -71,16 +52,39 @@ const ResetPasswordPage = () => {
     },
   });
 
-  const onSubmit: SubmitHandler<Pick<AuthInputs, "password">> = async ({
-    password,
-  }) => {
+  useEffect(() => {
+    const checkLinkValidity = async () => {
+      if (!oobCode) {
+        return;
+      }
+
+      try {
+        const email = await checkResetLinkValidity(oobCode);
+        setIsValidLink(!!email);
+        console.log(!!email);
+        console.log("email: ", email);
+      } catch (error) {
+        console.log(error);
+        setIsValidLink(false);
+      }
+
+      setIsLoading(false);
+    };
+
+    checkLinkValidity();
+  }, []);
+
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
+    console.log("Submitted data: ", data);
+    console.log("Form State:", form.getValues());
     if (oobCode) {
-      const result = await setNewPassword(oobCode, password);
+      const result = await setNewPassword(oobCode, data.password);
       if (result.success) {
         toast.success("Password reset successful!");
         setIsSuccess(true);
       } else {
         toast.error(result.errorMessage);
+        setIsSuccess(false);
       }
     }
   };
@@ -96,6 +100,19 @@ const ResetPasswordPage = () => {
       </div>
     );
 
+  if (isSuccess) {
+    return (
+      <div className="px-[30%]">
+        <p className="font-semibold text-2xl pb-5">
+          Password Reset Successful!
+        </p>
+        <p className="text-sm text-green-600">
+          You can now log in with your new password.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="px-[30%]">
       <p className="font-semibold text-2xl pb-5">Reset your password</p>
@@ -106,14 +123,17 @@ const ResetPasswordPage = () => {
               <div className="grid gap-2 text-sm">
                 <div className="grid gap-1">
                   <FormField
-                    disabled={isDisabled}
                     control={form.control}
                     name="password"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input type="password" {...field} />
+                          <Input
+                            type="password"
+                            {...field}
+                            disabled={isDisabled}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -122,14 +142,17 @@ const ResetPasswordPage = () => {
                 </div>
                 <div className="grid gap-1">
                   <FormField
-                    disabled={isDisabled}
                     control={form.control}
                     name="confirmPassword"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Confirm Password</FormLabel>
                         <FormControl>
-                          <Input type="password" {...field} />
+                          <Input
+                            type="password"
+                            {...field}
+                            disabled={isDisabled}
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -137,6 +160,9 @@ const ResetPasswordPage = () => {
                   />
                 </div>
                 <TButton type="submit" className="mt-2" disabled={isDisabled}>
+                  {form.formState.isSubmitting && (
+                    <Loader2Icon className="animate-spin" />
+                  )}
                   Set new password
                 </TButton>
               </div>
