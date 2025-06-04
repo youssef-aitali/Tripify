@@ -83,13 +83,14 @@ const LogInDialog = ({
   };
 
   const onSubmit: SubmitHandler<AuthInputs> = async ({ email, password }) => {
-    console.log(email, password);
     const result = await emailLogIn(email, password);
     if (result.success) {
       // Redirect or show success message
       console.log("User logged in:", result.user);
       onLogInDialogOpenChange(false);
       navigate("/dashboard");
+      !result.user?.emailVerified &&
+        toast.warning("Please confirm your email!");
     } else {
       toast.error(result.errorMessage);
     }

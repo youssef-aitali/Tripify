@@ -32,7 +32,6 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
     useState(false);
 
   const { currentUser, isLoading } = useContext(AuthContext);
-  console.log(currentUser);
 
   const logOutHandler = async () => {
     await logOut();
@@ -50,11 +49,11 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
         <span className="flex items-center gap-4">
           <IconBell
             stroke={2}
-            className="text-cyan-900/90 hover:text-cyan-900"
+            className="text-cyan-900/90 hover:text-cyan-900 cursor-pointer"
           />
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="h-8 w-8 rounded-lg">
+              <Avatar className="h-8 w-8 rounded-lg cursor-pointer">
                 <AvatarImage src={userIcon} alt="User avatar" />
                 <AvatarFallback className="rounded-full">CN</AvatarFallback>
               </Avatar>

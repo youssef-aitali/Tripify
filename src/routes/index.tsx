@@ -11,16 +11,16 @@ export const AppRoutes = () => (
     <Route element={<HomeLayout />}>
       <Route index element={<PlanTripPage />} />
       <Route
+        path={ROUTE_PATHS.PASSWORD_RESET}
+        element={<ResetPasswordPage />}
+      />
+      <Route
         path={ROUTE_PATHS.DASHBOARD}
         element={
           <ProtectedRoute>
             <DashboardPage />
           </ProtectedRoute>
         }
-      />
-      <Route
-        path={ROUTE_PATHS.PASSWORD_RESET}
-        element={<ResetPasswordPage />}
       />
     </Route>
   </Routes>

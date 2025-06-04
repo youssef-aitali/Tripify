@@ -1,5 +1,5 @@
 import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, type ReactNode } from "react";
+import { useContext, useEffect, type ReactNode } from "react";
 import { useNavigate } from "react-router";
 
 type ProtectedRouteProps = {
@@ -10,6 +10,12 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { currentUser, isLoading } = useContext(AuthContext);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!isLoading && !currentUser) {
+      navigate("/");
+    }
+  }, [currentUser, isLoading]);
+
   if (isLoading) {
     return <p>Loading...</p>;
   }
@@ -17,8 +23,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   if (currentUser) {
     return children;
   }
-
-  navigate("/");
+  return null;
 };
 
 export default ProtectedRoute;

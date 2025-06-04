@@ -89,6 +89,7 @@ const SignUpDialog = ({
       console.log("User created:", result.user);
       onSignUpDialogOpenChange(false);
       navigate("/dashboard");
+      toast.success("Thanks for signing up!");
     } else {
       toast.error(result.errorMessage);
     }
@@ -105,6 +106,12 @@ const SignUpDialog = ({
       console.log("User created:", result.user);
       onSignUpDialogOpenChange(false);
       navigate("/dashboard");
+      toast.success(
+        `Thanks for signing up! Please check your email ${email} to confirm your account`,
+        {
+          duration: 5000,
+        }
+      );
     } else {
       toast.error(result.errorMessage);
     }
