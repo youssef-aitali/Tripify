@@ -63,8 +63,6 @@ const ResetPasswordPage = () => {
       try {
         const email = await checkResetLinkValidity(oobCode);
         setIsValidLink(!!email);
-        console.log(!!email);
-        console.log("email: ", email);
       } catch (error) {
         console.log(error);
         setIsValidLink(false);
@@ -77,8 +75,6 @@ const ResetPasswordPage = () => {
   }, []);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
-    console.log("Submitted data: ", data);
-    console.log("Form State:", form.getValues());
     if (oobCode) {
       const result = await setNewPassword(oobCode, data.password);
       if (result.success) {
