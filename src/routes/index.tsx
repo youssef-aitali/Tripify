@@ -4,12 +4,20 @@ import DashboardPage from "@/pages/DashboardPage";
 import ResetPasswordPage from "@/pages/ResetPasswordPage";
 import HomeLayout from "@/layouts/HomeLayout";
 import PlanTripPage from "@/pages/PlanTripPage";
+import ProtectedRoute from "./ProtectedRoute";
 
 export const AppRoutes = () => (
   <Routes>
     <Route element={<HomeLayout />}>
       <Route index element={<PlanTripPage />} />
-      <Route path={ROUTE_PATHS.DASHBOARD} element={<DashboardPage />} />
+      <Route
+        path={ROUTE_PATHS.DASHBOARD}
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path={ROUTE_PATHS.PASSWORD_RESET}
         element={<ResetPasswordPage />}
