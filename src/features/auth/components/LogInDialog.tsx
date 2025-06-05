@@ -89,8 +89,6 @@ const LogInDialog = ({
       console.log("User logged in:", result.user);
       onLogInDialogOpenChange(false);
       navigate("/dashboard");
-      !result.user?.emailVerified &&
-        toast.warning("Please confirm your email!");
     } else {
       toast.error(result.errorMessage);
     }

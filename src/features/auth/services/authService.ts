@@ -1,13 +1,17 @@
 import { auth, googleProvider } from "@/lib/firebase/firebaseConfig";
 
 import {
+  applyActionCode,
+  checkActionCode,
   confirmPasswordReset,
   createUserWithEmailAndPassword,
+  sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signOut,
   verifyPasswordResetCode,
+  type User,
 } from "firebase/auth";
 
 import {
@@ -129,6 +133,22 @@ export const setNewPassword = async (
       success: false,
       errorMessage: getFirebaseErrorMessage(handleAuthErrors(error).error.code),
     };
+  }
+};
+
+export const sendVerificationEmail = async (user: User) => {
+  try {
+    await sendEmailVerification(user);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const verifyEmail = async (actionCode: string) => {
+  try {
+    await applyActionCode(auth, actionCode);
+  } catch (error: any) {
+    console.log("error updating user verification status!", error.message);
   }
 };
 

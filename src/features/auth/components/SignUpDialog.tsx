@@ -34,6 +34,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { SignUpDialogProps, AuthInputs } from "@/features/auth/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { sendVerificationEmail } from "../services/authService";
 
 const formSchema = z
   .object({
@@ -105,6 +106,7 @@ const SignUpDialog = ({
       // Redirect or show success message
       console.log("User created:", result.user);
       onSignUpDialogOpenChange(false);
+      await sendVerificationEmail(result.user!);
       navigate("/dashboard");
       toast.success(
         `Thanks for signing up! Please check your email ${email} to confirm your account`,
