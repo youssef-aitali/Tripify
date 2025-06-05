@@ -25,10 +25,10 @@ export const useAuth = () => {
 
     setAuthLoading({ ...authLoading, [`${type}AuthLoading`]: false });
 
-    if (result.error) {
+    if ("code" in result) {
       return {
         success: false,
-        errorMessage: getFirebaseErrorMessage(result.error.code),
+        errorMessage: getFirebaseErrorMessage(result.code),
       };
     }
 

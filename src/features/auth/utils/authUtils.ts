@@ -18,14 +18,14 @@ export const getFirebaseErrorMessage = (code: string) => {
       return "Password should be at least 6 characters!";
     case "auth/invalid-email":
       return "Please enter a valid email!";
-    case "firestore/permission-denied":
-      return "Failed to create user profile!";
     case "auth/requires-recent-login":
       return "Please sign in again before changing your password!";
     case "auth/invalid-action-code":
       return "Your password reset link is invalid or has already been used. Please request a new reset link!";
     case "auth/expired-action-code":
       return "Your password reset link has expired. Please request a new one!";
+    case "firestore/permission-denied":
+      return "Failed to create user profile!";
     default:
       return "Authentication failed. Please try again!";
   }
@@ -61,14 +61,12 @@ export const registerNewUser = async (
 export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
   if (typeof error === "object" && error !== null && "code" in error) {
     const firebaseError = error as AuthError | FirestoreError;
-    return { error: firebaseError };
+    return { ...firebaseError };
   }
 
   // Fallback for unknown errors
   return {
-    error: {
-      code: "auth/unknown-error",
-      message: "An unknown error occurred",
-    },
+    code: "auth/unknown-error",
+    message: "An unknown error occurred!",
   };
 };

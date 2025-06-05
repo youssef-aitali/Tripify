@@ -26,16 +26,16 @@ export type SendResetPasswordDialogProps = {
   onLogInDialogOpenChange: (open: boolean) => void;
 };
 
-export type AuthResult =
-  | { user: User; error?: never }
-  | { user?: never; error: { code: string } };
-
 export type AuthErrorResponse = {
-  error: {
-    code: string;
-    message?: string;
-  };
+  code: string;
+  message?: string;
 };
+
+export type AuthResult =
+  | AuthErrorResponse
+  | {
+      user: User;
+    };
 
 export type OutletProps = {
   isLogInDialogOpen: boolean;

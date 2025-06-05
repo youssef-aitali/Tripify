@@ -17,7 +17,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import TButton from "@/components/custom/TButton";
 import {
   Form,
   FormControl,
@@ -31,9 +30,11 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import TButton from "@/components/custom/TButton";
 import type { LogInDialogProps, AuthInputs } from "@/features/auth/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ROUTE_PATHS } from "@/routes/routePaths";
 
 const formSchema = z.object({
   email: z
@@ -69,14 +70,12 @@ const LogInDialog = ({
     },
   });
 
-  const handleGoogleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleGoogleSignIn = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const result = await googleSignIn();
     if (result.success) {
-      // Redirect or show success message
-      console.log("User created:", result.user);
       onLogInDialogOpenChange(false);
-      navigate("/dashboard");
+      navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
     }
@@ -85,10 +84,8 @@ const LogInDialog = ({
   const onSubmit: SubmitHandler<AuthInputs> = async ({ email, password }) => {
     const result = await emailLogIn(email, password);
     if (result.success) {
-      // Redirect or show success message
-      console.log("User logged in:", result.user);
       onLogInDialogOpenChange(false);
-      navigate("/dashboard");
+      navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
     }
@@ -103,7 +100,7 @@ const LogInDialog = ({
     onSignUpDialogOpenChange(true);
   };
 
-  const switchToSendResetPasswordDialogHandler = (
+  const HandleSwitchToSendResetPasswordDialog = (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
@@ -131,7 +128,7 @@ const LogInDialog = ({
           </VisuallyHidden>
           <VisuallyHidden asChild>
             <DialogDescription>
-              Login to access your save trips
+              Log in to access your save trips
             </DialogDescription>
           </VisuallyHidden>
         </DialogHeader>
@@ -147,7 +144,7 @@ const LogInDialog = ({
                   <div className="flex flex-col gap-2">
                     <TButton
                       className="w-full"
-                      onClick={handleGoogleSignUp}
+                      onClick={handleGoogleSignIn}
                       disabled={googleAuthLoading}
                     >
                       <GoogleLogo className="fill-white" />
@@ -189,8 +186,8 @@ const LogInDialog = ({
                               <FormLabel>Password</FormLabel>
                               <TButton
                                 variant="link"
-                                className="w-full ml-auto"
-                                onClick={switchToSendResetPasswordDialogHandler}
+                                className="ml-auto"
+                                onClick={HandleSwitchToSendResetPasswordDialog}
                               >
                                 Forgot your password?
                               </TButton>
@@ -206,7 +203,7 @@ const LogInDialog = ({
                     <TButton
                       type="submit"
                       className="w-full mt-2"
-                      disabled={emailAuthLoading}
+                      disabled={emailAuthLoading || googleAuthLoading}
                     >
                       Log In
                     </TButton>
