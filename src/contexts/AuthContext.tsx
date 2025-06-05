@@ -1,6 +1,12 @@
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { onAuthStateChanged, type User } from "firebase/auth";
-import { createContext, useEffect, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from "react";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -32,4 +38,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       {children}
     </AuthContext.Provider>
   );
+};
+
+export const useAuthUser = () => {
+  const context = useContext(AuthContext);
+  if (!context)
+    throw new Error("useAuthCurrentUser must be used withing AuthProvider");
+  return context;
 };

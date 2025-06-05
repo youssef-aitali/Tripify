@@ -1,9 +1,9 @@
-import { AuthContext } from "@/contexts/AuthContext";
-import { useContext, useEffect, useRef } from "react";
+import { AuthContext, useAuthUser } from "@/contexts/AuthContext";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 const DashboardPage = () => {
-  const { currentUser, isLoading } = useContext(AuthContext);
+  const { currentUser, isLoading } = useAuthUser();
   const hasChecked = useRef(false);
 
   useEffect(() => {

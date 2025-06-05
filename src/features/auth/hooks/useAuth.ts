@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
   loginWithEmailAndPassword,
-  setNewPassword,
   signInWithGoogle,
   signUpWithEmailAndPassword,
   signUpWithGoogle,

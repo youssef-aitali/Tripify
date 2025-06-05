@@ -23,7 +23,7 @@ import { IconBell } from "@tabler/icons-react";
 
 import SendResetPasswordDialog from "@/features/auth/components/SendResetPasswordDialog";
 import type { OutletProps } from "@/features/auth/authTypes";
-import { AuthContext } from "@/contexts/AuthContext";
+import { useAuthUser } from "@/contexts/AuthContext";
 import { logOut } from "@/features/auth/services/authService";
 
 const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
@@ -31,7 +31,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
 
-  const { currentUser, isLoading } = useContext(AuthContext);
+  const { currentUser, isLoading } = useAuthUser();
 
   const logOutHandler = async () => {
     await logOut();
