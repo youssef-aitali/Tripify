@@ -1,9 +1,9 @@
-import { AuthContext, useAuthUser } from "@/contexts/AuthContext";
+import { useAuthUser } from "@/contexts/AuthContext";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 const DashboardPage = () => {
-  const { currentUser, isLoading } = useAuthUser();
+  const { currentUser } = useAuthUser();
   const hasChecked = useRef(false);
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const DashboardPage = () => {
       }
     };
 
-    verifyEmail(); // Call the async function
+    verifyEmail();
   }, []);
 
   return <div>Welcome Page</div>;

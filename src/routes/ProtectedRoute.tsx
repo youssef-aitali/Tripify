@@ -1,29 +1,29 @@
-import { AuthContext, useAuthUser } from "@/contexts/AuthContext";
 import { useEffect, type ReactNode } from "react";
 import { useNavigate } from "react-router";
+
+import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
+import { useAuthUser } from "@/contexts/AuthContext";
+import PlanTripPage from "@/pages/PlanTripPage";
 
 type ProtectedRouteProps = {
   children: ReactNode;
 };
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { currentUser, isLoading } = useAuthUser();
+  const { currentUser, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isLoading && !currentUser) {
+    if (!isCurrentUserLoading && !currentUser) {
       navigate("/");
     }
-  }, [currentUser, isLoading]);
+  }, [currentUser, isCurrentUserLoading]);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
+  if (!isCurrentUserLoading) {
+    return !currentUser ? <PlanTripPage /> : children;
+  } else {
+    <LoadingSkeleton />;
   }
-
-  if (currentUser) {
-    return children;
-  }
-  return null;
 };
 
 export default ProtectedRoute;

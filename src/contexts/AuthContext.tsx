@@ -14,27 +14,27 @@ type AuthProviderProps = {
 
 export const AuthContext = createContext<{
   currentUser: User | null;
-  isLoading: boolean;
+  isCurrentUserLoading: boolean;
 }>({
   currentUser: null,
-  isLoading: true,
+  isCurrentUserLoading: true,
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
-      setIsLoading(false);
+      setIsCurrentUserLoading(false);
     });
 
     return unsubscribe;
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, isLoading }}>
+    <AuthContext.Provider value={{ currentUser, isCurrentUserLoading }}>
       {children}
     </AuthContext.Provider>
   );
@@ -43,6 +43,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 export const useAuthUser = () => {
   const context = useContext(AuthContext);
   if (!context)
-    throw new Error("useAuthCurrentUser must be used withing AuthProvider");
+    throw new Error("useAuthUser must be used withing AuthProvider");
   return context;
 };

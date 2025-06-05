@@ -146,6 +146,7 @@ const LogInDialog = ({
                 <div className="grid gap-4">
                   <div className="flex flex-col gap-2">
                     <TButton
+                      className="w-full"
                       onClick={handleGoogleSignUp}
                       disabled={googleAuthLoading}
                     >
@@ -188,7 +189,7 @@ const LogInDialog = ({
                               <FormLabel>Password</FormLabel>
                               <TButton
                                 variant="link"
-                                className="ml-auto"
+                                className="w-full ml-auto"
                                 onClick={switchToSendResetPasswordDialogHandler}
                               >
                                 Forgot your password?
@@ -204,7 +205,7 @@ const LogInDialog = ({
                     </div>
                     <TButton
                       type="submit"
-                      className="mt-2"
+                      className="w-full mt-2"
                       disabled={emailAuthLoading}
                     >
                       Log In

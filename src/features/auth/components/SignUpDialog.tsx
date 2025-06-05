@@ -160,6 +160,7 @@ const SignUpDialog = ({
                 <div className="grid gap-4">
                   <div className="flex flex-col gap-2">
                     <TButton
+                      className="w-full"
                       onClick={handleGoogleSignUp}
                       disabled={googleAuthLoading}
                     >
@@ -239,7 +240,7 @@ const SignUpDialog = ({
                     </div>
                     <TButton
                       type="submit"
-                      className="mt-2"
+                      className="w-full mt-2"
                       disabled={emailAuthLoading}
                     >
                       Sign up

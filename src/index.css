@@ -118,3 +118,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+input::selection,
+textarea::selection {
+  background: oklch(0.398 0.07 227.392 / 90%);
+}
