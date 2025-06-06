@@ -16,7 +16,7 @@ export const AppRoutes = () => (
         element={<AuthActionsHandlerPage />}
       />
       <Route
-        path={ROUTE_PATHS.PASSWORD_RESET}
+        path={`${ROUTE_PATHS.PASSWORD_RESET}`}
         element={<ResetPasswordPage />}
       />
       <Route

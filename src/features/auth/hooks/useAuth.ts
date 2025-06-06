@@ -19,7 +19,7 @@ export const useAuth = () => {
 
   const handleAuthFlow = async (
     authFn: () => Promise<AuthResult | void>,
-    type: "emailAuth" | "googleAuth"
+    type: "emailAuth" | "googleAuth" | "sendResetPasswordEmail"
   ) => {
     setAuthLoading({ ...authLoading, [`${type}Loading`]: true });
 
@@ -54,7 +54,17 @@ export const useAuth = () => {
   const googleSignIn = () => handleAuthFlow(signInWithGoogle, "googleAuth");
 
   const sendPasswordResetEmail = (email: string) =>
-    handleAuthFlow(() => sendResetPasswordEmail(email), "googleAuth");
+    handleAuthFlow(
+      () => sendResetPasswordEmail(email),
+      "sendResetPasswordEmail"
+    );
 
-  return { emailSignUp, googleSignUp, emailLogIn, googleSignIn, authLoading };
+  return {
+    emailSignUp,
+    googleSignUp,
+    emailLogIn,
+    googleSignIn,
+    sendPasswordResetEmail,
+    authLoading,
+  };
 };

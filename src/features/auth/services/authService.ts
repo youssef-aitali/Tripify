@@ -101,8 +101,7 @@ export const signInWithGoogle = async () => {
 
 export const sendResetPasswordEmail = async (email: string) => {
   try {
-    const result = await sendPasswordResetEmail(auth, email);
-    console.log(result);
+    await sendPasswordResetEmail(auth, email);
   } catch (error) {
     console.log(error);
   }
@@ -113,7 +112,7 @@ export const checkResetLinkValidity = async (actionCode: string) => {
     const email = await verifyPasswordResetCode(auth, actionCode);
     return email;
   } catch (error) {
-    console.log(false);
+    console.log(error);
   }
 };
 

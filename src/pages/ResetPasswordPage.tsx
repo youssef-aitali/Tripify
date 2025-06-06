@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Form,
   FormControl,
@@ -10,10 +10,9 @@ import {
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOutletContext, useSearchParams } from "react-router";
+import { useOutletContext, useParams, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
-import { Skeleton } from "@/components/ui/skeleton";
 
 import TButton from "@/components/custom/TButton";
 import {
@@ -21,6 +20,7 @@ import {
   setNewPassword,
 } from "@/features/auth/services/authService";
 import { Loader2Icon } from "lucide-react";
+import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 
 const formSchema = z
   .object({
@@ -40,11 +40,11 @@ const ResetPasswordPage = () => {
   const [isValidLink, setIsValidLink] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
   const [isSuccess, setIsSuccess] = useState(false);
-
-  const setIsLogInDialogOpen: (open: boolean) => void = useOutletContext();
-
+  const hasChecked = useRef(false);
   const [searchParams] = useSearchParams();
   const oobCode = searchParams.get("oobCode");
+
+  const setIsLogInDialogOpen: (open: boolean) => void = useOutletContext();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,6 +55,9 @@ const ResetPasswordPage = () => {
   });
 
   useEffect(() => {
+    if (hasChecked.current) return;
+    hasChecked.current = true;
+
     const checkLinkValidity = async () => {
       if (!oobCode) {
         return;
@@ -64,7 +67,6 @@ const ResetPasswordPage = () => {
         const email = await checkResetLinkValidity(oobCode);
         setIsValidLink(!!email);
       } catch (error) {
-        console.log(error);
         setIsValidLink(false);
       }
 
@@ -74,9 +76,11 @@ const ResetPasswordPage = () => {
     checkLinkValidity();
   }, []);
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async ({
+    password,
+  }) => {
     if (oobCode) {
-      const result = await setNewPassword(oobCode, data.password);
+      const result = await setNewPassword(oobCode, password);
       if (result.success) {
         toast.success("Password reset successful!");
         setIsSuccess(true);
@@ -89,14 +93,7 @@ const ResetPasswordPage = () => {
 
   const isDisabled = form.formState.isSubmitting || isSuccess;
 
-  if (isLoading)
-    return (
-      <div className="space-y-2 px-[30%]">
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-full" />
-        <Skeleton className="h-4 w-[200px]" />
-      </div>
-    );
+  if (isLoading) return <LoadingSkeleton />;
 
   if (isSuccess) {
     return (

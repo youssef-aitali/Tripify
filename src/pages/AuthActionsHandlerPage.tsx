@@ -1,6 +1,8 @@
-import { verifyEmail } from "@/features/auth/services/authService";
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+
+import { verifyEmail } from "@/features/auth/services/authService";
+import { ROUTE_PATHS } from "@/routes/routePaths";
 
 const AuthActionsHandlerPage = () => {
   const [searchParams] = useSearchParams();
@@ -10,17 +12,17 @@ const AuthActionsHandlerPage = () => {
   const hasChecked = useRef(false);
 
   useEffect(() => {
-    if (!mode || !actionCode) return;
     if (hasChecked.current) return;
     hasChecked.current = true;
+    if (!mode || !actionCode) return;
 
     const handleActionsRedirection = async () => {
       try {
         if (mode === "verifyEmail") {
           await verifyEmail(actionCode);
-          navigate("/dashboard");
+          navigate(ROUTE_PATHS.DASHBOARD);
         } else {
-          navigate("/passwordreset");
+          navigate(`${ROUTE_PATHS.PASSWORD_RESET}?oobCode=${actionCode}`);
         }
       } catch (error) {
         console.error("Error:", error);

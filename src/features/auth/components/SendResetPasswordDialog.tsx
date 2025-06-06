@@ -34,7 +34,7 @@ import type {
   AuthInputs,
   SendResetPasswordDialogProps,
 } from "@/features/auth/authTypes";
-import { sendResetPasswordEmail } from "../services/authService";
+import { useAuth } from "../hooks/useAuth";
 
 const formSchema = z.object({
   email: z
@@ -50,6 +50,11 @@ const SendResetPasswordDialog = ({
   onSendResetPasswordDialogOpenChange,
   onLogInDialogOpenChange,
 }: SendResetPasswordDialogProps) => {
+  const {
+    sendPasswordResetEmail,
+    authLoading: { sendResetPasswordEmailLoading },
+  } = useAuth();
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -60,8 +65,12 @@ const SendResetPasswordDialog = ({
   const onSubmit: SubmitHandler<Pick<AuthInputs, "email">> = async ({
     email,
   }) => {
-    await sendResetPasswordEmail(email);
-    toast.info("If this email exists, you'll receive a link shortly!");
+    const result = await sendPasswordResetEmail(email);
+    if (result.success) {
+      toast.info("If this email exists, you'll receive a link shortly!");
+    } else {
+      toast.error(result.errorMessage);
+    }
   };
 
   const switchToLoginDialogHandler = (
@@ -130,7 +139,11 @@ const SendResetPasswordDialog = ({
                         )}
                       />
                     </div>
-                    <TButton type="submit" className="mt-2">
+                    <TButton
+                      type="submit"
+                      className="mt-2"
+                      disabled={sendResetPasswordEmailLoading}
+                    >
                       Send Reset Link
                     </TButton>
                   </div>
