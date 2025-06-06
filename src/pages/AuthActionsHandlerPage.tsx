@@ -32,7 +32,7 @@ const AuthActionsHandlerPage = () => {
     handleActionsRedirection();
   }, []);
 
-  return <p>Processing your request...</p>;
+  return null;
 };
 
 export default AuthActionsHandlerPage;

@@ -103,7 +103,7 @@ export const sendResetPasswordEmail = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
-    console.log(error);
+    return handleAuthErrors(error);
   }
 };
 
