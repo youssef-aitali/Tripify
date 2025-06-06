@@ -31,7 +31,6 @@ export const signUpWithEmailAndPassword = async (
       email,
       password
     );
-
     const user = userCredential.user;
 
     const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
@@ -60,8 +59,8 @@ export const loginWithEmailAndPassword = async (
       email,
       password
     );
-
     const user = userCredential.user;
+
     return { user };
   } catch (error) {
     return handleAuthErrors(error);
@@ -71,10 +70,10 @@ export const loginWithEmailAndPassword = async (
 export const signUpWithGoogle = async () => {
   try {
     const userCredential = await signInWithPopup(auth, googleProvider);
-
     const user = userCredential.user;
 
     const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
+
     if (isEmailUsed) {
       throw {
         code: "auth/email-already-in-use",
@@ -92,7 +91,6 @@ export const signUpWithGoogle = async () => {
 export const signInWithGoogle = async () => {
   try {
     const userCredential = await signInWithPopup(auth, googleProvider);
-
     const user = userCredential.user;
 
     return { user };
@@ -103,7 +101,8 @@ export const signInWithGoogle = async () => {
 
 export const sendResetPasswordEmail = async (email: string) => {
   try {
-    await sendPasswordResetEmail(auth, email);
+    const result = await sendPasswordResetEmail(auth, email);
+    console.log(result);
   } catch (error) {
     console.log(error);
   }

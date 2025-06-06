@@ -24,8 +24,12 @@ export const getFirebaseErrorMessage = (code: string) => {
       return "Your password reset link is invalid or has already been used. Please request a new reset link!";
     case "auth/expired-action-code":
       return "Your password reset link has expired. Please request a new one!";
+    case "auth/popup-closed-by-user":
+      return "You closed the log in window. Please try again!";
     case "firestore/permission-denied":
       return "Failed to create user profile!";
+    case "auth/unknown-error":
+      return "An unknown error occurred. Please try again!";
     default:
       return "Authentication failed. Please try again!";
   }
@@ -64,9 +68,7 @@ export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
     return { ...firebaseError };
   }
 
-  // Fallback for unknown errors
   return {
     code: "auth/unknown-error",
-    message: "An unknown error occurred!",
   };
 };

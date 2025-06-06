@@ -35,6 +35,7 @@ import type { SignUpDialogProps, AuthInputs } from "@/features/auth/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { sendVerificationEmail } from "../services/authService";
+import { ROUTE_PATHS } from "@/routes/routePaths";
 
 const formSchema = z
   .object({
@@ -103,13 +104,11 @@ const SignUpDialog = ({
   }) => {
     const result = await emailSignUp(email, password, username!);
     if (result.success) {
-      // Redirect or show success message
-      console.log("User created:", result.user);
       onSignUpDialogOpenChange(false);
-      await sendVerificationEmail(result.user!);
-      navigate("/dashboard");
+      result.user && (await sendVerificationEmail(result.user));
+      navigate(ROUTE_PATHS.DASHBOARD);
       toast.success(
-        `Thanks for signing up! Please check your email ${email} to confirm your account`,
+        `Thanks for signing up! Please check your email ${email} to confirm your account!`,
         {
           duration: 5000,
         }

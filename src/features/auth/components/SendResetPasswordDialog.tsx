@@ -61,9 +61,7 @@ const SendResetPasswordDialog = ({
     email,
   }) => {
     await sendResetPasswordEmail(email);
-    toast.info("If this email exists, you’ll receive a link shortly.", {
-      className: "bg-green-500 text-white border-0",
-    });
+    toast.info("If this email exists, you'll receive a link shortly!");
   };
 
   const switchToLoginDialogHandler = (
