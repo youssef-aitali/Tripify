@@ -15,12 +15,10 @@ import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 
 import TButton from "@/components/custom/TButton";
-import {
-  checkResetLinkValidity,
-  setNewPassword,
-} from "@/features/auth/services/authService";
+import { checkResetLinkValidity } from "@/features/auth/services/authService";
 import { Loader2Icon } from "lucide-react";
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const formSchema = z
   .object({
@@ -43,6 +41,10 @@ const ResetPasswordPage = () => {
   const hasChecked = useRef(false);
   const [searchParams] = useSearchParams();
   const oobCode = searchParams.get("oobCode");
+  const {
+    confirmNewPassword,
+    authLoading: { setNewPasswordLoading },
+  } = useAuth();
 
   const setIsLogInDialogOpen: (open: boolean) => void = useOutletContext();
 
@@ -80,9 +82,8 @@ const ResetPasswordPage = () => {
     password,
   }) => {
     if (oobCode) {
-      const result = await setNewPassword(oobCode, password);
+      const result = await confirmNewPassword(oobCode, password);
       if (result.success) {
-        toast.success("Password reset successful!");
         setIsSuccess(true);
       } else {
         toast.error(result.errorMessage);
@@ -90,8 +91,6 @@ const ResetPasswordPage = () => {
       }
     }
   };
-
-  const isDisabled = form.formState.isSubmitting || isSuccess;
 
   if (isLoading) return <LoadingSkeleton />;
 
@@ -110,7 +109,7 @@ const ResetPasswordPage = () => {
           >
             Log In
           </TButton>{" "}
-          in with your new password.
+          in with your new password!
         </p>
       </div>
     );
@@ -135,7 +134,7 @@ const ResetPasswordPage = () => {
                           <Input
                             type="password"
                             {...field}
-                            disabled={isDisabled}
+                            disabled={setNewPasswordLoading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -154,7 +153,7 @@ const ResetPasswordPage = () => {
                           <Input
                             type="password"
                             {...field}
-                            disabled={isDisabled}
+                            disabled={setNewPasswordLoading}
                           />
                         </FormControl>
                         <FormMessage />
@@ -162,7 +161,11 @@ const ResetPasswordPage = () => {
                     )}
                   />
                 </div>
-                <TButton type="submit" className="mt-2" disabled={isDisabled}>
+                <TButton
+                  type="submit"
+                  className="mt-2"
+                  disabled={setNewPasswordLoading}
+                >
                   {form.formState.isSubmitting && (
                     <Loader2Icon className="animate-spin" />
                   )}

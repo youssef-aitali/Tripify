@@ -13,7 +13,7 @@ const HomeLayout = () => {
         isLogInDialogOpen={isLogInDialogOpen}
         setIsLogInDialogOpen={setIsLogInDialogOpen}
       />
-      <div className="px-[20%] pt-6 grow">
+      <div className="px-[20%] pt-4 grow">
         <Outlet context={setIsLogInDialogOpen} />
         <Toaster richColors />
       </div>

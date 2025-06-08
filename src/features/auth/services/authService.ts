@@ -112,7 +112,7 @@ export const checkResetLinkValidity = async (actionCode: string) => {
     const email = await verifyPasswordResetCode(auth, actionCode);
     return email;
   } catch (error) {
-    console.log(error);
+    console.error("Operation failed:", error);
   }
 };
 
@@ -122,14 +122,8 @@ export const setNewPassword = async (
 ) => {
   try {
     await confirmPasswordReset(auth, actionCode, newPassword);
-    return {
-      success: true,
-    };
   } catch (error) {
-    return {
-      success: false,
-      errorMessage: getFirebaseErrorMessage(handleAuthErrors(error).code),
-    };
+    return handleAuthErrors(error);
   }
 };
 
@@ -137,7 +131,7 @@ export const sendVerificationEmail = async (user: User) => {
   try {
     await sendEmailVerification(user);
   } catch (error) {
-    console.log(error);
+    console.error("Operation failed:", error);
   }
 };
 
@@ -145,7 +139,7 @@ export const verifyEmail = async (actionCode: string) => {
   try {
     await applyActionCode(auth, actionCode);
   } catch (error) {
-    console.log(error);
+    return handleAuthErrors(error);
   }
 };
 
@@ -153,6 +147,6 @@ export const logOut = async () => {
   try {
     await signOut(auth);
   } catch (error) {
-    console.log(error);
+    console.error("Operation failed:", error);
   }
 };

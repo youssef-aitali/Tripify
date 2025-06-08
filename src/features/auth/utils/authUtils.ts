@@ -21,7 +21,7 @@ export const getFirebaseErrorMessage = (code: string) => {
     case "auth/requires-recent-login":
       return "Please sign in again before changing your password!";
     case "auth/invalid-action-code":
-      return "Your password reset link is invalid or has already been used. Please request a new reset link!";
+      return "Invalid or Expired Link. Please request a new link!";
     case "auth/expired-action-code":
       return "Your password reset link has expired. Please request a new one!";
     case "auth/popup-closed-by-user":
@@ -29,9 +29,9 @@ export const getFirebaseErrorMessage = (code: string) => {
     case "firestore/permission-denied":
       return "Failed to create user profile!";
     case "auth/unknown-error":
-      return "An unknown error occurred. Please try again!";
+      return "An unexpected error occurred. Please try again!";
     default:
-      return "Authentication failed. Please try again!";
+      return "We encountered an error processing your request. Please try again!";
   }
 };
 

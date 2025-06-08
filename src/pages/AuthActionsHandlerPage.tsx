@@ -1,8 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 import { verifyEmail } from "@/features/auth/services/authService";
 import { ROUTE_PATHS } from "@/routes/routePaths";
+import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
 
 const AuthActionsHandlerPage = () => {
   const [searchParams] = useSearchParams();
@@ -17,15 +19,15 @@ const AuthActionsHandlerPage = () => {
     if (!mode || !actionCode) return;
 
     const handleActionsRedirection = async () => {
-      try {
-        if (mode === "verifyEmail") {
-          await verifyEmail(actionCode);
-          navigate(ROUTE_PATHS.DASHBOARD);
-        } else {
-          navigate(`${ROUTE_PATHS.PASSWORD_RESET}?oobCode=${actionCode}`);
+      if (mode === "verifyEmail") {
+        const result = await verifyEmail(actionCode);
+        if (result && "code" in result) {
+          toast.error(getFirebaseErrorMessage(result.code));
         }
-      } catch (error) {
-        console.error("Error:", error);
+
+        navigate(ROUTE_PATHS.DASHBOARD);
+      } else {
+        navigate(`${ROUTE_PATHS.PASSWORD_RESET}?oobCode=${actionCode}`);
       }
     };
 

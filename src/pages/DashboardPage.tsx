@@ -1,10 +1,17 @@
+import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
 import { useAuthUser } from "@/contexts/AuthContext";
-import { useEffect, useRef } from "react";
+import { sendVerificationEmail } from "@/features/auth/services/authService";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 const DashboardPage = () => {
   const { currentUser } = useAuthUser();
   const hasChecked = useRef(false);
+  const [showConfirmBanner, setShowConfirmBanner] = useState(false);
+
+  const handleResendConfirmationEmail = async () => {
+    currentUser && (await sendVerificationEmail(currentUser));
+  };
 
   useEffect(() => {
     if (hasChecked.current) return;
@@ -13,8 +20,7 @@ const DashboardPage = () => {
     const verifyEmail = async () => {
       try {
         await currentUser?.reload();
-        !currentUser?.emailVerified &&
-          toast.warning("Please confirm your email!");
+        setShowConfirmBanner(!currentUser?.emailVerified!!);
       } catch (error) {
         console.error("Error:", error);
       }
@@ -23,7 +29,18 @@ const DashboardPage = () => {
     verifyEmail();
   }, []);
 
-  return <div>Welcome Page</div>;
+  console.log(currentUser?.emailVerified);
+
+  return (
+    <div>
+      {showConfirmBanner && (
+        <ConfirmEmailBanner
+          resendVerificationEmail={handleResendConfirmationEmail}
+        />
+      )}
+      <div>Welcome Page</div>
+    </div>
+  );
 };
 
 export default DashboardPage;

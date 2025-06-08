@@ -5,6 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -43,17 +44,29 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
         <NavbarItemSkeleton />
       ) : currentUser ? (
         <div className="flex items-center gap-4">
-          <IconBell
-            stroke={2}
-            className="text-cyan-900/90 hover:text-cyan-900 cursor-pointer"
-          />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <IconBell
+                stroke={2}
+                className="text-cyan-900/90 hover:text-cyan-900 cursor-pointer"
+              />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-fit" align="end">
+              <DropdownMenuLabel className="text-base">
+                Notifications
+              </DropdownMenuLabel>
+              <DropdownMenuLabel className="text-sm text-center font-normal px-2">
+                You don't have any notifications
+              </DropdownMenuLabel>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 rounded-lg cursor-pointer">
                 <AvatarImage src={userAvatar} alt="User avatar" />
               </Avatar>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-40" align="end">
+            <DropdownMenuContent className="w-fit" align="end">
               <DropdownMenuGroup>
                 <DropdownMenuItem className="cursor-pointer">
                   <IconUser stroke={2} /> My profile

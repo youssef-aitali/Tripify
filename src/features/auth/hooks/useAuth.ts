@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   loginWithEmailAndPassword,
   sendResetPasswordEmail,
+  setNewPassword,
   signInWithGoogle,
   signUpWithEmailAndPassword,
   signUpWithGoogle,
@@ -15,11 +16,16 @@ export const useAuth = () => {
     emailAuthLoading: false,
     googleAuthLoading: false,
     sendResetPasswordEmailLoading: false,
+    setNewPasswordLoading: false,
   });
 
   const handleAuthFlow = async (
     authFn: () => Promise<AuthResult | void>,
-    type: "emailAuth" | "googleAuth" | "sendResetPasswordEmail"
+    type:
+      | "emailAuth"
+      | "googleAuth"
+      | "sendResetPasswordEmail"
+      | "setNewPassword"
   ) => {
     setAuthLoading({ ...authLoading, [`${type}Loading`]: true });
 
@@ -59,12 +65,19 @@ export const useAuth = () => {
       "sendResetPasswordEmail"
     );
 
+  const confirmNewPassword = (actionCode: string, newPassword: string) =>
+    handleAuthFlow(
+      () => setNewPassword(actionCode, newPassword),
+      "setNewPassword"
+    );
+
   return {
     emailSignUp,
     googleSignUp,
     emailLogIn,
     googleSignIn,
     sendPasswordResetEmail,
+    confirmNewPassword,
     authLoading,
   };
 };

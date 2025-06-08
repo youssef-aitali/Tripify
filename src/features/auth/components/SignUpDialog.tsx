@@ -36,6 +36,7 @@ import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { sendVerificationEmail } from "../services/authService";
 import { ROUTE_PATHS } from "@/routes/routePaths";
+import { playConfettiAnimation } from "../utils/playConfettiAnimation";
 
 const formSchema = z
   .object({
@@ -87,11 +88,9 @@ const SignUpDialog = ({
     e.preventDefault();
     const result = await googleSignUp();
     if (result.success) {
-      // Redirect or show success message
-      console.log("User created:", result.user);
       onSignUpDialogOpenChange(false);
-      navigate("/dashboard");
-      toast.success("Thanks for signing up!");
+      playConfettiAnimation();
+      navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
     }
@@ -106,13 +105,8 @@ const SignUpDialog = ({
     if (result.success) {
       onSignUpDialogOpenChange(false);
       result.user && (await sendVerificationEmail(result.user));
+      playConfettiAnimation();
       navigate(ROUTE_PATHS.DASHBOARD);
-      toast.success(
-        `Thanks for signing up! Please check your email ${email} to confirm your account!`,
-        {
-          duration: 5000,
-        }
-      );
     } else {
       toast.error(result.errorMessage);
     }
@@ -161,7 +155,7 @@ const SignUpDialog = ({
                     <TButton
                       className="w-full"
                       onClick={handleGoogleSignUp}
-                      disabled={googleAuthLoading}
+                      disabled={emailAuthLoading || googleAuthLoading}
                     >
                       <GoogleLogo className="fill-white" />
                       Sign up with Google
@@ -240,7 +234,7 @@ const SignUpDialog = ({
                     <TButton
                       type="submit"
                       className="w-full mt-2"
-                      disabled={emailAuthLoading}
+                      disabled={emailAuthLoading || googleAuthLoading}
                     >
                       Sign up
                     </TButton>
