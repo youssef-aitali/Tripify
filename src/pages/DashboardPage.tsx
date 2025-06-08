@@ -1,13 +1,13 @@
 import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
+import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { sendVerificationEmail } from "@/features/auth/services/authService";
 import { useEffect, useRef, useState } from "react";
-import { toast } from "sonner";
 
 const DashboardPage = () => {
   const { currentUser } = useAuthUser();
   const hasChecked = useRef(false);
-  const [showConfirmBanner, setShowConfirmBanner] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleResendConfirmationEmail = async () => {
     currentUser && (await sendVerificationEmail(currentUser));
@@ -20,20 +20,20 @@ const DashboardPage = () => {
     const verifyEmail = async () => {
       try {
         await currentUser?.reload();
-        setShowConfirmBanner(!currentUser?.emailVerified!!);
       } catch (error) {
         console.error("Error:", error);
       }
+      setIsLoading(false);
     };
 
     verifyEmail();
   }, []);
 
-  console.log(currentUser?.emailVerified);
+  if (isLoading) return <LoadingSkeleton />;
 
   return (
     <div>
-      {showConfirmBanner && (
+      {!currentUser?.emailVerified && (
         <ConfirmEmailBanner
           resendVerificationEmail={handleResendConfirmationEmail}
         />
