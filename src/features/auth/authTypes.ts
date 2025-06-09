@@ -1,11 +1,4 @@
-import { type User } from "firebase/auth";
-
-export type AuthInputs = {
-  username?: string;
-  email: string;
-  password: string;
-  confirmPassword?: string;
-};
+import type { User } from "firebase/auth";
 
 export type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
@@ -35,7 +28,8 @@ export type AuthResult =
   | AuthErrorResponse
   | {
       user: User;
-    };
+    }
+  | void;
 
 export type OutletProps = {
   isLogInDialogOpen: boolean;

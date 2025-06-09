@@ -10,8 +10,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { IconSettings } from "@tabler/icons-react";
-import { IconUser } from "@tabler/icons-react";
+import { IconSettingsCode } from "@tabler/icons-react";
+import { IconDashboard } from "@tabler/icons-react";
 import { IconLogout } from "@tabler/icons-react";
 import { IconBell } from "@tabler/icons-react";
 
@@ -25,6 +25,8 @@ import TButton from "@/components/custom/TButton";
 import userAvatar from "@/assets/icons/user.svg?url";
 import { useAuthUser } from "@/contexts/AuthContext";
 import Tripifylogo from "@/assets/logo.svg";
+import { Link } from "react-router";
+import { ROUTE_PATHS } from "@/routes/routePaths";
 
 const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSignUpDialogOpen, setIsSignUpDialogOpen] = useState(false);
@@ -69,17 +71,19 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuContent className="w-fit" align="end">
               <DropdownMenuGroup>
                 <DropdownMenuItem className="cursor-pointer">
-                  <IconUser stroke={2} /> My profile
+                  <IconDashboard />
+                  <Link to={ROUTE_PATHS.DASHBOARD}>Dashboard</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
-                  <IconSettings stroke={2} /> Settings
+                  <IconSettingsCode />
+                  <Link to={ROUTE_PATHS.ACCOUNT}>Settings</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={logOutHandler}
                 >
-                  <IconLogout stroke={2} /> Log out
+                  <IconLogout /> Log out
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>

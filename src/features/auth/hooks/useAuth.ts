@@ -20,7 +20,7 @@ export const useAuth = () => {
   });
 
   const handleAuthFlow = async (
-    authFn: () => Promise<AuthResult | void>,
+    authFn: () => Promise<AuthResult>,
     type:
       | "emailAuth"
       | "googleAuth"

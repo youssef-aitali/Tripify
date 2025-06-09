@@ -31,12 +31,12 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { SignUpDialogProps, AuthInputs } from "@/features/auth/authTypes";
+import type { SignUpDialogProps } from "@/features/auth/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { sendVerificationEmail } from "../services/authService";
+import { sendVerificationEmail } from "@/features/auth/services/authService";
 import { ROUTE_PATHS } from "@/routes/routePaths";
-import { playConfettiAnimation } from "../utils/playConfettiAnimation";
+import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimation";
 
 const formSchema = z
   .object({
@@ -96,7 +96,7 @@ const SignUpDialog = ({
     }
   };
 
-  const onSubmit: SubmitHandler<AuthInputs> = async ({
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async ({
     email,
     password,
     username,

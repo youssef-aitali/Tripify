@@ -14,11 +14,10 @@ import {
 } from "firebase/auth";
 
 import {
-  getFirebaseErrorMessage,
   handleAuthErrors,
   isUserEmailAlreadyUsed,
   registerNewUser,
-} from "../utils/authUtils";
+} from "@/features/auth/utils/authUtils";
 
 export const signUpWithEmailAndPassword = async (
   email: string,

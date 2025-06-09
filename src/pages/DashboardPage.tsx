@@ -1,8 +1,9 @@
+import { useEffect, useRef, useState } from "react";
+
 import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/contexts/AuthContext";
 import { sendVerificationEmail } from "@/features/auth/services/authService";
-import { useEffect, useRef, useState } from "react";
 
 const DashboardPage = () => {
   const { currentUser } = useAuthUser();
@@ -17,7 +18,7 @@ const DashboardPage = () => {
     if (hasChecked.current) return;
     hasChecked.current = true;
 
-    const verifyEmail = async () => {
+    const reloadCurrentUser = async () => {
       try {
         await currentUser?.reload();
       } catch (error) {
@@ -26,7 +27,7 @@ const DashboardPage = () => {
       setIsLoading(false);
     };
 
-    verifyEmail();
+    reloadCurrentUser();
   }, []);
 
   if (isLoading) return <LoadingSkeleton />;

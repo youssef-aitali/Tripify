@@ -30,11 +30,8 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type {
-  AuthInputs,
-  SendResetPasswordDialogProps,
-} from "@/features/auth/authTypes";
-import { useAuth } from "../hooks/useAuth";
+import type { SendResetPasswordDialogProps } from "@/features/auth/authTypes";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const formSchema = z.object({
   email: z
@@ -62,7 +59,7 @@ const SendResetPasswordDialog = ({
     },
   });
 
-  const onSubmit: SubmitHandler<Pick<AuthInputs, "email">> = async ({
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async ({
     email,
   }) => {
     const result = await sendPasswordResetEmail(email);

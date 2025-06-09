@@ -10,13 +10,13 @@ import {
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useOutletContext, useParams, useSearchParams } from "react-router";
+import { useOutletContext, useSearchParams } from "react-router";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
+import { Loader2Icon } from "lucide-react";
 
 import TButton from "@/components/custom/TButton";
 import { checkResetLinkValidity } from "@/features/auth/services/authService";
-import { Loader2Icon } from "lucide-react";
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 

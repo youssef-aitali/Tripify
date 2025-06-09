@@ -1,11 +1,15 @@
 import { Routes, Route } from "react-router";
-import { ROUTE_PATHS } from "./routePaths";
-import DashboardPage from "@/pages/DashboardPage";
-import ResetPasswordPage from "@/pages/ResetPasswordPage";
+
+import { ROUTE_PATHS } from "@/routes/routePaths";
 import HomeLayout from "@/layouts/HomeLayout";
 import PlanTripPage from "@/pages/PlanTripPage";
-import ProtectedRoute from "./ProtectedRoute";
+import ProtectedRoute from "@/routes/ProtectedRoute";
+import ResetPasswordPage from "@/pages/ResetPasswordPage";
+import DashboardPage from "@/pages/DashboardPage";
 import AuthActionsHandlerPage from "@/pages/AuthActionsHandlerPage";
+import SettingsLayout from "@/layouts/SettingsLayout";
+import AccountPage from "@/pages/AccountPage";
+import PreferencesPage from "@/pages/PreferencesPage";
 
 export const AppRoutes = () => (
   <Routes>
@@ -27,6 +31,16 @@ export const AppRoutes = () => (
           </ProtectedRoute>
         }
       />
+      <Route
+        element={
+          <ProtectedRoute>
+            <SettingsLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route path={ROUTE_PATHS.ACCOUNT} element={<AccountPage />} />
+        <Route path={ROUTE_PATHS.PREFERENCES} element={<PreferencesPage />} />
+      </Route>
     </Route>
   </Routes>
 );
