@@ -1,16 +1,10 @@
-import TButton from "@/components/custom/TButton";
-import { ROUTE_PATHS } from "@/routes/routePaths";
-import { Link, NavLink } from "react-router";
+import TNavLink from "@/components/custom/TNavLink";
 
 const SettingsNavbar = () => {
   return (
     <div className="flex flex-col w-20 items-start gap-6">
-      <TButton variant="link" className="text-lg">
-        <NavLink to={ROUTE_PATHS.ACCOUNT}>Account</NavLink>
-      </TButton>
-      <TButton variant="link" className="text-lg">
-        <NavLink to={ROUTE_PATHS.PREFERENCES}>Preferences</NavLink>
-      </TButton>
+      <TNavLink label="Account" />
+      <TNavLink label="Preferences" />
     </div>
   );
 };
