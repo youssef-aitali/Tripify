@@ -24,7 +24,7 @@ const AuthActionsHandlerPage = () => {
         if (result && "code" in result) {
           toast.error(getFirebaseErrorMessage(result.code));
         }
-
+        toast.success("Email verified! 🎉 Welcome aboard.");
         navigate(ROUTE_PATHS.DASHBOARD);
       } else {
         navigate(`${ROUTE_PATHS.PASSWORD_RESET}?oobCode=${actionCode}`);

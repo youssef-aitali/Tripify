@@ -159,50 +159,47 @@ const LogInDialog = ({
                       Or continue with
                     </span>
                   </div>
-                  <div className="grid gap-2 text-sm">
-                    <div className="grid gap-1">
-                      <FormField
-                        control={form.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input
-                                type="email"
-                                placeholder="your@email.com"
-                                {...field}
-                              />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
-                    <div className="grid gap-1">
-                      <FormField
-                        control={form.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <div className="flex items-center">
-                              <FormLabel>Password</FormLabel>
-                              <TButton
-                                variant="link"
-                                className="ml-auto"
-                                onClick={HandleSwitchToSendResetPasswordDialog}
-                              >
-                                Forgot your password?
-                              </TButton>
-                            </div>
-                            <FormControl>
-                              <Input type="password" {...field} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                    </div>
+                  <div className="grid gap-4 text-sm">
+                    <FormField
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Email</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="email"
+                              placeholder="your@email.com"
+                              {...field}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
+                        <FormItem>
+                          <div className="flex items-center">
+                            <FormLabel>Password</FormLabel>
+                            <TButton
+                              variant="link"
+                              className="ml-auto"
+                              onClick={HandleSwitchToSendResetPasswordDialog}
+                            >
+                              Forgot your password?
+                            </TButton>
+                          </div>
+                          <FormControl>
+                            <Input type="password" {...field} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <TButton
                       type="submit"
                       className="w-full mt-2"

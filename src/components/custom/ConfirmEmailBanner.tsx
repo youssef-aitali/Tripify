@@ -4,10 +4,12 @@ import TButton from "./TButton";
 
 type ConfirmEmailBannerProps = {
   resendVerificationEmail: () => void;
+  isSendButtonLoading: boolean;
 };
 
 const ConfirmEmailBanner = ({
   resendVerificationEmail,
+  isSendButtonLoading,
 }: ConfirmEmailBannerProps) => {
   return (
     <Alert className="border-orange-200 bg-orange-100 text-orange-600 font-semibold">
@@ -18,6 +20,7 @@ const ConfirmEmailBanner = ({
           variant="link"
           className="font-semibold text-orange-600 hover:text-orange-700"
           onClick={resendVerificationEmail}
+          disabled={isSendButtonLoading}
         >
           Resend Email
         </TButton>

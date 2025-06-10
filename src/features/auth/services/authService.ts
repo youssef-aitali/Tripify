@@ -130,7 +130,7 @@ export const sendVerificationEmail = async (user: User) => {
   try {
     await sendEmailVerification(user);
   } catch (error) {
-    console.error("Operation failed:", error);
+    return handleAuthErrors(error);
   }
 };
 

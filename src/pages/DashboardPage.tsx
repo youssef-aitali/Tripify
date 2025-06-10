@@ -1,17 +1,28 @@
 import { useEffect, useRef, useState } from "react";
+import { toast } from "sonner";
 
 import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/contexts/AuthContext";
-import { sendVerificationEmail } from "@/features/auth/services/authService";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const DashboardPage = () => {
   const { currentUser } = useAuthUser();
+  const {
+    sendEmailVerification,
+    authLoading: { sendEmailVerificationLoading },
+  } = useAuth();
   const hasChecked = useRef(false);
   const [isLoading, setIsLoading] = useState(true);
 
   const handleResendConfirmationEmail = async () => {
-    currentUser && (await sendVerificationEmail(currentUser));
+    const result = await sendEmailVerification(currentUser!);
+
+    if (result.success) {
+      toast.info("Confirmation email sent. Check your inbox!");
+    } else {
+      toast.error(result.errorMessage);
+    }
   };
 
   useEffect(() => {
@@ -37,6 +48,7 @@ const DashboardPage = () => {
       {!currentUser?.emailVerified && (
         <ConfirmEmailBanner
           resendVerificationEmail={handleResendConfirmationEmail}
+          isSendButtonLoading={sendEmailVerificationLoading}
         />
       )}
       <div>Welcome Page</div>

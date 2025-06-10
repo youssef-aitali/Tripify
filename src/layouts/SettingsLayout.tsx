@@ -5,10 +5,12 @@ import SettingsNavbar from "@/features/settings/components/SettingsNavbar";
 const SettingsLayout = () => {
   return (
     <div className="px-[20%]">
-      <p className="text-2xl font-semibold mb-8">Settings</p>
-      <div className="flex gap-20">
+      <div className="text-3xl font-semibold mb-8">Settings</div>
+      <div className="flex">
         <SettingsNavbar />
-        <Outlet />
+        <div className="px-[20%] w-full">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { useState } from "react";
 import {
   loginWithEmailAndPassword,
   sendResetPasswordEmail,
+  sendVerificationEmail,
   setNewPassword,
   signInWithGoogle,
   signUpWithEmailAndPassword,
@@ -10,6 +11,7 @@ import {
 
 import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
 import type { AuthResult } from "@/features/auth/authTypes";
+import type { User } from "firebase/auth";
 
 export const useAuth = () => {
   const [authLoading, setAuthLoading] = useState({
@@ -17,6 +19,7 @@ export const useAuth = () => {
     googleAuthLoading: false,
     sendResetPasswordEmailLoading: false,
     setNewPasswordLoading: false,
+    sendEmailVerificationLoading: false,
   });
 
   const handleAuthFlow = async (
@@ -26,6 +29,7 @@ export const useAuth = () => {
       | "googleAuth"
       | "sendResetPasswordEmail"
       | "setNewPassword"
+      | "sendEmailVerification"
   ) => {
     setAuthLoading({ ...authLoading, [`${type}Loading`]: true });
 
@@ -71,6 +75,9 @@ export const useAuth = () => {
       "setNewPassword"
     );
 
+  const sendEmailVerification = (user: User) =>
+    handleAuthFlow(() => sendVerificationEmail(user), "sendEmailVerification");
+
   return {
     emailSignUp,
     googleSignUp,
@@ -78,6 +85,7 @@ export const useAuth = () => {
     googleSignIn,
     sendPasswordResetEmail,
     confirmNewPassword,
+    sendEmailVerification,
     authLoading,
   };
 };
