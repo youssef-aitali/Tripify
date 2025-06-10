@@ -40,9 +40,6 @@ import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimati
 
 const formSchema = z
   .object({
-    username: z.string().min(1, {
-      message: "Username is required!",
-    }),
     email: z
       .string()
       .min(1, {
@@ -77,7 +74,6 @@ const SignUpDialog = ({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
       email: "",
       password: "",
       confirmPassword: "",
@@ -99,9 +95,8 @@ const SignUpDialog = ({
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async ({
     email,
     password,
-    username,
   }) => {
-    const result = await emailSignUp(email, password, username!);
+    const result = await emailSignUp(email, password);
     if (result.success) {
       onSignUpDialogOpenChange(false);
       result.user && (await sendVerificationEmail(result.user));
@@ -167,19 +162,6 @@ const SignUpDialog = ({
                     </span>
                   </div>
                   <div className="grid gap-4 text-sm">
-                    <FormField
-                      control={form.control}
-                      name="username"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Username</FormLabel>
-                          <FormControl>
-                            <Input type="text" {...field} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
                     <FormField
                       control={form.control}
                       name="email"

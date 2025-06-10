@@ -21,8 +21,7 @@ import {
 
 export const signUpWithEmailAndPassword = async (
   email: string,
-  password: string,
-  username: string
+  password: string
 ) => {
   try {
     const userCredential = await createUserWithEmailAndPassword(
@@ -40,7 +39,9 @@ export const signUpWithEmailAndPassword = async (
       };
     }
 
-    await registerNewUser(username, email, user.uid);
+    console.log("Email & Password sign up: ", user);
+
+    await registerNewUser(user.displayName, email, user.uid);
 
     return { user };
   } catch (error) {
@@ -79,6 +80,7 @@ export const signUpWithGoogle = async () => {
       };
     }
 
+    console.log("Email & Password sign up: ", user);
     await registerNewUser(user.displayName, user.email!, user.uid);
     console.log("stored in firebase");
     return { user };

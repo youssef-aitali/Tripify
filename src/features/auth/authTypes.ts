@@ -19,6 +19,20 @@ export type SendResetPasswordDialogProps = {
   onLogInDialogOpenChange: (open: boolean) => void;
 };
 
+export type UserPreferences = {
+  language: string;
+  appearance: string;
+  notifications: boolean;
+};
+
+export type AuthUser = {
+  fullname: string;
+  username: string;
+  email: string;
+  avatarUrl: string;
+  preferences: UserPreferences;
+};
+
 export type AuthErrorResponse = {
   code: string;
   message?: string;

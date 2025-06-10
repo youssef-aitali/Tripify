@@ -47,9 +47,9 @@ export const useAuth = () => {
     return { success: true, user: result?.user };
   };
 
-  const emailSignUp = (email: string, password: string, username: string) =>
+  const emailSignUp = (email: string, password: string) =>
     handleAuthFlow(
-      () => signUpWithEmailAndPassword(email, password, username),
+      () => signUpWithEmailAndPassword(email, password),
       "emailAuth"
     );
 

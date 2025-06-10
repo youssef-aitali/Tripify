@@ -48,12 +48,13 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
 };
 
 export const registerNewUser = async (
-  username: string | null,
+  displayName: string | null,
   email: string,
   userId: string
 ) => {
   const userProfile = {
-    username: !username ? "Anonymous" : username,
+    fullname: displayName || "Anonymous",
+    username: email.split("@")[0],
     email,
     avatarUrl: "",
     preferences: {
