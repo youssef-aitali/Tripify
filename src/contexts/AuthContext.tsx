@@ -1,3 +1,4 @@
+import { getUserProfile } from "@/features/auth/utils/authUtils";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import {
@@ -25,12 +26,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-      setIsCurrentUserLoading(false);
-    });
-
-    return unsubscribe;
+    try {
+      const unsubscribe = onAuthStateChanged(auth, (user) => {
+        user && getUserProfile(user.uid);
+        console.log(user);
+        setCurrentUser(user);
+        setIsCurrentUserLoading(false);
+      });
+      return unsubscribe;
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }, []);
 
   return (

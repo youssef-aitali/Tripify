@@ -32,7 +32,7 @@ const formSchema = z.object({
 const AccountPage = () => {
   const { currentUser, isCurrentUserLoading } = useAuthUser();
 
-  console.log(currentUser);
+  console.log(currentUser, isCurrentUserLoading);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),

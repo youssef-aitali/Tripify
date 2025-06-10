@@ -3,7 +3,9 @@ import type { AuthError } from "firebase/auth";
 import {
   addDoc,
   collection,
+  doc,
   FirestoreError,
+  getDoc,
   getDocs,
   query,
   where,
@@ -37,7 +39,6 @@ export const getFirebaseErrorMessage = (code: string) => {
   }
 };
 
-// Check if user document already exists
 export const isUserEmailAlreadyUsed = async (email: string) => {
   const usersRef = collection(db, "users");
   const q = query(usersRef, where("email", "==", email));
@@ -62,6 +63,7 @@ export const registerNewUser = async (
   };
 
   await addDoc(collection(db, "users"), userProfile);
+  //await setDoc(doc(db, "users", user.uid), { ... });
 };
 
 export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
@@ -73,4 +75,13 @@ export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
   return {
     code: "auth/unknown-error",
   };
+};
+
+export const getUserProfile = async (userId: string) => {
+  const userDocRef = doc(db, "users", userId);
+  console.log(userId);
+  console.log(userDocRef);
+  const userDocSnap = await getDoc(userDocRef);
+  console.log("User data:", userDocSnap.data());
+  return userDocSnap;
 };
