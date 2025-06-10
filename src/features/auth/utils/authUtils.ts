@@ -1,13 +1,13 @@
 import { db } from "@/lib/firebase/firebaseConfig";
 import type { AuthError } from "firebase/auth";
 import {
-  addDoc,
   collection,
   doc,
   FirestoreError,
   getDoc,
   getDocs,
   query,
+  setDoc,
   where,
 } from "firebase/firestore";
 import type { AuthErrorResponse } from "../authTypes";
@@ -49,7 +49,8 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
 
 export const registerNewUser = async (
   username: string | null,
-  email: string
+  email: string,
+  userId: string
 ) => {
   const userProfile = {
     username: !username ? "Anonymous" : username,
@@ -62,8 +63,7 @@ export const registerNewUser = async (
     },
   };
 
-  await addDoc(collection(db, "users"), userProfile);
-  //await setDoc(doc(db, "users", user.uid), { ... });
+  await setDoc(doc(db, "users", userId), userProfile);
 };
 
 export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
@@ -79,9 +79,8 @@ export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
 
 export const getUserProfile = async (userId: string) => {
   const userDocRef = doc(db, "users", userId);
-  console.log(userId);
-  console.log(userDocRef);
   const userDocSnap = await getDoc(userDocRef);
-  console.log("User data:", userDocSnap.data());
-  return userDocSnap;
+  const userDocData = userDocSnap.data();
+
+  return userDocData;
 };

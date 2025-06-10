@@ -40,7 +40,7 @@ export const signUpWithEmailAndPassword = async (
       };
     }
 
-    await registerNewUser(username, email);
+    await registerNewUser(username, email, user.uid);
 
     return { user };
   } catch (error) {
@@ -79,8 +79,8 @@ export const signUpWithGoogle = async () => {
       };
     }
 
-    await registerNewUser(user.displayName, user.email!);
-
+    await registerNewUser(user.displayName, user.email!, user.uid);
+    console.log("stored in firebase");
     return { user };
   } catch (error) {
     return handleAuthErrors(error);

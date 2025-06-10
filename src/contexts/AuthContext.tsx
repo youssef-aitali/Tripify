@@ -27,13 +27,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   useEffect(() => {
     try {
-      const unsubscribe = onAuthStateChanged(auth, (user) => {
-        user && getUserProfile(user.uid);
-        console.log(user);
+      const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+        console.log("Auth state changed");
+        if (user) {
+          const userData = await getUserProfile(user.uid);
+          console.log(userData);
+        }
         setCurrentUser(user);
         setIsCurrentUserLoading(false);
       });
-      return unsubscribe;
+
+      return unsubscribeAuth;
     } catch (error) {
       console.error("Error:", error);
     }
