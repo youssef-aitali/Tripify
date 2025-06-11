@@ -23,7 +23,7 @@ import { logOut } from "@/features/auth/services/authService";
 import NavbarItemSkeleton from "@/components/custom/NavbarItemSkeleton";
 import TButton from "@/components/custom/TButton";
 import userAvatar from "@/assets/icons/user.svg?url";
-import { useAuthUser } from "@/contexts/AuthContext";
+import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import Tripifylogo from "@/assets/logo.svg";
 import { Link } from "react-router";
 import { ROUTE_PATHS } from "@/routes/routePaths";
@@ -33,7 +33,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
 
-  const { currentUser, isCurrentUserLoading } = useAuthUser();
+  const { dbCurrentUser, isCurrentUserLoading } = useAuthUser();
 
   const logOutHandler = async () => {
     await logOut();
@@ -44,7 +44,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
       <img className="w-24" src={Tripifylogo} alt="Tripify logo" />
       {isCurrentUserLoading ? (
         <NavbarItemSkeleton />
-      ) : currentUser ? (
+      ) : dbCurrentUser ? (
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -64,8 +64,11 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
           </DropdownMenu>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Avatar className="h-8 w-8 rounded-lg cursor-pointer">
-                <AvatarImage src={userAvatar} alt="User avatar" />
+              <Avatar className="h-8 w-8 cursor-pointer">
+                <AvatarImage
+                  src={dbCurrentUser?.avatarUrl || userAvatar}
+                  alt="User avatar"
+                />
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-fit" align="end">

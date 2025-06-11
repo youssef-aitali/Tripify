@@ -14,7 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useAuthUser } from "@/contexts/AuthContext";
+import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
+import userAvatar from "@/assets/icons/user.svg?url";
 
 const formSchema = z.object({
   fullname: z.string(),
@@ -30,16 +31,14 @@ const formSchema = z.object({
 });
 
 const AccountPage = () => {
-  const { currentUser, isCurrentUserLoading } = useAuthUser();
-
-  console.log(currentUser, isCurrentUserLoading);
+  const { dbCurrentUser, isCurrentUserLoading } = useAuthUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: "",
-      username: "",
-      email: "",
+      fullname: dbCurrentUser?.fullname,
+      username: dbCurrentUser?.username,
+      email: dbCurrentUser?.email,
     },
   });
 
@@ -53,7 +52,7 @@ const AccountPage = () => {
             <div className="*:data-[slot=avatar]:ring-background flex items-end -space-x-4 *:data-[slot=avatar]:ring-2">
               <Avatar className="w-20 h-20">
                 <AvatarImage
-                  src="https://github.com/shadcn.png"
+                  src={dbCurrentUser?.avatarUrl || userAvatar}
                   alt="@shadcn"
                 />
               </Avatar>

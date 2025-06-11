@@ -4,7 +4,11 @@ import { toast } from "sonner";
 
 import { verifyEmail } from "@/features/auth/services/authService";
 import { ROUTE_PATHS } from "@/routes/routePaths";
-import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
+import {
+  getFirebaseErrorMessage,
+  persistEmailVerification,
+} from "@/features/auth/utils/authUtils";
+import { auth } from "@/lib/firebase/firebaseConfig";
 
 const AuthActionsHandlerPage = () => {
   const [searchParams] = useSearchParams();
@@ -23,8 +27,11 @@ const AuthActionsHandlerPage = () => {
         const result = await verifyEmail(actionCode);
         if (result && "code" in result) {
           toast.error(getFirebaseErrorMessage(result.code));
+        } else {
+          auth.currentUser &&
+            (await persistEmailVerification(auth.currentUser.uid));
+          toast.success("Email verified! 🎉 Welcome aboard.");
         }
-        toast.success("Email verified! 🎉 Welcome aboard.");
         navigate(ROUTE_PATHS.DASHBOARD);
       } else {
         navigate(`${ROUTE_PATHS.PASSWORD_RESET}?oobCode=${actionCode}`);

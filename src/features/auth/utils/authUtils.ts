@@ -1,5 +1,5 @@
 import { db } from "@/lib/firebase/firebaseConfig";
-import type { AuthError } from "firebase/auth";
+import type { AuthError, User } from "firebase/auth";
 import {
   collection,
   doc,
@@ -47,16 +47,12 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
   return !querySnapshot.empty;
 };
 
-export const registerNewUser = async (
-  displayName: string | null,
-  email: string,
-  userId: string
-) => {
+export const registerNewUser = async (user: User) => {
   const userProfile = {
-    fullname: displayName || "Anonymous",
-    username: email.split("@")[0],
-    email,
-    avatarUrl: "",
+    fullname: user.displayName || "Anonymous",
+    username: user.email?.split("@")[0],
+    email: user.email,
+    avatarUrl: user.photoURL || "",
     preferences: {
       language: "English",
       appearance: "Light",
@@ -64,7 +60,7 @@ export const registerNewUser = async (
     },
   };
 
-  await setDoc(doc(db, "users", userId), userProfile);
+  await setDoc(doc(db, "users", user.uid), userProfile);
 };
 
 export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
@@ -84,4 +80,12 @@ export const getUserProfile = async (userId: string) => {
   const userDocData = userDocSnap.data();
 
   return userDocData;
+};
+
+export const persistEmailVerification = async (userId: string) => {
+  await setDoc(
+    doc(db, "users", userId),
+    { emailVerified: true },
+    { merge: true }
+  );
 };

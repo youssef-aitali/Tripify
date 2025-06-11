@@ -75,8 +75,8 @@ export const useAuth = () => {
       "setNewPassword"
     );
 
-  const sendEmailVerification = (user: User) =>
-    handleAuthFlow(() => sendVerificationEmail(user), "sendEmailVerification");
+  const sendEmailVerification = () =>
+    handleAuthFlow(sendVerificationEmail, "sendEmailVerification");
 
   return {
     emailSignUp,

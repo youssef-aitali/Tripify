@@ -3,11 +3,13 @@ import { toast } from "sonner";
 
 import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
-import { useAuthUser } from "@/contexts/AuthContext";
+import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { auth } from "@/lib/firebase/firebaseConfig";
 
 const DashboardPage = () => {
-  const { currentUser } = useAuthUser();
+  const { dbCurrentUser } = useAuthUser();
+  const authCurrentUser = auth.currentUser;
   const {
     sendEmailVerification,
     authLoading: { sendEmailVerificationLoading },
@@ -16,7 +18,7 @@ const DashboardPage = () => {
   const [isLoading, setIsLoading] = useState(true);
 
   const handleResendConfirmationEmail = async () => {
-    const result = await sendEmailVerification(currentUser!);
+    const result = await sendEmailVerification();
 
     if (result.success) {
       toast.info("Confirmation email sent. Check your inbox!");
@@ -31,7 +33,7 @@ const DashboardPage = () => {
 
     const reloadCurrentUser = async () => {
       try {
-        await currentUser?.reload();
+        await authCurrentUser?.reload();
       } catch (error) {
         console.error("Error:", error);
       }
@@ -45,7 +47,7 @@ const DashboardPage = () => {
 
   return (
     <div>
-      {!currentUser?.emailVerified && (
+      {!authCurrentUser?.emailVerified && (
         <ConfirmEmailBanner
           resendVerificationEmail={handleResendConfirmationEmail}
           isSendButtonLoading={sendEmailVerificationLoading}

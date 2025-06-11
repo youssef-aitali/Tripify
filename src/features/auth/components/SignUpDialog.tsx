@@ -99,7 +99,6 @@ const SignUpDialog = ({
     const result = await emailSignUp(email, password);
     if (result.success) {
       onSignUpDialogOpenChange(false);
-      result.user && (await sendVerificationEmail(result.user));
       playConfettiAnimation();
       navigate(ROUTE_PATHS.DASHBOARD);
     } else {

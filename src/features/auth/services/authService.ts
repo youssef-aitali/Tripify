@@ -39,9 +39,9 @@ export const signUpWithEmailAndPassword = async (
       };
     }
 
-    console.log("Email & Password sign up: ", user);
+    await registerNewUser(user);
 
-    await registerNewUser(user.displayName, email, user.uid);
+    await sendVerificationEmail();
 
     return { user };
   } catch (error) {
@@ -80,9 +80,8 @@ export const signUpWithGoogle = async () => {
       };
     }
 
-    console.log("Email & Password sign up: ", user);
-    await registerNewUser(user.displayName, user.email!, user.uid);
-    console.log("stored in firebase");
+    await registerNewUser(user);
+
     return { user };
   } catch (error) {
     return handleAuthErrors(error);
@@ -128,9 +127,9 @@ export const setNewPassword = async (
   }
 };
 
-export const sendVerificationEmail = async (user: User) => {
+export const sendVerificationEmail = async () => {
   try {
-    await sendEmailVerification(user);
+    await sendEmailVerification(auth.currentUser!);
   } catch (error) {
     return handleAuthErrors(error);
   }
