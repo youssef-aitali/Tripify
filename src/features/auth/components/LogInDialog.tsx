@@ -203,7 +203,7 @@ const LogInDialog = ({
                     <TButton
                       type="submit"
                       className="w-full mt-2"
-                      disabled={emailAuthLoading || googleAuthLoading}
+                      disabled={emailAuthLoading}
                     >
                       Log In
                     </TButton>

@@ -14,16 +14,18 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log("is current user loading", isCurrentUserLoading);
+    console.log("current user: ", currentUser);
+    console.log("test is : ", !isCurrentUserLoading && !currentUser);
     if (!isCurrentUserLoading && !currentUser) {
       navigate("/");
     }
   }, [currentUser, isCurrentUserLoading]);
 
-  if (!isCurrentUserLoading) {
-    return !currentUser ? <PlanTripPage /> : children;
-  } else {
-    <LoadingSkeleton />;
+  if (isCurrentUserLoading) {
+    return <LoadingSkeleton />;
   }
+  return currentUser ? children : null;
 };
 
 export default ProtectedRoute;

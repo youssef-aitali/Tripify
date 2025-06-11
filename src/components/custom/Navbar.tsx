@@ -34,7 +34,6 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
     useState(false);
 
   const { currentUser, isCurrentUserLoading } = useAuthUser();
-  console.log(currentUser);
 
   const logOutHandler = async () => {
     await logOut();
@@ -67,7 +66,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarImage
-                  src={currentUser?.photoURL || userAvatar}
+                  src={currentUser.photoURL || userAvatar}
                   alt="User avatar"
                 />
               </Avatar>

@@ -1,7 +1,7 @@
-import type { AuthUser } from "@/features/auth/authTypes";
+import type { AuthUser, CurrentUserType } from "@/features/auth/authTypes";
 import { getUserProfile } from "@/features/auth/utils/authUtils";
 import { auth } from "@/lib/firebase/firebaseConfig";
-import { onAuthStateChanged, type User } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import type { DocumentData } from "firebase/firestore";
 import { createContext, useEffect, useState, type ReactNode } from "react";
 
@@ -10,7 +10,7 @@ type AuthProviderProps = {
 };
 
 export const AuthContext = createContext<{
-  currentUser: DocumentData | AuthUser | null;
+  currentUser: CurrentUserType | null;
   isCurrentUserLoading: boolean;
 }>({
   currentUser: null,
@@ -18,9 +18,7 @@ export const AuthContext = createContext<{
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [currentUser, setCurrentUser] = useState<
-    DocumentData | AuthUser | null
-  >(null);
+  const [currentUser, setCurrentUser] = useState<CurrentUserType | null>(null);
   const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
 
   useEffect(() => {
@@ -28,9 +26,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
         if (user) {
           const userData = await getUserProfile(user.uid);
+          console.log({
+            ...user,
+            ...userData,
+            username: user.email?.split("@")[0],
+          });
           setCurrentUser({
             ...user,
             ...userData,
+            username: user.email?.split("@")[0],
           });
         } else {
           setCurrentUser(null);
