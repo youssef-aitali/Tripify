@@ -10,17 +10,17 @@ type ProtectedRouteProps = {
 };
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { dbCurrentUser, isCurrentUserLoading } = useAuthUser();
+  const { currentUser, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!isCurrentUserLoading && !dbCurrentUser) {
+    if (!isCurrentUserLoading && !currentUser) {
       navigate("/");
     }
-  }, [dbCurrentUser, isCurrentUserLoading]);
+  }, [currentUser, isCurrentUserLoading]);
 
   if (!isCurrentUserLoading) {
-    return !dbCurrentUser ? <PlanTripPage /> : children;
+    return !currentUser ? <PlanTripPage /> : children;
   } else {
     <LoadingSkeleton />;
   }

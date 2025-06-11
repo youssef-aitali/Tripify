@@ -10,15 +10,15 @@ type AuthProviderProps = {
 };
 
 export const AuthContext = createContext<{
-  dbCurrentUser: DocumentData | AuthUser | null;
+  currentUser: DocumentData | AuthUser | null;
   isCurrentUserLoading: boolean;
 }>({
-  dbCurrentUser: null,
+  currentUser: null,
   isCurrentUserLoading: true,
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [dbCurrentUser, setCurrentUser] = useState<
+  const [currentUser, setCurrentUser] = useState<
     DocumentData | AuthUser | null
   >(null);
   const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
@@ -28,22 +28,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
         if (user) {
           const userData = await getUserProfile(user.uid);
-          setCurrentUser(
-            userData || {
-              fullname: user.displayName || "Anonymous",
-              username: user.email!.split("@")[0],
-              email: user.email,
-              emailVerified: user.emailVerified,
-              avatarUrl: user.photoURL || "",
-              preferences: {
-                language: "English",
-                appearance: "Light",
-                notifications: true,
-              },
-            }
-          );
+          setCurrentUser({
+            ...user,
+            ...userData,
+          });
         } else {
-          setCurrentUser(user);
+          setCurrentUser(null);
         }
         setIsCurrentUserLoading(false);
       });
@@ -55,7 +45,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ dbCurrentUser, isCurrentUserLoading }}>
+    <AuthContext.Provider value={{ currentUser, isCurrentUserLoading }}>
       {children}
     </AuthContext.Provider>
   );

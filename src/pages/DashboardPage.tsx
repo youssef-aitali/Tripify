@@ -8,7 +8,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { auth } from "@/lib/firebase/firebaseConfig";
 
 const DashboardPage = () => {
-  const { dbCurrentUser } = useAuthUser();
+  const { currentUser } = useAuthUser();
   const authCurrentUser = auth.currentUser;
   const {
     sendEmailVerification,

@@ -20,6 +20,8 @@ export const getFirebaseErrorMessage = (code: string) => {
       return "Password should be at least 6 characters!";
     case "auth/invalid-email":
       return "Please enter a valid email!";
+    case "auth/invalid-credential":
+      return "Incorrect email/password!";
     case "auth/requires-recent-login":
       return "Please sign in again before changing your password!";
     case "auth/invalid-action-code":
@@ -49,10 +51,10 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
 
 export const registerNewUser = async (user: User) => {
   const userProfile = {
-    fullname: user.displayName || "Anonymous",
-    username: user.email.split("@")[0],
+    fullname: user.displayName || "",
+    username: user.email?.split("@")[0],
     email: user.email,
-    avatarUrl: user.photoURL || "",
+    photoURL: user.photoURL || "",
     preferences: {
       language: "English",
       appearance: "Light",

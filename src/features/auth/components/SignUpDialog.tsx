@@ -149,7 +149,7 @@ const SignUpDialog = ({
                     <TButton
                       className="w-full"
                       onClick={handleGoogleSignUp}
-                      disabled={emailAuthLoading || googleAuthLoading}
+                      disabled={googleAuthLoading}
                     >
                       <GoogleLogo className="fill-white" />
                       Sign up with Google
@@ -207,7 +207,7 @@ const SignUpDialog = ({
                     <TButton
                       type="submit"
                       className="w-full mt-2"
-                      disabled={emailAuthLoading || googleAuthLoading}
+                      disabled={emailAuthLoading}
                     >
                       Sign up
                     </TButton>

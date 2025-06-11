@@ -31,14 +31,14 @@ const formSchema = z.object({
 });
 
 const AccountPage = () => {
-  const { dbCurrentUser, isCurrentUserLoading } = useAuthUser();
+  const { currentUser, isCurrentUserLoading } = useAuthUser();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: dbCurrentUser?.fullname,
-      username: dbCurrentUser?.username,
-      email: dbCurrentUser?.email,
+      fullname: currentUser?.fullname,
+      username: currentUser?.username,
+      email: currentUser?.email,
     },
   });
 
@@ -52,7 +52,7 @@ const AccountPage = () => {
             <div className="*:data-[slot=avatar]:ring-background flex items-end -space-x-4 *:data-[slot=avatar]:ring-2">
               <Avatar className="w-20 h-20">
                 <AvatarImage
-                  src={dbCurrentUser?.avatarUrl || userAvatar}
+                  src={currentUser?.photoURL || userAvatar}
                   alt="@shadcn"
                 />
               </Avatar>

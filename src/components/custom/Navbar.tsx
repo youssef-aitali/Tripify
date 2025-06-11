@@ -33,7 +33,8 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
 
-  const { dbCurrentUser, isCurrentUserLoading } = useAuthUser();
+  const { currentUser, isCurrentUserLoading } = useAuthUser();
+  console.log(currentUser);
 
   const logOutHandler = async () => {
     await logOut();
@@ -44,7 +45,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
       <img className="w-24" src={Tripifylogo} alt="Tripify logo" />
       {isCurrentUserLoading ? (
         <NavbarItemSkeleton />
-      ) : dbCurrentUser ? (
+      ) : currentUser ? (
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -66,7 +67,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarImage
-                  src={dbCurrentUser?.avatarUrl || userAvatar}
+                  src={currentUser?.photoURL || userAvatar}
                   alt="User avatar"
                 />
               </Avatar>

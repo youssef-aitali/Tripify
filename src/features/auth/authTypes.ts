@@ -29,7 +29,7 @@ export type AuthUser = {
   fullname: string;
   username: string;
   email: string;
-  avatarUrl: string;
+  photoURL: string;
   preferences: UserPreferences;
 };
 

@@ -10,7 +10,6 @@ import {
   signInWithPopup,
   signOut,
   verifyPasswordResetCode,
-  type User,
 } from "firebase/auth";
 
 import {
