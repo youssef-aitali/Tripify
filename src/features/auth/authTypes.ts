@@ -1,5 +1,4 @@
 import type { User } from "firebase/auth";
-import type { DocumentData } from "firebase/firestore";
 
 export type SignUpDialogProps = {
   isSignUpDialogOpen: boolean;
@@ -34,9 +33,6 @@ export type AuthUser = {
   photoURL: string;
   preferences: UserPreferences;
 };
-export type CurrentUserType = User & {
-  username?: string;
-} & Partial<DocumentData>;
 
 export type AuthErrorResponse = {
   code: string;

@@ -12,22 +12,18 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { currentUser, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
 
-  console.log(
-    "inside protected route, is current user still loading? = ",
-    isCurrentUserLoading
-  );
-  console.log("inside protected route, current user = ", currentUser);
-
   useEffect(() => {
-    if (!isCurrentUserLoading && !currentUser) {
-      navigate("/");
-    }
+    console.log(
+      "Inside protected route, is currentUserLoading --> ",
+      isCurrentUserLoading
+    );
+    console.log("Inside protected route, current User --> ", currentUser);
+    if (!currentUser) navigate("/");
   }, [currentUser]);
 
   if (isCurrentUserLoading) {
     return <LoadingSkeleton />;
   }
-
   return currentUser ? children : null;
 };
 

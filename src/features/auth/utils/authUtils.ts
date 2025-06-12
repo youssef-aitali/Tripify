@@ -29,7 +29,7 @@ export const getFirebaseErrorMessage = (code: string) => {
     case "auth/expired-action-code":
       return "Your password reset link has expired. Please request a new one!";
     case "auth/popup-closed-by-user":
-      return "You closed the log in window. Please try again!";
+      return "You closed the Google authentication window. Please try again!";
     case "auth/too-many-requests":
       return "Too many attempts. Please try again later!";
     case "firestore/permission-denied":

@@ -25,7 +25,7 @@ import TButton from "@/components/custom/TButton";
 import userAvatar from "@/assets/icons/user.svg?url";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import Tripifylogo from "@/assets/logo.svg";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { ROUTE_PATHS } from "@/routes/routePaths";
 
 const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
@@ -34,9 +34,11 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
     useState(false);
 
   const { currentUser, isCurrentUserLoading } = useAuthUser();
+  const navigate = useNavigate();
 
   const logOutHandler = async () => {
     await logOut();
+    navigate("/");
   };
 
   return (
