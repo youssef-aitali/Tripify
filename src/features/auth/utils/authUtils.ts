@@ -49,8 +49,8 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
   return !querySnapshot.empty;
 };
 
-export const registerNewUser = async (user: User) => {
-  const userProfile = {
+export const createAuthUser = (user: User) => {
+  return {
     fullname: user.displayName || "",
     username: user.email?.split("@")[0],
     email: user.email,
@@ -61,7 +61,10 @@ export const registerNewUser = async (user: User) => {
       notifications: true,
     },
   };
+};
 
+export const registerNewUser = async (user: User) => {
+  const userProfile = createAuthUser(user);
   await setDoc(doc(db, "users", user.uid), userProfile);
 };
 
@@ -84,10 +87,11 @@ export const getUserProfile = async (userId: string) => {
   return userDocData;
 };
 
-export const persistEmailVerification = async (userId: string) => {
+/* export const persistEmailVerification = async (userId: string) => {
   await setDoc(
     doc(db, "users", userId),
     { emailVerified: true },
     { merge: true }
   );
 };
+ */

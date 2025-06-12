@@ -5,6 +5,13 @@ import { cn } from "@/lib/utils";
 type ButtonProps = ComponentProps<typeof ShadCNButton>;
 
 const TButton = ({ className, variant, ...props }: ButtonProps) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === " ") {
+      e.preventDefault(); // Block space bar
+    }
+    props.onKeyDown?.(e); // Preserve existing onKeyDown
+  };
+
   return (
     <ShadCNButton
       variant={variant}
@@ -17,6 +24,7 @@ const TButton = ({ className, variant, ...props }: ButtonProps) => {
           "bg-cyan-900/90 hover:bg-cyan-900 text-white",
         className
       )}
+      onKeyDown={handleKeyDown}
       {...props}
     />
   );

@@ -1,5 +1,8 @@
 import type { AuthUser, CurrentUserType } from "@/features/auth/authTypes";
-import { getUserProfile } from "@/features/auth/utils/authUtils";
+import {
+  createAuthUser,
+  getUserProfile,
+} from "@/features/auth/utils/authUtils";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { onAuthStateChanged } from "firebase/auth";
 import type { DocumentData } from "firebase/firestore";
@@ -10,15 +13,17 @@ type AuthProviderProps = {
 };
 
 export const AuthContext = createContext<{
-  currentUser: CurrentUserType | null;
+  currentUser: AuthUser | null;
+  setCurrentUser: (value: React.SetStateAction<AuthUser | null>) => void;
   isCurrentUserLoading: boolean;
 }>({
   currentUser: null,
+  setCurrentUser: () => {},
   isCurrentUserLoading: true,
 });
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [currentUser, setCurrentUser] = useState<CurrentUserType | null>(null);
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
   const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
 
   useEffect(() => {
@@ -26,22 +31,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
         if (user) {
           const userData = await getUserProfile(user.uid);
-          console.log({
-            ...user,
-            ...userData,
-            username: user.email?.split("@")[0],
-          });
+          const authUser = createAuthUser(user);
           setCurrentUser({
-            ...user,
+            ...authUser,
             ...userData,
-            username: user.email?.split("@")[0],
+            emailVerified: user.emailVerified,
           });
+          console.log("Inside Context: --> setting user to data");
         } else {
+          console.log("Inside Context: --> setting user to null");
           setCurrentUser(null);
         }
         setIsCurrentUserLoading(false);
       });
-
+      console.log(
+        "Inside Context: --> setting to is currentCurrentUserLoading to false"
+      );
       return unsubscribeAuth;
     } catch (error) {
       console.error("Error:", error);
@@ -49,7 +54,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ currentUser, isCurrentUserLoading }}>
+    <AuthContext.Provider
+      value={{ currentUser, setCurrentUser, isCurrentUserLoading }}
+    >
       {children}
     </AuthContext.Provider>
   );

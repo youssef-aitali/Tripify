@@ -137,6 +137,7 @@ export const sendVerificationEmail = async () => {
 export const verifyEmail = async (actionCode: string) => {
   try {
     await applyActionCode(auth, actionCode);
+    await auth.currentUser?.reload();
   } catch (error) {
     return handleAuthErrors(error);
   }

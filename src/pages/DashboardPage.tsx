@@ -5,11 +5,10 @@ import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { auth } from "@/lib/firebase/firebaseConfig";
 
 const DashboardPage = () => {
   const { currentUser } = useAuthUser();
-  const authCurrentUser = auth.currentUser;
+
   const {
     sendEmailVerification,
     authLoading: { sendEmailVerificationLoading },
@@ -27,7 +26,7 @@ const DashboardPage = () => {
     }
   };
 
-  useEffect(() => {
+  /*  useEffect(() => {
     if (hasChecked.current) return;
     hasChecked.current = true;
 
@@ -41,13 +40,13 @@ const DashboardPage = () => {
     };
 
     reloadCurrentUser();
-  }, []);
+  }, []); */
 
-  if (isLoading) return <LoadingSkeleton />;
+  /* if (isLoading) return <LoadingSkeleton />; */
 
   return (
     <div>
-      {!authCurrentUser?.emailVerified && (
+      {!currentUser?.emailVerified && (
         <ConfirmEmailBanner
           resendVerificationEmail={handleResendConfirmationEmail}
           isSendButtonLoading={sendEmailVerificationLoading}

@@ -28,8 +28,9 @@ export type UserPreferences = {
 
 export type AuthUser = {
   fullname: string;
-  username: string;
-  email: string;
+  username: string | undefined;
+  email: string | null;
+  emailVerified: boolean;
   photoURL: string;
   preferences: UserPreferences;
 };
