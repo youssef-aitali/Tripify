@@ -4,7 +4,7 @@ import {
   getUserProfile,
 } from "@/features/auth/utils/authUtils";
 import { auth } from "@/lib/firebase/firebaseConfig";
-import { onAuthStateChanged } from "firebase/auth";
+import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 
@@ -13,12 +13,29 @@ type AuthProviderProps = {
 };
 
 const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  //const [currentUser, setCurrentUser] = useState<AuthUser | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
 
   useEffect(() => {
-    try {
-      const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+    const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
+      console.log("Inside Context: --> setting user to ", user);
+      console.log("Inside Context: --> is curent user loading:  ", user);
+      setCurrentUser(user);
+      setIsCurrentUserLoading(false);
+      try {
+        if (user) {
+          const userData = await getUserProfile(user.uid);
+          console.log("DOCUMENT DATA: ", userData);
+        }
+      } catch (error) {
+        console.error("Error:", error);
+      }
+    });
+    return unsubscribeAuth;
+
+    /*  try {
+        const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
         !isCurrentUserLoading && setIsCurrentUserLoading(true);
         if (user) {
           const userData = await getUserProfile(user.uid);
@@ -38,10 +55,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         );
         setIsCurrentUserLoading(false);
       });
-      return unsubscribeAuth;
+      return unsubscribeAuth; 
     } catch (error) {
       console.error("Error:", error);
-    }
+    } */
   }, []);
 
   return (

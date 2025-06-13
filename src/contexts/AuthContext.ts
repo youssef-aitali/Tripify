@@ -1,10 +1,12 @@
 import { createContext } from "react";
 
 import type { AuthUser } from "@/features/auth/authTypes";
+import type { User } from "firebase/auth";
 
 type AuthContextType = {
-  currentUser: AuthUser | null;
-  setCurrentUser: (value: React.SetStateAction<AuthUser | null>) => void;
+  /* currentUser: AuthUser | null; */
+  currentUser: User | null;
+  setCurrentUser: (value: React.SetStateAction<User | null>) => void;
   isCurrentUserLoading: boolean;
 };
 

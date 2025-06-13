@@ -1,26 +1,24 @@
 import { useEffect, type ReactNode } from "react";
-import { useNavigate } from "react-router";
+import { Navigate, useNavigate } from "react-router";
 
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
+import { ROUTE_PATHS } from "./routePaths";
 
 type ProtectedRouteProps = {
   children: ReactNode;
 };
 
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const { currentUser, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
+  const { currentUser, isCurrentUserLoading } = useAuthUser();
+
+  console.log("Inside Protected Route, is currentUserLoading: ", currentUser);
+  console.log("Inside Protected Route, currentUser: ", isCurrentUserLoading);
 
   useEffect(() => {
-    console.log(
-      "Inside protected route, is currentUserLoading --> ",
-      isCurrentUserLoading
-    );
-    console.log("Inside protected route, current User --> ", currentUser);
-    if (!currentUser) navigate("/");
-  }, [currentUser]);
-
+    if (!currentUser && !isCurrentUserLoading) navigate(ROUTE_PATHS.PLAN_TRIP);
+  }, [currentUser, isCurrentUserLoading]);
   if (isCurrentUserLoading) {
     return <LoadingSkeleton />;
   }
