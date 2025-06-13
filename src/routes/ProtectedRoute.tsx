@@ -13,9 +13,6 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const navigate = useNavigate();
   const { currentUser, isCurrentUserLoading } = useAuthUser();
 
-  console.log("Inside Protected Route, is currentUserLoading: ", currentUser);
-  console.log("Inside Protected Route, currentUser: ", isCurrentUserLoading);
-
   useEffect(() => {
     if (!currentUser && !isCurrentUserLoading) navigate(ROUTE_PATHS.PLAN_TRIP);
   }, [currentUser, isCurrentUserLoading]);

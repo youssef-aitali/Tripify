@@ -38,7 +38,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
 
   const logOutHandler = async () => {
     await logOut();
-    navigate("/");
+    navigate(ROUTE_PATHS.PLAN_TRIP);
   };
 
   return (

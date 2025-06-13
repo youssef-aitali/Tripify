@@ -1,8 +1,6 @@
-import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
-import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
@@ -13,8 +11,6 @@ const DashboardPage = () => {
     sendEmailVerification,
     authLoading: { sendEmailVerificationLoading },
   } = useAuth();
-  const hasChecked = useRef(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   const handleResendConfirmationEmail = async () => {
     const result = await sendEmailVerification();
@@ -25,24 +21,6 @@ const DashboardPage = () => {
       toast.error(result.errorMessage);
     }
   };
-
-  /*  useEffect(() => {
-    if (hasChecked.current) return;
-    hasChecked.current = true;
-
-    const reloadCurrentUser = async () => {
-      try {
-        await authCurrentUser?.reload();
-      } catch (error) {
-        console.error("Error:", error);
-      }
-      setIsLoading(false);
-    };
-
-    reloadCurrentUser();
-  }, []); */
-
-  /* if (isLoading) return <LoadingSkeleton />; */
 
   return (
     <div>

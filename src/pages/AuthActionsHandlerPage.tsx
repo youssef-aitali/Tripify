@@ -14,7 +14,7 @@ const AuthActionsHandlerPage = () => {
   const actionCode = searchParams.get("oobCode");
   const navigate = useNavigate();
   const hasChecked = useRef(false);
-  const { currentUser, setCurrentUser } = useAuthUser();
+  const { currentUser } = useAuthUser();
 
   useEffect(() => {
     if (hasChecked.current) return;
@@ -27,13 +27,7 @@ const AuthActionsHandlerPage = () => {
         if (result && "code" in result) {
           toast.error(getFirebaseErrorMessage(result.code));
         } else {
-          /*    auth.currentUser &&
-            (await persistEmailVerification(auth.currentUser.uid)); */
-          const newCurrentUser = {
-            ...currentUser,
-            emailVerified: true,
-          } as AuthUser;
-          setCurrentUser(newCurrentUser);
+          await currentUser?.reload();
           toast.success("Email verified! 🎉 Welcome aboard.");
         }
         navigate(ROUTE_PATHS.DASHBOARD);
