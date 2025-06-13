@@ -1,5 +1,5 @@
 import { useEffect, type ReactNode } from "react";
-import { Navigate, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 
 import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";

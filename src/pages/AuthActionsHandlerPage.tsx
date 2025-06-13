@@ -6,7 +6,6 @@ import { verifyEmail } from "@/features/auth/services/authService";
 import { ROUTE_PATHS } from "@/routes/routePaths";
 import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
-import type { AuthUser } from "@/features/auth/authTypes";
 
 const AuthActionsHandlerPage = () => {
   const [searchParams] = useSearchParams();
