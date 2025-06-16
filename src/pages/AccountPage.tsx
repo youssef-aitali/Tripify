@@ -1,5 +1,5 @@
 import TButton from "@/components/custom/TButton";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IconPencil } from "@tabler/icons-react";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
@@ -16,8 +16,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import userAvatar from "@/assets/icons/user.svg?url";
+import { useRef, useState } from "react";
 
 const formSchema = z.object({
+  photoURL: z.string(),
   fullname: z.string(),
   username: z.string().min(1, {
     message: "Username is required!",
@@ -33,17 +35,25 @@ const formSchema = z.object({
 const AccountPage = () => {
   const { userData } = useAuthUser();
 
+  console.log(userAvatar.startsWith("data:image/"));
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      photoURL: "",
       fullname: userData?.fullname,
       username: userData?.username,
       email: userData?.email,
     },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {};
+  const photoInputRef = useRef<HTMLInputElement>(null);
 
+  const handleAvatarClick = () => {
+    photoInputRef.current?.click();
+  };
+
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {};
   return (
     <div className="flex flex-col gap-6">
       <Form {...form}>
@@ -51,17 +61,32 @@ const AccountPage = () => {
           <div className="grid gap-4 text-sm">
             <div className="*:data-[slot=avatar]:ring-background flex items-end -space-x-4 *:data-[slot=avatar]:ring-2">
               <Avatar className="w-20 h-20">
-                <AvatarImage
-                  src={userData?.photoURL || userAvatar}
-                  alt="@shadcn"
-                />
+                <AvatarImage src={form.getValues("photoURL")} alt="@shadcn" />
+                <AvatarFallback />
               </Avatar>
               <Avatar className="bg-gray-100 cursor-pointer flex justify-center items-center">
-                <TButton variant="ghost">
+                <TButton variant="ghost" onClick={handleAvatarClick}>
                   <IconPencil stroke={2} />
                 </TButton>
               </Avatar>
             </div>
+            <FormField
+              control={form.control}
+              name="photoURL"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl ref={photoInputRef}>
+                    <Input
+                      className="hidden"
+                      type="file"
+                      accept="image/*"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="fullname"

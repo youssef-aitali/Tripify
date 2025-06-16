@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { IconSettingsCode } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
 import { IconLogout } from "@tabler/icons-react";
@@ -68,9 +68,10 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarImage
-                  src={currentUser.photoURL || userAvatar}
+                  src={currentUser?.photoURL || userAvatar}
                   alt="User avatar"
                 />
+                <AvatarFallback />
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-fit" align="end">

@@ -6,7 +6,7 @@ type ButtonProps = ComponentProps<typeof ShadCNButton>;
 
 const TButton = ({ className, variant, ...props }: ButtonProps) => {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
-    if (e.key === " ") {
+    if (e.key === " " || e.key === "Enter") {
       e.preventDefault(); // Block space bar
     }
     props.onKeyDown?.(e); // Preserve existing onKeyDown
