@@ -33,7 +33,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
 
-  const { currentUser, isCurrentUserLoading } = useAuthUser();
+  const { currentUser, userData, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
 
   const logOutHandler = async () => {
@@ -68,10 +68,13 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuTrigger asChild>
               <Avatar className="h-8 w-8 cursor-pointer">
                 <AvatarImage
-                  src={currentUser?.photoURL || userAvatar}
+                  src={userData?.photoURL || currentUser.photoURL || undefined}
                   alt="User avatar"
                 />
-                <AvatarFallback />
+                <AvatarFallback className="bg-gray-400 text-lg font-semibold text-white">
+                  {userData?.username.toUpperCase()[0] ??
+                    currentUser.email?.toUpperCase()[0]}
+                </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-fit" align="end">

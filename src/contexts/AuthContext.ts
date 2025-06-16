@@ -9,7 +9,7 @@ type AuthContextType = {
   currentUser: User | null;
   setCurrentUser: (value: React.SetStateAction<User | null>) => void;
   isCurrentUserLoading: boolean;
-  userData: DocumentData | undefined;
+  userData: DocumentData | AuthUser | undefined;
 };
 
 export const AuthContext = createContext<AuthContextType>({

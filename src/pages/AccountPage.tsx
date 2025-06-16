@@ -50,22 +50,16 @@ const AccountPage = () => {
     photoInputRef.current?.click();
   };
 
-  const getAvatarImageSource = () => {
-    if (photoPath) return photoPath;
-    return userData?.photoURL;
-  };
-
   const handleAvatarPhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     // Revoke previous URL if exists
-    if (photoPath) URL.revokeObjectURL(photoPath);
+    photoPath && URL.revokeObjectURL(photoPath);
 
     // Create a temporary blob URL for preview
-    const url = URL.createObjectURL(file);
-    console.log(url);
-    setPhotoPath(url);
+    const tempoBlobURL = URL.createObjectURL(file);
+    setPhotoPath(tempoBlobURL);
   };
 
   useEffect(() => {
@@ -75,6 +69,12 @@ const AccountPage = () => {
   }, []);
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {};
+
+  const cancelAccountUpdates = () => {
+    setPhotoPath(null);
+    form.reset();
+  };
+
   return (
     <div className="flex flex-col gap-6">
       <Form {...form}>
@@ -83,10 +83,12 @@ const AccountPage = () => {
             <div className="*:data-[slot=avatar]:ring-background flex items-end -space-x-4 *:data-[slot=avatar]:ring-2">
               <Avatar className="w-20 h-20">
                 <AvatarImage
-                  src={getAvatarImageSource() || userAvatar}
-                  alt="@shadcn"
+                  src={photoPath || userData?.photoURL || undefined}
+                  alt="Avatar"
                 />
-                <AvatarFallback />
+                <AvatarFallback className="bg-gray-400 text-4xl font-semibold text-white">
+                  {userData?.username[0].toUpperCase()}
+                </AvatarFallback>
               </Avatar>
               <Avatar className="bg-gray-100 cursor-pointer flex justify-center items-center">
                 <TButton variant="ghost" onClick={handleAvatarClick}>
@@ -152,7 +154,11 @@ const AccountPage = () => {
               <TButton type="submit" className="w-48 mt-4">
                 Save
               </TButton>
-              <TButton variant="ghost" className="w-48 mt-4">
+              <TButton
+                variant="ghost"
+                className="w-48 mt-4"
+                onClick={cancelAccountUpdates}
+              >
                 Cancel
               </TButton>
             </div>

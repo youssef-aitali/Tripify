@@ -49,18 +49,22 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
   return !querySnapshot.empty;
 };
 
-export const registerNewUser = async (user: User) => {
-  await setDoc(doc(db, "users", user.uid), {
+export const createUserData = (user: User) => {
+  return {
     fullname: user.displayName || "",
     username: user.email?.split("@")[0],
     email: user.email,
-    photoURL: user.photoURL || "",
+    photoURL: user.photoURL,
     preferences: {
       language: "English",
       appearance: "Light",
       notifications: true,
     },
-  });
+  };
+};
+
+export const registerNewUser = async (user: User) => {
+  await setDoc(doc(db, "users", user.uid), createUserData(user));
 };
 
 export const handleAuthErrors = (error: unknown): AuthErrorResponse => {

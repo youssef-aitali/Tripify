@@ -1,9 +1,13 @@
-import { getUserProfile } from "@/features/auth/utils/authUtils";
+import {
+  createUserData,
+  getUserProfile,
+} from "@/features/auth/utils/authUtils";
 import { auth } from "@/lib/firebase/firebaseConfig";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import type { DocumentData } from "firebase/firestore";
+import type { AuthUser } from "@/features/auth/authTypes";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -12,7 +16,9 @@ type AuthProviderProps = {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isCurrentUserLoading, setIsCurrentUserLoading] = useState(true);
-  const [userData, setUserData] = useState<DocumentData | undefined>(undefined);
+  const [userData, setUserData] = useState<DocumentData | AuthUser | undefined>(
+    undefined
+  );
 
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
@@ -20,8 +26,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         if (user) {
           setCurrentUser(user);
           const userData = await getUserProfile(user.uid);
-          setUserData(userData);
-          console.log("DOCUMENT DATA: ", userData);
+          setUserData(userData ?? createUserData(user));
         } else {
           setCurrentUser(null);
           setUserData(undefined);

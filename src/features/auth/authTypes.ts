@@ -35,3 +35,17 @@ export type OutletProps = {
   isLogInDialogOpen: boolean;
   setIsLogInDialogOpen: (isDialogOpen: boolean) => void;
 };
+
+export type UserPreferences = {
+  language: string;
+  appearance: string;
+  notifications: boolean;
+};
+
+export type AuthUser = {
+  fullname: string;
+  username: string;
+  email: string;
+  photoURL: string | null;
+  preferences: UserPreferences;
+};
