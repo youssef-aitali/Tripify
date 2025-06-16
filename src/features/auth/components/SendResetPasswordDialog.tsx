@@ -39,7 +39,7 @@ const formSchema = z.object({
     .min(1, {
       message: "Email is required!",
     })
-    .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address!"),
+    .email("Invalid email address!"),
 });
 
 const SendResetPasswordDialog = ({

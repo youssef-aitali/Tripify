@@ -16,10 +16,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import userAvatar from "@/assets/icons/user.svg?url";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 const formSchema = z.object({
-  photoURL: z.string(),
   fullname: z.string(),
   username: z.string().min(1, {
     message: "Username is required!",
@@ -29,18 +28,16 @@ const formSchema = z.object({
     .min(1, {
       message: "Email is required!",
     })
-    .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address!"),
+    .email("Invalid email address!"),
 });
 
 const AccountPage = () => {
   const { userData } = useAuthUser();
-
-  console.log(userAvatar.startsWith("data:image/"));
+  const [photoPath, setPhotoPath] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      photoURL: "",
       fullname: userData?.fullname,
       username: userData?.username,
       email: userData?.email,
@@ -53,6 +50,30 @@ const AccountPage = () => {
     photoInputRef.current?.click();
   };
 
+  const getAvatarImageSource = () => {
+    if (photoPath) return photoPath;
+    return userData?.photoURL;
+  };
+
+  const handleAvatarPhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Revoke previous URL if exists
+    if (photoPath) URL.revokeObjectURL(photoPath);
+
+    // Create a temporary blob URL for preview
+    const url = URL.createObjectURL(file);
+    console.log(url);
+    setPhotoPath(url);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (photoPath) URL.revokeObjectURL(photoPath);
+    };
+  }, []);
+
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {};
   return (
     <div className="flex flex-col gap-6">
@@ -61,7 +82,10 @@ const AccountPage = () => {
           <div className="grid gap-4 text-sm">
             <div className="*:data-[slot=avatar]:ring-background flex items-end -space-x-4 *:data-[slot=avatar]:ring-2">
               <Avatar className="w-20 h-20">
-                <AvatarImage src={form.getValues("photoURL")} alt="@shadcn" />
+                <AvatarImage
+                  src={getAvatarImageSource() || userAvatar}
+                  alt="@shadcn"
+                />
                 <AvatarFallback />
               </Avatar>
               <Avatar className="bg-gray-100 cursor-pointer flex justify-center items-center">
@@ -70,22 +94,12 @@ const AccountPage = () => {
                 </TButton>
               </Avatar>
             </div>
-            <FormField
-              control={form.control}
-              name="photoURL"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl ref={photoInputRef}>
-                    <Input
-                      className="hidden"
-                      type="file"
-                      accept="image/*"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+            <input
+              ref={photoInputRef}
+              className="hidden"
+              type="file"
+              accept="image/*"
+              onChange={handleAvatarPhotoChange}
             />
             <FormField
               control={form.control}

@@ -42,7 +42,7 @@ const formSchema = z.object({
     .min(1, {
       message: "Email is required!",
     })
-    .regex(/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/, "Invalid email address!"),
+    .email("Invalid email address!"),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters!",
   }),
