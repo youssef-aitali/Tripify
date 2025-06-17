@@ -22,7 +22,6 @@ import SignUpDialog from "@/features/auth/components/SignUpDialog";
 import { logOut } from "@/features/auth/services/authService";
 import NavbarItemSkeleton from "@/components/custom/NavbarItemSkeleton";
 import TButton from "@/components/custom/TButton";
-import userAvatar from "@/assets/icons/user.svg?url";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import Tripifylogo from "@/assets/logo.svg";
 import { Link, useNavigate } from "react-router";

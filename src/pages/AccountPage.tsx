@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
-import userAvatar from "@/assets/icons/user.svg?url";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 
 const formSchema = z.object({
