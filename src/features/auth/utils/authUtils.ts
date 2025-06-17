@@ -10,7 +10,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import type { AuthErrorResponse } from "../authTypes";
+import type { AuthErrorResponse, AuthUser } from "../authTypes";
 
 export const getFirebaseErrorMessage = (code: string) => {
   switch (code) {
@@ -84,6 +84,10 @@ export const getUserProfile = async (userId: string) => {
   const userDocData = userDocSnap.data();
 
   return userDocData;
+};
+
+export const updateUserData = async (userId: string, newUserData: AuthUser) => {
+  await setDoc(doc(db, "users", userId), { ...newUserData }, { merge: true });
 };
 
 /* export const persistEmailVerification = async (userId: string) => {

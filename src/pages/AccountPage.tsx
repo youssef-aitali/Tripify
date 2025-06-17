@@ -45,7 +45,8 @@ const AccountPage = () => {
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
-  const handleAvatarClick = () => {
+  const handleAvatarClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
     photoInputRef.current?.click();
   };
 
@@ -67,7 +68,10 @@ const AccountPage = () => {
     };
   }, []);
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async () => {};
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
+    console.log(data);
+    console.log(photoPath);
+  };
 
   const cancelAccountUpdates = () => {
     setPhotoPath(null);
@@ -150,16 +154,22 @@ const AccountPage = () => {
               )}
             />
             <div className="flex justifiy-center gap-2">
-              <TButton type="submit" className="w-48 mt-4">
+              <TButton
+                type="submit"
+                className="w-1/2 mt-4"
+                disabled={!form.formState.isDirty && !photoPath}
+              >
                 Save
               </TButton>
-              <TButton
-                variant="ghost"
-                className="w-48 mt-4"
-                onClick={cancelAccountUpdates}
-              >
-                Cancel
-              </TButton>
+              {(form.formState.isDirty || photoPath) && (
+                <TButton
+                  variant="ghost"
+                  className="w-1/2 mt-4"
+                  onClick={cancelAccountUpdates}
+                >
+                  Cancel
+                </TButton>
+              )}
             </div>
           </div>
         </form>

@@ -34,7 +34,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { SignUpDialogProps } from "@/features/auth/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { sendVerificationEmail } from "@/features/auth/services/authService";
 import { ROUTE_PATHS } from "@/routes/routePaths";
 import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimation";
 
