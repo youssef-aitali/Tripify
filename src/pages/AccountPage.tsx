@@ -53,8 +53,6 @@ const AccountPage = () => {
     },
   });
 
-  console.log("Form: ", form.getValues());
-
   const { isDirty, isSubmitting } = form.formState;
 
   const photoInputRef = useRef<HTMLInputElement>(null);
@@ -71,8 +69,6 @@ const AccountPage = () => {
     // Revoke previous URL if exists
     previewPhotoPath && URL.revokeObjectURL(previewPhotoPath);
 
-    console.log("File: ", file);
-    console.log("Tempo Path: ", previewPhotoPath);
     // Create a temporary blob URL for preview
     setPreviewPhotoPath(URL.createObjectURL(file));
     setSeletectedPreviewPhoto(file);
@@ -127,7 +123,10 @@ const AccountPage = () => {
                   src={previewPhotoPath || userData?.photoURL || undefined}
                   alt="Avatar"
                 />
-                <AvatarFallback className="bg-gray-400 text-4xl font-semibold text-white">
+                <AvatarFallback
+                  className="bg-gray-400 text-4xl font-semibold text-white"
+                  delayMs={0}
+                >
                   {userData?.username[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>

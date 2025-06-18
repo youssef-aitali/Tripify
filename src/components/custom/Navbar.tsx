@@ -70,7 +70,10 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
                   src={userData?.photoURL || currentUser.photoURL || undefined}
                   alt="User avatar"
                 />
-                <AvatarFallback className="bg-gray-400 text-lg font-semibold text-white">
+                <AvatarFallback
+                  className="bg-gray-400 text-lg font-semibold text-white"
+                  delayMs={0}
+                >
                   {userData?.username?.[0].toUpperCase() ??
                     currentUser.email?.[0].toUpperCase()}
                 </AvatarFallback>
