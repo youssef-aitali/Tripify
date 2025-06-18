@@ -71,8 +71,8 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
                   alt="User avatar"
                 />
                 <AvatarFallback className="bg-gray-400 text-lg font-semibold text-white">
-                  {userData?.username.toUpperCase()[0] ??
-                    currentUser.email?.toUpperCase()[0]}
+                  {userData?.username?.[0].toUpperCase() ??
+                    currentUser.email?.[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>

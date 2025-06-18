@@ -16,6 +16,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { getPhotoUploadURL } from "@/features/settings/services/settingsService";
 
 const formSchema = z.object({
   fullname: z.string(),
@@ -32,7 +33,10 @@ const formSchema = z.object({
 
 const AccountPage = () => {
   const { userData } = useAuthUser();
-  const [photoPath, setPhotoPath] = useState<string | null>(null);
+  const [selectedPreviewPhoto, setSeletectedPreviewPhoto] = useState<
+    File | undefined
+  >(undefined);
+  const [previewPhotoPath, setPreviewPhotoPath] = useState<string | null>(null);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -55,27 +59,40 @@ const AccountPage = () => {
     if (!file) return;
 
     // Revoke previous URL if exists
-    photoPath && URL.revokeObjectURL(photoPath);
+    previewPhotoPath && URL.revokeObjectURL(previewPhotoPath);
 
     // Create a temporary blob URL for preview
-    const tempoBlobURL = URL.createObjectURL(file);
-    setPhotoPath(tempoBlobURL);
+    setPreviewPhotoPath(URL.createObjectURL(file));
+    setSeletectedPreviewPhoto(file);
   };
 
   useEffect(() => {
     return () => {
-      if (photoPath) URL.revokeObjectURL(photoPath);
+      if (previewPhotoPath) URL.revokeObjectURL(previewPhotoPath);
     };
   }, []);
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (data) => {
-    console.log(data);
-    console.log(photoPath);
+  const cancelAccountUpdates = () => {
+    setSeletectedPreviewPhoto(undefined);
+    setPreviewPhotoPath(null);
+    form.reset();
   };
 
-  const cancelAccountUpdates = () => {
-    setPhotoPath(null);
-    form.reset();
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async ({
+    fullname,
+    username,
+    email,
+  }) => {
+    const updatedUserData = {
+      fullname,
+      username,
+      email,
+      ...(selectedPreviewPhoto && {
+        photoURL: await getPhotoUploadURL(selectedPreviewPhoto),
+      }),
+    };
+
+    console.log(updatedUserData);
   };
 
   return (
@@ -86,7 +103,7 @@ const AccountPage = () => {
             <div className="*:data-[slot=avatar]:ring-background flex items-end -space-x-4 *:data-[slot=avatar]:ring-2">
               <Avatar className="w-20 h-20">
                 <AvatarImage
-                  src={photoPath || userData?.photoURL || undefined}
+                  src={previewPhotoPath || userData?.photoURL || undefined}
                   alt="Avatar"
                 />
                 <AvatarFallback className="bg-gray-400 text-4xl font-semibold text-white">
@@ -157,11 +174,11 @@ const AccountPage = () => {
               <TButton
                 type="submit"
                 className="w-1/2 mt-4"
-                disabled={!form.formState.isDirty && !photoPath}
+                disabled={!form.formState.isDirty && !selectedPreviewPhoto}
               >
                 Save
               </TButton>
-              {(form.formState.isDirty || photoPath) && (
+              {(form.formState.isDirty || selectedPreviewPhoto) && (
                 <TButton
                   variant="ghost"
                   className="w-1/2 mt-4"

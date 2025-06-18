@@ -86,10 +86,6 @@ export const getUserProfile = async (userId: string) => {
   return userDocData;
 };
 
-export const updateUserData = async (userId: string, newUserData: AuthUser) => {
-  await setDoc(doc(db, "users", userId), { ...newUserData }, { merge: true });
-};
-
 /* export const persistEmailVerification = async (userId: string) => {
   await setDoc(
     doc(db, "users", userId),
