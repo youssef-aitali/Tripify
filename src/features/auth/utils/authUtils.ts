@@ -85,12 +85,3 @@ export const getUserProfile = async (userId: string) => {
 
   return userDocData;
 };
-
-/* export const persistEmailVerification = async (userId: string) => {
-  await setDoc(
-    doc(db, "users", userId),
-    { emailVerified: true },
-    { merge: true }
-  );
-};
- */

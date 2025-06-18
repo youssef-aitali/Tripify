@@ -16,7 +16,13 @@ import {
 import { Input } from "@/components/ui/input";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
-import { getPhotoUploadURL } from "@/features/settings/services/settingsService";
+import {
+  getPhotoUploadURL,
+  updateUserData,
+} from "@/features/settings/services/settingsService";
+import type { AuthUser } from "@/features/auth/authTypes";
+import { getUserProfile } from "@/features/auth/utils/authUtils";
+import { IconLoader } from "@tabler/icons-react";
 
 const formSchema = z.object({
   fullname: z.string(),
@@ -32,7 +38,7 @@ const formSchema = z.object({
 });
 
 const AccountPage = () => {
-  const { userData } = useAuthUser();
+  const { userData, currentUser, setUserData } = useAuthUser();
   const [selectedPreviewPhoto, setSeletectedPreviewPhoto] = useState<
     File | undefined
   >(undefined);
@@ -46,6 +52,10 @@ const AccountPage = () => {
       email: userData?.email,
     },
   });
+
+  console.log("Form: ", form.getValues());
+
+  const { isDirty, isSubmitting } = form.formState;
 
   const photoInputRef = useRef<HTMLInputElement>(null);
 
@@ -61,6 +71,8 @@ const AccountPage = () => {
     // Revoke previous URL if exists
     previewPhotoPath && URL.revokeObjectURL(previewPhotoPath);
 
+    console.log("File: ", file);
+    console.log("Tempo Path: ", previewPhotoPath);
     // Create a temporary blob URL for preview
     setPreviewPhotoPath(URL.createObjectURL(file));
     setSeletectedPreviewPhoto(file);
@@ -92,7 +104,16 @@ const AccountPage = () => {
       }),
     };
 
-    console.log(updatedUserData);
+    await updateUserData(currentUser!.uid, updatedUserData as AuthUser);
+
+    setUserData(await getUserProfile(currentUser!.uid));
+
+    setSeletectedPreviewPhoto(undefined);
+    form.reset({
+      fullname,
+      username,
+      email,
+    });
   };
 
   return (
@@ -174,11 +195,12 @@ const AccountPage = () => {
               <TButton
                 type="submit"
                 className="w-1/2 mt-4"
-                disabled={!form.formState.isDirty && !selectedPreviewPhoto}
+                disabled={(!isDirty && !selectedPreviewPhoto) || isSubmitting}
               >
+                {isSubmitting && <IconLoader className="animate-spin" />}
                 Save
               </TButton>
-              {(form.formState.isDirty || selectedPreviewPhoto) && (
+              {(isDirty || selectedPreviewPhoto) && !isSubmitting && (
                 <TButton
                   variant="ghost"
                   className="w-1/2 mt-4"
