@@ -72,7 +72,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
                 />
                 <AvatarFallback
                   className="bg-gray-400 text-lg font-semibold text-white"
-                  delayMs={0}
+                  delayMs={1000}
                 >
                   {userData?.username?.[0].toUpperCase() ??
                     currentUser.email?.[0].toUpperCase()}

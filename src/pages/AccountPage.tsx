@@ -125,7 +125,7 @@ const AccountPage = () => {
                 />
                 <AvatarFallback
                   className="bg-gray-400 text-4xl font-semibold text-white"
-                  delayMs={0}
+                  delayMs={1000}
                 >
                   {userData?.username[0].toUpperCase()}
                 </AvatarFallback>
