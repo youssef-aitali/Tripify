@@ -23,6 +23,7 @@ import {
 import type { AuthUser } from "@/features/authTypes";
 import { getUserProfile } from "@/features/auth/utils/authUtils";
 import { IconLoader } from "@tabler/icons-react";
+import { IconTrash } from "@tabler/icons-react";
 
 const formSchema = z.object({
   fullname: z.string(),
@@ -125,7 +126,7 @@ const AccountPage = () => {
                 />
                 <AvatarFallback
                   className="bg-gray-400 text-4xl font-semibold text-white"
-                  delayMs={1000}
+                  delayMs={1500}
                 >
                   {userData?.username[0].toUpperCase()}
                 </AvatarFallback>
@@ -212,6 +213,11 @@ const AccountPage = () => {
           </div>
         </form>
       </Form>
+      <div className="border-t border-border" />
+      <div className="flex">
+        <IconTrash stroke={2} />
+        Delete account
+      </div>
     </div>
   );
 };

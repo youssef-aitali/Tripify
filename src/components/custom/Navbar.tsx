@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   DropdownMenu,
@@ -74,7 +74,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
                 />
                 <AvatarFallback
                   className="bg-gray-400 text-lg font-semibold text-white"
-                  delayMs={1000}
+                  delayMs={1500}
                 >
                   {userData?.username?.[0].toUpperCase() ??
                     currentUser.email?.[0].toUpperCase()}
