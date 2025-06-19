@@ -1,4 +1,4 @@
-import { auth, googleProvider } from "@/lib/firebase/firebaseConfig";
+import { auth, googleProvider } from "@/lib/firebaseConfig";
 
 import {
   applyActionCode,

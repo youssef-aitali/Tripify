@@ -1,4 +1,4 @@
-import { db } from "@/lib/firebase/firebaseConfig";
+import { db } from "@/lib/firebaseConfig";
 import type { AuthError, User } from "firebase/auth";
 import {
   collection,
@@ -10,7 +10,7 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import type { AuthErrorResponse, AuthUser } from "../authTypes";
+import type { AuthErrorResponse, AuthUser } from "../../authTypes";
 
 export const getFirebaseErrorMessage = (code: string) => {
   switch (code) {

@@ -20,7 +20,7 @@ import {
   getPhotoUploadURL,
   updateUserData,
 } from "@/features/settings/services/settingsService";
-import type { AuthUser } from "@/features/auth/authTypes";
+import type { AuthUser } from "@/features/authTypes";
 import { getUserProfile } from "@/features/auth/utils/authUtils";
 import { IconLoader } from "@tabler/icons-react";
 

@@ -2,12 +2,12 @@ import {
   createUserData,
   getUserProfile,
 } from "@/features/auth/utils/authUtils";
-import { auth } from "@/lib/firebase/firebaseConfig";
+import { auth } from "@/lib/firebaseConfig";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import type { DocumentData } from "firebase/firestore";
-import type { AuthUser } from "@/features/auth/authTypes";
+import type { AuthUser } from "@/features/authTypes";
 
 type AuthProviderProps = {
   children: ReactNode;

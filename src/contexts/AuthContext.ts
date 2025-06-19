@@ -1,6 +1,6 @@
 import { createContext } from "react";
 
-import type { AuthUser } from "@/features/auth/authTypes";
+import type { AuthUser } from "@/features/authTypes";
 import type { User } from "firebase/auth";
 import type { DocumentData } from "firebase/firestore";
 

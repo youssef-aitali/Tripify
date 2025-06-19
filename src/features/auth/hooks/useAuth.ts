@@ -10,7 +10,7 @@ import {
 } from "@/features/auth/services/authService";
 
 import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
-import type { AuthResult } from "@/features/auth/authTypes";
+import type { AuthResult } from "@/features/authTypes";
 import type { User } from "firebase/auth";
 
 export const useAuth = () => {

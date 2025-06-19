@@ -31,7 +31,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import TButton from "@/components/custom/TButton";
-import type { LogInDialogProps } from "@/features/auth/authTypes";
+import type { LogInDialogProps } from "@/features/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ROUTE_PATHS } from "@/routes/routePaths";

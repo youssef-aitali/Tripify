@@ -31,7 +31,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { SignUpDialogProps } from "@/features/auth/authTypes";
+import type { SignUpDialogProps } from "@/features/authTypes";
 import GoogleLogo from "@/assets/icons/google.svg?react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ROUTE_PATHS } from "@/routes/routePaths";

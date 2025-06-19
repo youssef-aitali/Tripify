@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   DropdownMenu,
@@ -16,7 +16,7 @@ import { IconLogout } from "@tabler/icons-react";
 import { IconBell } from "@tabler/icons-react";
 
 import SendResetPasswordDialog from "@/features/auth/components/SendResetPasswordDialog";
-import type { OutletProps } from "@/features/auth/authTypes";
+import type { OutletProps } from "@/features/authTypes";
 import LogInDialog from "@/features/auth/components/LogInDialog";
 import SignUpDialog from "@/features/auth/components/SignUpDialog";
 import { logOut } from "@/features/auth/services/authService";
@@ -40,12 +40,14 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
     navigate(ROUTE_PATHS.PLAN_TRIP);
   };
 
+  console.log("user data photo: ", userData?.photoURL);
+
   return (
     <div className="flex justify-between items-center h-16 border-b-1 border-gray-200 px-[20%]">
       <img className="w-24" src={Tripifylogo} alt="Tripify logo" />
-      {isCurrentUserLoading ? (
+      {currentUser && !userData ? (
         <NavbarItemSkeleton />
-      ) : currentUser ? (
+      ) : currentUser && userData ? (
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

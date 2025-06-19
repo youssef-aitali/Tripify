@@ -1,18 +1,15 @@
-import type { AuthUser } from "@/features/auth/authTypes";
-import { db } from "@/lib/firebase/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
+import { db } from "@/lib/firebaseConfig";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
+import type { AuthUser } from "@/features/authTypes";
+
 export const getPhotoUploadURL = async (photoFile: File) => {
-  // Create a root reference
   const storage = getStorage();
+  const photoFileRef = ref(storage, photoFile.name);
 
-  // Create a reference to 'mountains.jpg'
-  const mountainsRef = ref(storage, photoFile.name);
-
-  // 'file' comes from the Blob or File API
-  await uploadBytes(mountainsRef, photoFile);
-  return await getDownloadURL(mountainsRef);
+  await uploadBytes(photoFileRef, photoFile);
+  return await getDownloadURL(photoFileRef);
 };
 
 export const updateUserData = async (userId: string, newUserData: AuthUser) => {

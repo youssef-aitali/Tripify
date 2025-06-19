@@ -30,7 +30,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import type { SendResetPasswordDialogProps } from "@/features/auth/authTypes";
+import type { SendResetPasswordDialogProps } from "@/features/authTypes";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 const formSchema = z.object({
