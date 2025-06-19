@@ -32,7 +32,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
 
-  const { currentUser, userData, isCurrentUserLoading } = useAuthUser();
+  const { currentUser, userData } = useAuthUser();
   const navigate = useNavigate();
 
   const logOutHandler = async () => {
