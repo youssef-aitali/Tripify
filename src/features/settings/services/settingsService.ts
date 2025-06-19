@@ -3,6 +3,7 @@ import { db } from "@/lib/firebaseConfig";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import type { AuthUser } from "@/features/authTypes";
+import { updateProfile, type User } from "firebase/auth";
 
 export const getPhotoUploadURL = async (photoFile: File) => {
   const storage = getStorage();
@@ -12,6 +13,10 @@ export const getPhotoUploadURL = async (photoFile: File) => {
   return await getDownloadURL(photoFileRef);
 };
 
-export const updateUserData = async (userId: string, newUserData: AuthUser) => {
-  await setDoc(doc(db, "users", userId), { ...newUserData }, { merge: true });
+export const updateUserData = async (user: User, newUserData: AuthUser) => {
+  await updateProfile(user, {
+    displayName: newUserData.fullname,
+    ...newUserData,
+  });
+  await setDoc(doc(db, "users", user.uid), { ...newUserData }, { merge: true });
 };

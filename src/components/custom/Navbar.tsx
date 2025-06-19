@@ -32,7 +32,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSendResetPasswordDialogOpen, setIsSendResetPasswordDialogOpen] =
     useState(false);
 
-  const { currentUser, userData } = useAuthUser();
+  const { currentUser, userData, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
 
   const logOutHandler = async () => {
@@ -40,14 +40,12 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
     navigate(ROUTE_PATHS.PLAN_TRIP);
   };
 
-  console.log("user data photo: ", userData?.photoURL);
-
   return (
     <div className="flex justify-between items-center h-16 border-b-1 border-gray-200 px-[20%]">
       <img className="w-24" src={Tripifylogo} alt="Tripify logo" />
-      {currentUser && !userData ? (
+      {isCurrentUserLoading ? (
         <NavbarItemSkeleton />
-      ) : currentUser && userData ? (
+      ) : currentUser ? (
         <div className="flex items-center gap-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

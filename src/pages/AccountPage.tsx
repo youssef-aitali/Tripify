@@ -101,7 +101,9 @@ const AccountPage = () => {
       }),
     };
 
-    await updateUserData(currentUser!.uid, updatedUserData as AuthUser);
+    await updateUserData(currentUser!, updatedUserData as AuthUser);
+    console.log("photo URL: ", currentUser?.photoURL);
+    console.log("displayName: ", currentUser?.displayName);
 
     setUserData(await getUserProfile(currentUser!.uid));
 
