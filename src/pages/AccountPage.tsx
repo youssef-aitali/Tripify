@@ -1,6 +1,6 @@
 import TButton from "@/components/custom/TButton";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { IconPencil } from "@tabler/icons-react";
+import { IconAlertCircle, IconPencil } from "@tabler/icons-react";
 
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
@@ -18,13 +18,26 @@ import { Input } from "@/components/ui/input";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import {
+  cancelUserDeletionMark,
   getPhotoUploadURL,
+  markUserForDeletion,
   updateUserData,
 } from "@/features/settings/services/settingsService";
 import type { AuthUser } from "@/features/authTypes";
 import { getUserProfile } from "@/features/auth/utils/authUtils";
 import { IconLoader } from "@tabler/icons-react";
 import { IconTrash } from "@tabler/icons-react";
+import {
+  Dialog,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogClose,
+  DialogContent,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const formSchema = z.object({
   fullname: z.string(),
@@ -45,6 +58,7 @@ const AccountPage = () => {
     File | undefined
   >(undefined);
   const [previewPhotoPath, setPreviewPhotoPath] = useState<string | null>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -114,6 +128,20 @@ const AccountPage = () => {
       username,
       email,
     });
+  };
+
+  const handleAccountDeletion = async () => {
+    console.log("Starting account deletion...");
+    const deletionDate = new Date();
+    deletionDate.setDate(deletionDate.getDate() + 10);
+
+    currentUser && (await markUserForDeletion(currentUser.uid, deletionDate));
+  };
+
+  const handleCancelDeletion = async () => {
+    setIsCancelling(true);
+    currentUser && (await cancelUserDeletionMark(currentUser.uid));
+    setIsCancelling(false);
   };
 
   return (
@@ -223,9 +251,50 @@ const AccountPage = () => {
         </form>
       </Form>
       <div className="border-t border-border" />
-      <TButton variant="ghost" className="text-gray-600 w-full text-left">
-        <IconTrash stroke={2} /> Delete account
-      </TButton>
+      {!isCancelling ? (
+        <Dialog>
+          <DialogTrigger asChild>
+            <TButton variant="ghost" className="text-gray-600 w-full text-left">
+              <IconTrash stroke={2} /> Delete account
+            </TButton>
+          </DialogTrigger>
+          <DialogContent className="[&_.absolute]:cursor-pointer">
+            <DialogHeader>
+              <DialogTitle>Delete account</DialogTitle>
+              <DialogDescription>
+                This will permanently delete your account and remove your data
+                from our servers.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <DialogClose asChild>
+                <TButton>Keep my account</TButton>
+              </DialogClose>
+              <DialogClose asChild>
+                <TButton variant="ghost" onClick={handleAccountDeletion}>
+                  Continue with account deletion
+                </TButton>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      ) : (
+        <Alert
+          variant="destructive"
+          className="border-red-200 bg-red-100 text-red-600"
+        >
+          <IconAlertCircle stroke={3} />
+          <AlertDescription className="flex-col items-center justify-between">
+            <p>
+              Account scheduled to be deleted in 1 week. After that, it will be
+              permanently removed and cannot be recovered. You can change your
+              mind any time before{" "}
+              <strong>Friday, June 27, 2025 9:22 PM.</strong>
+            </p>
+            <TButton onClick={handleCancelDeletion}>Cancel deletion</TButton>
+          </AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };

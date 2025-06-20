@@ -20,3 +20,29 @@ export const updateUserData = async (user: User, newUserData: AuthUser) => {
   });
   await setDoc(doc(db, "users", user.uid), { ...newUserData }, { merge: true });
 };
+
+export const markUserForDeletion = async (
+  userId: string,
+  deletionDate: Date
+) => {
+  await setDoc(
+    doc(db, "users", userId),
+    {
+      pendingDeletion: {
+        requestedAt: new Date(),
+        scheduledFor: deletionDate,
+      },
+    },
+    { merge: true }
+  );
+};
+
+export const cancelUserDeletionMark = async (userId: string) => {
+  await setDoc(
+    doc(db, "users", userId),
+    {
+      pendingDeletion: null,
+    },
+    { merge: true }
+  );
+};
