@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -116,7 +117,7 @@ const AccountPage = () => {
   };
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-4">
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
           <div className="grid gap-4 text-sm">
@@ -186,17 +187,23 @@ const AccountPage = () => {
                     <Input
                       type="email"
                       placeholder="your@email.com"
+                      disabled
                       {...field}
                     />
                   </FormControl>
+                  {currentUser?.providerData[0].providerId === "google.com" && (
+                    <FormDescription className="text-xs ml-auto">
+                      Managed by Google
+                    </FormDescription>
+                  )}
                   <FormMessage />
                 </FormItem>
               )}
             />
-            <div className="flex justifiy-center gap-2">
+            <div className="flex justifiy-center gap-2 mt-4 mb-4">
               <TButton
                 type="submit"
-                className="w-1/2 mt-4"
+                className="w-1/2"
                 disabled={(!isDirty && !selectedPreviewPhoto) || isSubmitting}
               >
                 {isSubmitting && <IconLoader className="animate-spin" />}
@@ -205,7 +212,7 @@ const AccountPage = () => {
               {(isDirty || selectedPreviewPhoto) && !isSubmitting && (
                 <TButton
                   variant="ghost"
-                  className="w-1/2 mt-4"
+                  className="w-1/2"
                   onClick={cancelAccountUpdates}
                 >
                   Cancel
@@ -216,10 +223,9 @@ const AccountPage = () => {
         </form>
       </Form>
       <div className="border-t border-border" />
-      <div className="flex">
-        <IconTrash stroke={2} />
-        Delete account
-      </div>
+      <TButton variant="ghost" className="text-gray-600 w-full text-left">
+        <IconTrash stroke={2} /> Delete account
+      </TButton>
     </div>
   );
 };

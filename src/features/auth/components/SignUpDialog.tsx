@@ -32,7 +32,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import type { SignUpDialogProps } from "@/features/authTypes";
-import GoogleLogo from "@/assets/icons/google.svg?react";
+import { IconBrandGoogleFilled } from "@tabler/icons-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ROUTE_PATHS } from "@/routes/routePaths";
 import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimation";
@@ -150,7 +150,7 @@ const SignUpDialog = ({
                       onClick={handleGoogleSignUp}
                       disabled={googleAuthLoading}
                     >
-                      <GoogleLogo className="fill-white" />
+                      <IconBrandGoogleFilled stroke={2} />
                       Sign up with Google
                     </TButton>
                   </div>
