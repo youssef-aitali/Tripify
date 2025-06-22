@@ -38,6 +38,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { format } from "date-fns";
 
 const formSchema = z.object({
   fullname: z.string(),
@@ -58,7 +59,6 @@ const AccountPage = () => {
     File | undefined
   >(undefined);
   const [previewPhotoPath, setPreviewPhotoPath] = useState<string | null>(null);
-  const [isCancelling, setIsCancelling] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -117,8 +117,6 @@ const AccountPage = () => {
     };
 
     await updateUserData(currentUser!, updatedUserData as AuthUser);
-    console.log("photo URL: ", currentUser?.photoURL);
-    console.log("displayName: ", currentUser?.displayName);
 
     setUserData(await getUserProfile(currentUser!.uid));
 
@@ -136,12 +134,12 @@ const AccountPage = () => {
     deletionDate.setDate(deletionDate.getDate() + 10);
 
     currentUser && (await markUserForDeletion(currentUser.uid, deletionDate));
+    setUserData(await getUserProfile(currentUser!.uid));
   };
 
   const handleCancelDeletion = async () => {
-    setIsCancelling(true);
     currentUser && (await cancelUserDeletionMark(currentUser.uid));
-    setIsCancelling(false);
+    setUserData(await getUserProfile(currentUser!.uid));
   };
 
   return (
@@ -251,7 +249,7 @@ const AccountPage = () => {
         </form>
       </Form>
       <div className="border-t border-border" />
-      {!isCancelling ? (
+      {!userData?.pendingDeletion ? (
         <Dialog>
           <DialogTrigger asChild>
             <TButton variant="ghost" className="text-gray-600 w-full text-left">
@@ -286,10 +284,15 @@ const AccountPage = () => {
           <IconAlertCircle stroke={3} />
           <AlertDescription className="flex-col items-center justify-between">
             <p>
-              Account scheduled to be deleted in 1 week. After that, it will be
+              Account scheduled to be deleted in 10 days. After that, it will be
               permanently removed and cannot be recovered. You can change your
               mind any time before{" "}
-              <strong>Friday, June 27, 2025 9:22 PM.</strong>
+              <strong>
+                {format(
+                  userData?.pendingDeletion?.scheduledFor.toDate(),
+                  "EEEE, MMMM d, yyyy h:mm a"
+                )}
+              </strong>
             </p>
             <TButton onClick={handleCancelDeletion}>Cancel deletion</TButton>
           </AlertDescription>

@@ -42,10 +42,16 @@ export type UserPreferences = {
   notifications: boolean;
 };
 
+export type DeletionActionDates = {
+  requestedAt: Date;
+  scheduledFor: Date;
+};
+
 export type AuthUser = {
   fullname: string;
   username: string;
   email: string;
   photoURL: string | null;
   preferences: UserPreferences;
+  pendingDeletion: DeletionActionDates | null;
 };
