@@ -1,6 +1,7 @@
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { IconAlertCircle } from "@tabler/icons-react";
-import TButton from "./TButton";
+
+import TButton from "@/components/custom/TButton";
 
 type ConfirmEmailBannerProps = {
   resendVerificationEmail: () => void;

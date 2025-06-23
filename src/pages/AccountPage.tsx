@@ -1,7 +1,4 @@
-import TButton from "@/components/custom/TButton";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { IconAlertCircle, IconPencil } from "@tabler/icons-react";
-
+import { useEffect, useRef, useState, type ChangeEvent } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -14,19 +11,15 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
-import { useEffect, useRef, useState, type ChangeEvent } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
-  cancelUserDeletionMark,
-  getPhotoUploadURL,
-  markUserForDeletion,
-  updateUserData,
-} from "@/features/settings/services/settingsService";
-import type { AuthUser } from "@/features/authTypes";
+  IconAlertCircle,
+  IconPencil,
+  IconLoader,
+  IconTrash,
+} from "@tabler/icons-react";
+import { Input } from "@/components/ui/input";
 import { getUserProfile } from "@/features/auth/utils/authUtils";
-import { IconLoader } from "@tabler/icons-react";
-import { IconTrash } from "@tabler/icons-react";
 import {
   Dialog,
   DialogDescription,
@@ -37,20 +30,26 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Alert, AlertDescription } from "@/components/ui/alert";
 import { format } from "date-fns";
+
+import {
+  getPhotoUploadURL,
+  toggleUserDeletionMark,
+  updateUserData,
+} from "@/features/settings/services/settingsService";
+import type { AuthUser } from "@/features/authTypes";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import TButton from "@/components/custom/TButton";
+import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
+import LoadingSkeleton from "@/components/custom/LoadingSkeleton";
+import AccountLoadingSkeleton from "@/components/custom/AccountLoadingSkeleton";
 
 const formSchema = z.object({
   fullname: z.string(),
   username: z.string().min(1, {
     message: "Username is required!",
   }),
-  email: z
-    .string()
-    .min(1, {
-      message: "Email is required!",
-    })
-    .email("Invalid email address!"),
+  email: z.string(),
 });
 
 const AccountPage = () => {
@@ -63,9 +62,9 @@ const AccountPage = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullname: userData?.fullname,
-      username: userData?.username,
-      email: userData?.email,
+      fullname: "",
+      username: "",
+      email: "",
     },
   });
 
@@ -91,16 +90,20 @@ const AccountPage = () => {
   };
 
   useEffect(() => {
+    if (userData) {
+      form.reset({
+        fullname: userData.fullname,
+        username: userData.username,
+        email: userData.email,
+      });
+    }
+  }, [userData]);
+
+  useEffect(() => {
     return () => {
       if (previewPhotoPath) URL.revokeObjectURL(previewPhotoPath);
     };
   }, []);
-
-  const cancelAccountUpdates = () => {
-    setSeletectedPreviewPhoto(undefined);
-    setPreviewPhotoPath(null);
-    form.reset();
-  };
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async ({
     fullname,
@@ -118,7 +121,7 @@ const AccountPage = () => {
 
     await updateUserData(currentUser!, updatedUserData as AuthUser);
 
-    setUserData(await getUserProfile(currentUser!.uid));
+    //setUserData(await getUserProfile(currentUser!.uid));
 
     setSeletectedPreviewPhoto(undefined);
     form.reset({
@@ -128,19 +131,34 @@ const AccountPage = () => {
     });
   };
 
+  const cancelAccountUpdates = () => {
+    setSeletectedPreviewPhoto(undefined);
+    setPreviewPhotoPath(null);
+    form.reset();
+  };
+
   const handleAccountDeletion = async () => {
-    console.log("Starting account deletion...");
     const deletionDate = new Date();
     deletionDate.setDate(deletionDate.getDate() + 10);
 
-    currentUser && (await markUserForDeletion(currentUser.uid, deletionDate));
-    setUserData(await getUserProfile(currentUser!.uid));
+    currentUser &&
+      (await toggleUserDeletionMark(currentUser.uid, deletionDate));
+    //currentUser && (await markUserForDeletion(currentUser.uid, deletionDate));
+    //setUserData(await getUserProfile(currentUser!.uid));
   };
 
   const handleCancelDeletion = async () => {
-    currentUser && (await cancelUserDeletionMark(currentUser.uid));
-    setUserData(await getUserProfile(currentUser!.uid));
+    currentUser && (await toggleUserDeletionMark(currentUser.uid, null));
+    //currentUser && (await cancelUserDeletionMark(currentUser.uid));
+    //setUserData(await getUserProfile(currentUser!.uid));
   };
+
+  if (!userData)
+    return (
+      <div className="flex justify-center items-center">
+        <AccountLoadingSkeleton />
+      </div>
+    );
 
   return (
     <div className="flex flex-col gap-4">
@@ -277,12 +295,9 @@ const AccountPage = () => {
           </DialogContent>
         </Dialog>
       ) : (
-        <Alert
-          variant="destructive"
-          className="border-red-200 bg-red-100 text-red-600"
-        >
+        <Alert variant="destructive" className="border-red-200 bg-red-100">
           <IconAlertCircle stroke={3} />
-          <AlertDescription className="flex-col items-center justify-between">
+          <AlertDescription className="flex-col gap-2">
             <p>
               Account scheduled to be deleted in 10 days. After that, it will be
               permanently removed and cannot be recovered. You can change your

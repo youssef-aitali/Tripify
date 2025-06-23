@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 
-import ConfirmEmailBanner from "@/components/custom/ConfirmEmailBanner";
+import ConfirmEmailBanner from "@/features/auth/components/ConfirmEmailBanner";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 

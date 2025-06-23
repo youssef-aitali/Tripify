@@ -1,9 +1,9 @@
-import { doc, setDoc } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
+import { updateProfile, type User } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 import type { AuthUser } from "@/features/authTypes";
-import { updateProfile, type User } from "firebase/auth";
 
 export const getPhotoUploadURL = async (photoFile: File) => {
   const storage = getStorage();
@@ -21,27 +21,19 @@ export const updateUserData = async (user: User, newUserData: AuthUser) => {
   await setDoc(doc(db, "users", user.uid), { ...newUserData }, { merge: true });
 };
 
-export const markUserForDeletion = async (
+export const toggleUserDeletionMark = async (
   userId: string,
-  deletionDate: Date
+  deletionDate?: Date | null
 ) => {
   await setDoc(
     doc(db, "users", userId),
     {
-      pendingDeletion: {
-        requestedAt: new Date(),
-        scheduledFor: deletionDate,
-      },
-    },
-    { merge: true }
-  );
-};
-
-export const cancelUserDeletionMark = async (userId: string) => {
-  await setDoc(
-    doc(db, "users", userId),
-    {
-      pendingDeletion: null,
+      pendingDeletion: deletionDate
+        ? {
+            requestedAt: new Date(),
+            scheduledFor: deletionDate,
+          }
+        : null,
     },
     { merge: true }
   );

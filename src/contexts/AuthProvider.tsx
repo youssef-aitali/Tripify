@@ -6,8 +6,15 @@ import { auth } from "@/lib/firebaseConfig";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState, type ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-import type { DocumentData } from "firebase/firestore";
+import {
+  onSnapshot,
+  type DocumentData,
+  type Unsubscribe,
+} from "firebase/firestore";
 import type { AuthUser } from "@/features/authTypes";
+
+import { doc } from "firebase/firestore";
+import { db } from "@/lib/firebaseConfig";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -21,12 +28,21 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   );
 
   useEffect(() => {
+    let unsubscribeSnapshot: Unsubscribe;
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
           setCurrentUser(user);
-          const userData = await getUserProfile(user.uid);
+          /* const userData = await getUserProfile(user.uid);
           setUserData(userData ?? createUserData(user));
+          */
+          unsubscribeSnapshot = onSnapshot(
+            doc(db, "users", user.uid),
+            (doc) => {
+              setUserData(doc.exists() ? doc.data() : createUserData(user));
+            }
+          );
         } else {
           setCurrentUser(null);
           setUserData(undefined);
@@ -36,7 +52,10 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
         console.error("Error:", error);
       }
     });
-    return unsubscribeAuth;
+    return () => {
+      unsubscribeAuth;
+      unsubscribeSnapshot;
+    };
   }, []);
 
   return (
