@@ -30,10 +30,10 @@
 
 import { onSchedule } from "firebase-functions/scheduler";
 import * as logger from "firebase-functions/logger";
-import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
 import * as nodemailer from "nodemailer";
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
+import { defineSecret } from "firebase-functions/params";
 
 admin.initializeApp();
 
@@ -41,7 +41,7 @@ export const checkScheduledDeletions = onSchedule(
   {
     schedule: "every day 00:00",
     timeZone: "UTC",
-    maxInstances: 1,
+    maxInstances: 2,
   },
   async () => {
     try {
@@ -71,7 +71,8 @@ export const checkScheduledDeletions = onSchedule(
 
           await userDoc.ref.update({
             email: `deleted_${userId}@anonymized.com`,
-            name: `[Deleted User]`,
+            fullname: `[Deleted User]`,
+            username: `[Deleted User]`,
             pendingDeletion: admin.firestore.FieldValue.delete(),
             deletedAt: now,
           });
@@ -89,19 +90,22 @@ export const checkScheduledDeletions = onSchedule(
   }
 );
 
+const gmailEmail = defineSecret("GMAIL_EMAIL");
+const gmailPassword = defineSecret("GMAIL_PASSWORD");
+
 // Create email transporter (configure with your email service)
 const transporter = nodemailer.createTransport({
-  service: "gmail", // or your email provider
+  service: "gmail",
   auth: {
-    user: functions.config().gmail.email,
-    pass: functions.config().gmail.password,
+    user: gmailEmail.value(),
+    pass: gmailPassword.value(),
   },
 });
 
 // Helper function to send emails
 async function sendEmail(to: string, subject: string, text: string) {
   const mailOptions = {
-    from: "your-app@example.com",
+    from: "support@tripify.com",
     to,
     subject,
     text,
@@ -110,31 +114,66 @@ async function sendEmail(to: string, subject: string, text: string) {
   await transporter.sendMail(mailOptions);
 }
 
-export const sendDeletionEmails = onDocumentUpdated(async (change) => {
-  const before = change.before.data();
-  const after = change.after.data();
+export const sendDeletionEmails = onDocumentUpdated(
+  {
+    document: "users/{userId}",
+    region: "us-central1", // Specify your preferred region
+    secrets: [gmailEmail, gmailPassword],
+    maxInstances: 2, // Limit concurrent executions
+  },
+  async (event) => {
+    try {
+      // 1. Get snapshots with proper null checks
+      const beforeSnap = event.data?.before;
+      const afterSnap = event.data?.after;
 
-  // If pendingDeletion was just added
-  if (!before.pendingDeletion && after.pendingDeletion) {
-    await sendEmail(
-      after.email,
-      "Account Deletion Scheduled",
-      `Your account will be deleted on ${after.pendingDeletion.scheduledFor.toDate()}. Click here to cancel.`
-    );
-  }
+      if (!beforeSnap || !afterSnap) {
+        logger.error("Missing document snapshots");
+        return;
+      }
 
-  // If 24 hours left (optional)
-  const now = new Date();
-  const deletionTime = after.pendingDeletion?.scheduledFor?.toDate();
-  if (deletionTime) {
-    const timeLeft = deletionTime.getTime() - now.getTime();
-    if (timeLeft <= 24 * 60 * 60 * 1000) {
-      // 24h left
-      await sendEmail(
-        after.email,
-        "Final Warning: Account Deletion Tomorrow",
-        "Your account will be deleted in 24 hours."
-      );
+      // 2. Get data with type safety
+      const before = beforeSnap.data();
+      const after = afterSnap.data();
+
+      // 3. Validate required fields
+      if (!after?.email) {
+        logger.error("No email found in document");
+        return;
+      }
+
+      // 4. Check if pendingDeletion was just added
+      if (!before?.pendingDeletion && after?.pendingDeletion) {
+        await sendEmail(
+          after.email,
+          "Account Deletion Scheduled",
+          `Your account will be deleted on ${after.pendingDeletion.scheduledFor.toDate()}.`
+        );
+        return;
+      }
+
+      // 5. Check for 24-hour warning
+      if (after.pendingDeletion && !after.pendingDeletion.notificationSent) {
+        const now = new Date();
+        const deletionTime = after.pendingDeletion.scheduledFor.toDate();
+        const timeLeft = deletionTime.getTime() - now.getTime();
+
+        if (timeLeft <= 24 * 60 * 60 * 1000) {
+          await sendEmail(
+            after.email,
+            "Final Warning: Account Deletion Tomorrow",
+            "Your account will be deleted in 24 hours."
+          );
+
+          // Mark notification as sent to prevent duplicates
+          await afterSnap.ref.update({
+            "pendingDeletion.notificationSent": true,
+          });
+        }
+      }
+    } catch (error) {
+      logger.error("Error in sendDeletionEmails:", error);
+      throw error;
     }
   }
-});
+);

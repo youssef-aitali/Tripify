@@ -16,6 +16,7 @@ module.exports = {
   parserOptions: {
     project: ["tsconfig.json", "tsconfig.dev.json"],
     sourceType: "module",
+    ecmaVersion: 2020,
   },
   ignorePatterns: [
     "/lib/**/*", // Ignore built files.
@@ -25,7 +26,8 @@ module.exports = {
   rules: {
     quotes: ["error", "double"],
     "import/no-unresolved": 0,
-    indent: ["error", 2],
+    "@typescript-eslint/explicit-function-return-type": "warn",
+    "@typescript-eslint/no-unused-vars": "error",
   },
   overrides: [
     {
@@ -33,4 +35,13 @@ module.exports = {
       // ... other rules ...
     },
   ],
+  settings: {
+    "import/resolver": {
+      typescript: {}, // Resolve TypeScript paths
+      node: {
+        // Fallback for JS/CommonJS
+        extensions: [".js", ".ts"],
+      },
+    },
+  },
 };
