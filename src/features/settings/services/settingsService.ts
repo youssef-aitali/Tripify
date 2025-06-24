@@ -32,6 +32,7 @@ export const toggleUserDeletionMark = async (
         ? {
             requestedAt: new Date(),
             scheduledFor: deletionDate,
+            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           }
         : null,
     },

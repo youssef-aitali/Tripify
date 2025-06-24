@@ -37,6 +37,7 @@ import { onDocumentUpdated } from "firebase-functions/v2/firestore";
 import { defineSecret } from "firebase-functions/params";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { format } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
 
 initializeApp();
 
@@ -141,7 +142,7 @@ export const sendDeletionEmails = onDocumentUpdated(
       const afterSnap = event.data?.after;
 
       if (!beforeSnap || !afterSnap) {
-        logger.error("Missing document snapshots");
+        logger.log("Missing document snapshots");
         return;
       }
 
@@ -158,13 +159,20 @@ export const sendDeletionEmails = onDocumentUpdated(
       // 4. Check if pendingDeletion was just added
       if (!before?.pendingDeletion && after?.pendingDeletion) {
         const htmlContent = `
+          <p>Hello ${after.fullname ?? after.username},</p>
           <p>Account scheduled to be deleted in 10 days. After that, it will be
               permanently removed and cannot be recovered. You can change your
               mind any time before <strong> ${format(
-                after.pendingDeletion.scheduledFor.toDate(),
+                toZonedTime(
+                  after.pendingDeletion.scheduledFor.toDate(),
+                  after.pendingDeletion.timeZone
+                ),
+
                 "EEEE, MMMM d, yyyy h:mm a"
               )}</strong>. 
           </p>
+          <br/>
+          <p>Your Tripify team</p>
         `;
 
         await sendEmail(
@@ -182,10 +190,18 @@ export const sendDeletionEmails = onDocumentUpdated(
         const timeLeft = deletionTime.getTime() - now.getTime();
 
         if (timeLeft <= 24 * 60 * 60 * 1000) {
+          const htmlContent = `
+          <p>Hello ${after.fullname ?? after.username},</p>
+          <p>Your account will be deleted in <strong>24 hours.</strong>. 
+          </p>
+          <br/>
+          <p>Your Tripify team</p>
+        `;
+
           await sendEmail(
             after.email,
             "Final Warning: Account Deletion Tomorrow",
-            "Your account will be deleted in 24 hours."
+            htmlContent
           );
 
           // Mark notification as sent to prevent duplicates
