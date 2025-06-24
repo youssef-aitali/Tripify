@@ -28,14 +28,17 @@
 //   response.send("Hello from Firebase!");
 // });
 
-import { onSchedule } from "firebase-functions/scheduler";
+import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
 import * as admin from "firebase-admin";
+import { initializeApp } from "firebase-admin/app";
 import * as nodemailer from "nodemailer";
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
 import { defineSecret } from "firebase-functions/params";
+import { setGlobalOptions } from "firebase-functions/v2";
+import { format } from "date-fns";
 
-admin.initializeApp();
+initializeApp();
 
 export const checkScheduledDeletions = onSchedule(
   {
@@ -93,31 +96,41 @@ export const checkScheduledDeletions = onSchedule(
 const gmailEmail = defineSecret("GMAIL_EMAIL");
 const gmailPassword = defineSecret("GMAIL_PASSWORD");
 
-// Create email transporter (configure with your email service)
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: gmailEmail.value(),
-    pass: gmailPassword.value(),
-  },
+setGlobalOptions({
+  secrets: [gmailEmail, gmailPassword], // Register secrets
+  region: "us-central1",
 });
 
 // Helper function to send emails
-async function sendEmail(to: string, subject: string, text: string) {
+async function sendEmail(to: string, subject: string, html: string) {
+  // Create email transporter (configure with your email service)
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: gmailEmail.value(),
+      pass: gmailPassword.value(),
+    },
+  });
+
   const mailOptions = {
-    from: "support@tripify.com",
+    from: '"Tripify Support" <support@tripify.com>',
     to,
     subject,
-    text,
+    html,
   };
 
-  await transporter.sendMail(mailOptions);
+  try {
+    await transporter.sendMail(mailOptions);
+    logger.log(`Email sent to ${to}`);
+  } catch (error) {
+    logger.error("Email sending failed:", error);
+    throw error;
+  }
 }
 
 export const sendDeletionEmails = onDocumentUpdated(
   {
     document: "users/{userId}",
-    region: "us-central1", // Specify your preferred region
     secrets: [gmailEmail, gmailPassword],
     maxInstances: 2, // Limit concurrent executions
   },
@@ -144,10 +157,20 @@ export const sendDeletionEmails = onDocumentUpdated(
 
       // 4. Check if pendingDeletion was just added
       if (!before?.pendingDeletion && after?.pendingDeletion) {
+        const htmlContent = `
+          <p>Account scheduled to be deleted in 10 days. After that, it will be
+              permanently removed and cannot be recovered. You can change your
+              mind any time before <strong> ${format(
+                after.pendingDeletion.scheduledFor.toDate(),
+                "EEEE, MMMM d, yyyy h:mm a"
+              )}</strong>. 
+          </p>
+        `;
+
         await sendEmail(
           after.email,
-          "Account Deletion Scheduled",
-          `Your account will be deleted on ${after.pendingDeletion.scheduledFor.toDate()}.`
+          "Urgent: Account Deletion Scheduled",
+          htmlContent
         );
         return;
       }
