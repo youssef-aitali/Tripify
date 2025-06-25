@@ -38,6 +38,7 @@ import { defineSecret } from "firebase-functions/params";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
+import { firestore } from "firebase-admin";
 
 initializeApp();
 
@@ -49,7 +50,7 @@ export const checkScheduledDeletions = onSchedule(
   },
   async () => {
     try {
-      const now = admin.firestore.Timestamp.now();
+      const now = firestore.Timestamp.now();
       logger.log(`Starting scheduled deletions check at ${now.toDate()}`);
 
       const usersSnapshot = await admin
