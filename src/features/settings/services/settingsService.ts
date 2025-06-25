@@ -39,3 +39,18 @@ export const toggleUserDeletionMark = async (
     { merge: true }
   );
 };
+
+export const updateUserPreferredLanguage = async (
+  userId: string,
+  preferredLanguage: string
+) => {
+  await setDoc(
+    doc(db, "users", userId),
+    {
+      preferences: {
+        language: preferredLanguage,
+      },
+    },
+    { merge: true }
+  );
+};

@@ -15,6 +15,7 @@ import type { AuthUser } from "@/features/authTypes";
 
 import { doc } from "firebase/firestore";
 import { db } from "@/lib/firebaseConfig";
+import i18n from "i18next";
 
 type AuthProviderProps = {
   children: ReactNode;
@@ -41,6 +42,9 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
             doc(db, "users", user.uid),
             (doc) => {
               setUserData(doc.exists() ? doc.data() : createUserData(user));
+              i18n.changeLanguage(
+                doc.exists() ? doc.data().preferences.language : i18n.language
+              );
             }
           );
         } else {

@@ -14,6 +14,7 @@ import { IconSettingsCode } from "@tabler/icons-react";
 import { IconDashboard } from "@tabler/icons-react";
 import { IconLogout } from "@tabler/icons-react";
 import { IconBell } from "@tabler/icons-react";
+import { useTranslation } from "react-i18next";
 
 import SendResetPasswordDialog from "@/features/auth/components/SendResetPasswordDialog";
 import type { OutletProps } from "@/features/authTypes";
@@ -34,6 +35,8 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
 
   const { currentUser, userData, isCurrentUserLoading } = useAuthUser();
   const navigate = useNavigate();
+
+  const { t } = useTranslation("auth");
 
   const logOutHandler = async () => {
     await logOut();
@@ -56,10 +59,10 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-fit" align="end">
               <DropdownMenuLabel className="text-base">
-                Notifications
+                {t("Notifications")}
               </DropdownMenuLabel>
               <DropdownMenuLabel className="text-sm text-center font-normal px-2">
-                You don't have any notifications
+                {t("Empty Notifications")}
               </DropdownMenuLabel>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -83,18 +86,18 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
               <DropdownMenuGroup>
                 <DropdownMenuItem className="cursor-pointer">
                   <IconDashboard />
-                  <Link to={ROUTE_PATHS.DASHBOARD}>Dashboard</Link>
+                  <Link to={ROUTE_PATHS.DASHBOARD}>{t("Dashboard")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="cursor-pointer">
                   <IconSettingsCode />
-                  <Link to={ROUTE_PATHS.ACCOUNT}>Settings</Link>
+                  <Link to={ROUTE_PATHS.ACCOUNT}>{t("Settings")}</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="cursor-pointer"
                   onClick={logOutHandler}
                 >
-                  <IconLogout /> Log out
+                  <IconLogout /> {t("Log out")}
                 </DropdownMenuItem>
               </DropdownMenuGroup>
             </DropdownMenuContent>
@@ -103,9 +106,11 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
       ) : (
         <div className="flex gap-4">
           <TButton variant="ghost" onClick={() => setIsLogInDialogOpen(true)}>
-            Login
+            {t("Log in")}
           </TButton>
-          <TButton onClick={() => setIsSignUpDialogOpen(true)}>Sign up</TButton>
+          <TButton onClick={() => setIsSignUpDialogOpen(true)}>
+            {t("Sign up")}
+          </TButton>
           <LogInDialog
             isLogInDialogOpen={isLogInDialogOpen}
             onSignUpDialogOpenChange={setIsSignUpDialogOpen}

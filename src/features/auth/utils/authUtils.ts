@@ -56,7 +56,7 @@ export const createUserData = (user: User) => {
     email: user.email,
     photoURL: user.photoURL,
     preferences: {
-      language: "English",
+      //language: "en",
       appearance: "Light",
       notifications: true,
     },
