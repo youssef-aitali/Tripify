@@ -30,7 +30,7 @@
 
 import { onSchedule } from "firebase-functions/v2/scheduler";
 import * as logger from "firebase-functions/logger";
-import * as admin from "firebase-admin";
+import admin from "firebase-admin";
 import { initializeApp } from "firebase-admin/app";
 import * as nodemailer from "nodemailer";
 import { onDocumentUpdated } from "firebase-functions/v2/firestore";
@@ -38,10 +38,35 @@ import { defineSecret } from "firebase-functions/params";
 import { setGlobalOptions } from "firebase-functions/v2";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
-import { firestore } from "firebase-admin";
+import { Timestamp } from "firebase-admin/firestore";
+//import { beforeUserCreated } from "firebase-functions/v2/identity";
+//import { getFirestore } from "firebase-admin/firestore";
 
 initializeApp();
+/* const db = getFirestore();
 
+export const validateGoogleSignIn = beforeUserCreated(async (event) => {
+  if (!event.data) return;
+
+  const { uid, email, providerData } = event.data;
+
+  if (!email) return;
+
+  // Check if signing up via Google provider
+  const isGoogleSignIn = providerData.some(
+    (provider) => provider.providerId !== "google.com"
+  );
+
+  if (isGoogleSignIn) {
+    const userDoc = await db.collection("users").doc(uid).get();
+
+    if (!userDoc.exists) {
+      logger.log(`❌ Blocked Google sign-in for non-registered user: ${email}`);
+      throw new Error("auth/invalid-credential");
+    }
+  }
+});
+ */
 export const checkScheduledDeletions = onSchedule(
   {
     schedule: "every day 00:00",
@@ -50,7 +75,7 @@ export const checkScheduledDeletions = onSchedule(
   },
   async () => {
     try {
-      const now = firestore.Timestamp.now();
+      const now = Timestamp.now();
       logger.log(`Starting scheduled deletions check at ${now.toDate()}`);
 
       const usersSnapshot = await admin
@@ -66,7 +91,6 @@ export const checkScheduledDeletions = onSchedule(
 
       const deletionPromises = usersSnapshot.docs.map(async (userDoc) => {
         const userId = userDoc.id;
-        //const userData = userDoc.data();
 
         try {
           logger.log(`Processing deletion for user: ${userId}`);
@@ -78,6 +102,7 @@ export const checkScheduledDeletions = onSchedule(
             email: `deleted_${userId}@anonymized.com`,
             fullname: `[Deleted User]`,
             username: `[Deleted User]`,
+            photoURL: `[Deleted User]`,
             pendingDeletion: admin.firestore.FieldValue.delete(),
             deletedAt: now,
           });
