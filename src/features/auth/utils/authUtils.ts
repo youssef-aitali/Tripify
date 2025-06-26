@@ -21,7 +21,7 @@ export const getFirebaseErrorMessage = (code: string) => {
     case "auth/invalid-email":
       return "Please enter a valid email!";
     case "auth/invalid-credential":
-      return "Incorrect email/password!";
+      return "Invalid login details. Check your credentials and try again!";
     case "auth/requires-recent-login":
       return "Please sign in again before changing your password!";
     case "auth/invalid-action-code":
