@@ -14,9 +14,11 @@ import {
 
 import {
   handleAuthErrors,
+  isUserDocAlreadyExists,
   isUserEmailAlreadyUsed,
   registerNewUser,
 } from "@/features/auth/utils/authUtils";
+import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimation";
 
 export const signUpWithEmailAndPassword = async (
   email: string,
@@ -66,37 +68,40 @@ export const loginWithEmailAndPassword = async (
   }
 };
 
-export const signUpWithGoogle = async () => {
-  try {
-    const userCredential = await signInWithPopup(auth, googleProvider);
-    const user = userCredential.user;
-
-    const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
-
-    if (isEmailUsed) {
-      throw {
-        code: "auth/email-already-in-use",
-      };
-    }
-
-    await registerNewUser(user);
-
-    return { user };
-  } catch (error) {
-    return handleAuthErrors(error);
-  }
-};
-
 export const signInWithGoogle = async () => {
   try {
     const userCredential = await signInWithPopup(auth, googleProvider);
     const user = userCredential.user;
 
+    /* const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
+
+    if (isEmailUsed) {
+      throw {
+        code: "auth/email-already-in-use",
+      };
+    } */
+
+    if (!(await isUserDocAlreadyExists(user.uid))) {
+      await registerNewUser(user);
+      playConfettiAnimation();
+    }
+
     return { user };
   } catch (error) {
     return handleAuthErrors(error);
   }
 };
+
+/* export const signInWithGoogle = async () => {
+  try {
+    const userCredential = await signInWithPopup(auth, googleProvider);
+    const user = userCredential.user;
+
+    return { user };
+  } catch (error) {
+    return handleAuthErrors(error);
+  }
+}; */
 
 export const sendResetPasswordEmail = async (email: string) => {
   try {

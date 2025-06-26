@@ -49,6 +49,11 @@ export const isUserEmailAlreadyUsed = async (email: string) => {
   return !querySnapshot.empty;
 };
 
+export const isUserDocAlreadyExists = async (userId: string) => {
+  const userDoc = await getDoc(doc(db, "users", userId));
+  return userDoc.exists();
+};
+
 export const createUserData = (user: User) => {
   return {
     fullname: user.displayName || "",
@@ -60,6 +65,7 @@ export const createUserData = (user: User) => {
       appearance: "Light",
       notifications: true,
     },
+    createdAt: new Date(),
   };
 };
 
