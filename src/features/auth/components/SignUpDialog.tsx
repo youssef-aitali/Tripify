@@ -64,7 +64,7 @@ const SignUpDialog = ({
 }: SignUpDialogProps) => {
   const {
     emailSignUp,
-    googleSignUp,
+    googleSignIn,
     authLoading: { emailAuthLoading, googleAuthLoading },
   } = useAuth();
 
@@ -81,10 +81,10 @@ const SignUpDialog = ({
 
   const handleGoogleSignUp = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const result = await googleSignUp();
+    const result = await googleSignIn();
     if (result.success) {
       onSignUpDialogOpenChange(false);
-      playConfettiAnimation();
+      //playConfettiAnimation();
       navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
