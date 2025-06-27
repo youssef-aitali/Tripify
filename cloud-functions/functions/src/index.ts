@@ -40,20 +40,9 @@ import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { Timestamp } from "firebase-admin/firestore";
 import { beforeUserSignedIn } from "firebase-functions/v2/identity";
-//import { BeforeSignInResponse } from "firebase-functions/lib/common/providers/identity";
-//import { getFirestore } from "firebase-admin/firestore";
 import { HttpsError } from "firebase-functions/v2/https";
 
 initializeApp();
-
-/* class AuthError extends Error {
-  code: string;
-
-  constructor(message: string, code: string) {
-    super(message);
-    this.code = code;
-  }
-} */
 
 export const beforesignin = beforeUserSignedIn(async (event) => {
   const user = event.data;
@@ -62,7 +51,6 @@ export const beforesignin = beforeUserSignedIn(async (event) => {
   if (user && user.email && event.eventType.includes("google.com")) {
     try {
       const existingUser = await admin.auth().getUserByEmail(user.email);
-      console.log("Existing user: ", existingUser);
 
       if (existingUser && !existingUser.emailVerified) {
         logger.info(
@@ -71,11 +59,9 @@ export const beforesignin = beforeUserSignedIn(async (event) => {
         );
 
         const httperror = new HttpsError(
-          "failed-precondition", // or "permission-denied", etc.
+          "failed-precondition",
           "auth/existing-unverified-email"
         );
-
-        httperror.code;
 
         throw httperror;
       }
@@ -86,38 +72,13 @@ export const beforesignin = beforeUserSignedIn(async (event) => {
         "message" in error &&
         error.message === "auth/existing-unverified-email"
       ) {
-        // No existing user, allow sign-in
+        // Rethrow other admin.auth errors to fail sign-in
         throw error;
       }
-      // Rethrow other admin.auth errors to fail sign-in
+      // No existing user, allow sign-in
       return;
     }
   }
-
-  /* if (user.email && event.eventType.includes(":google.com")) {
-    let existingUser;
-
-    try {
-      existingUser = await admin.auth().getUserByEmail(user.email);
-    } catch (error) {
-      logger.error("Error fetching user by email:", error);
-    }
-
-    if (existingUser && !existingUser.emailVerified) {
-      logger.info(
-        `User with email ${user.email} has an existing unverified account: `,
-        existingUser
-      );
-
-      // check if email is unverified
-      throw new HttpsError(
-        "failed-precondition",
-        "Unverified email in existing account"
-      );
-    }
-
-    // otherwise, allow the sign in
-  } */
 });
 
 export const checkScheduledDeletions = onSchedule(

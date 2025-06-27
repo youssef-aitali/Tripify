@@ -34,6 +34,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (user) => {
       try {
         if (user) {
+          console.log(user.providerId);
           setCurrentUser(user);
           /* const userData = await getUserProfile(user.uid);
           setUserData(userData ?? createUserData(user));
