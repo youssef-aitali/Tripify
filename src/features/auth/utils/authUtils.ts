@@ -1,5 +1,9 @@
-import { db } from "@/lib/firebaseConfig";
-import type { AuthError, User } from "firebase/auth";
+import { auth, db } from "@/lib/firebaseConfig";
+import {
+  fetchSignInMethodsForEmail,
+  type AuthError,
+  type User,
+} from "firebase/auth";
 import {
   collection,
   doc,
@@ -10,12 +14,14 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import type { AuthErrorResponse, AuthUser } from "../../authTypes";
+import type { AuthErrorResponse } from "@/features/authTypes";
 
 export const getFirebaseErrorMessage = (code: string) => {
   switch (code) {
     case "auth/email-already-in-use":
       return "This email is already registered!";
+    case "auth/existing-unverified-email":
+      return `Verify the existing email to add Google Sign-In!`;
     case "auth/weak-password":
       return "Password should be at least 6 characters!";
     case "auth/invalid-email":
@@ -70,14 +76,41 @@ export const createUserData = (user: User) => {
 };
 
 export const registerNewUser = async (user: User) => {
-  await setDoc(doc(db, "users", user.uid), createUserData(user));
+  await setDoc(doc(db, "users", user.uid), createUserData(user), {
+    merge: true,
+  });
 };
 
 export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
-  if (typeof error === "object" && error !== null && "code" in error) {
+  if (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    "message" in error
+  ) {
     const firebaseError = error as AuthError | FirestoreError;
-    return { ...firebaseError };
+    const message = error.message as string;
+    console.log(message.includes("auth/existing-unverified-email"));
+    return message.includes("auth/existing-unverified-email")
+      ? { ...firebaseError, code: "auth/existing-unverified-email" }
+      : { ...firebaseError };
   }
+
+  /*  if (
+    typeof error === "object" &&
+    error !== null &&
+    "message" in error &&
+    "code" in error &&
+    error.message === "auth/existing-unverified-email"
+  ) {
+    console.log("here");
+
+    return {
+      code: error.message,
+    };
+
+    // handle other known custom errors here similarly if needed
+  } */
 
   return {
     code: "auth/unknown-error",

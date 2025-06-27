@@ -46,6 +46,7 @@ export const signUpWithEmailAndPassword = async (
 
     return { user };
   } catch (error) {
+    console.log(error);
     return handleAuthErrors(error);
   }
 };
@@ -64,6 +65,7 @@ export const loginWithEmailAndPassword = async (
 
     return { user };
   } catch (error) {
+    console.log(error);
     return handleAuthErrors(error);
   }
 };
@@ -79,12 +81,9 @@ export const signInWithGoogle = async () => {
       throw {
         code: "auth/email-already-in-use",
       };
-    } */
-
-    if (!(await isUserDocAlreadyExists(user.uid))) {
-      await registerNewUser(user);
-      playConfettiAnimation();
     }
+ */
+    await registerNewUser(user);
 
     return { user };
   } catch (error) {

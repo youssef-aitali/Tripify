@@ -84,7 +84,7 @@ const SignUpDialog = ({
     const result = await googleSignIn();
     if (result.success) {
       onSignUpDialogOpenChange(false);
-      //playConfettiAnimation();
+      playConfettiAnimation();
       navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
