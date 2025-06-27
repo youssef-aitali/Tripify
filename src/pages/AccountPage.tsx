@@ -160,6 +160,8 @@ const AccountPage = () => {
       </div>
     );
 
+  console.log(currentUser?.providerData[0]);
+
   return (
     <div className="flex flex-col gap-4">
       <Form {...form}>

@@ -41,12 +41,10 @@ export const signUpWithEmailAndPassword = async (
     }
 
     await registerNewUser(user);
-
     await sendVerificationEmail();
 
     return { user };
   } catch (error) {
-    console.log(error);
     return handleAuthErrors(error);
   }
 };
