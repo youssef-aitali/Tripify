@@ -11,8 +11,6 @@ import frSettings from "@/locales/fr/settings.json";
 import { auth, db } from "@/lib/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 
-console.log("i18n executed!");
-
 const firestoreLanguageDetector: LanguageDetectorAsyncModule = {
   type: "languageDetector",
   async: true,
