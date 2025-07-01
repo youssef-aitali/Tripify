@@ -19,9 +19,11 @@ import type { AuthErrorResponse } from "@/features/authTypes";
 export const getFirebaseErrorMessage = (code: string) => {
   switch (code) {
     case "auth/email-already-in-use":
-      return "This email is already registered!";
+      return "An account already exists with this email. Did you mean to sign in?";
     case "auth/existing-unverified-email":
       return `Verify the existing email to add Google Sign-In!`;
+    case "auth/email-used-with-google":
+      return `This email is already signed up with Google. Please sign in, or use a different email!`;
     case "auth/weak-password":
       return "Password should be at least 6 characters!";
     case "auth/invalid-email":
@@ -81,18 +83,27 @@ export const registerNewUser = async (user: User) => {
   });
 };
 
-export const handleAuthErrors = (error: unknown): AuthErrorResponse => {
+export const handleAuthErrors = ({
+  error,
+  existingEmailMethod,
+}: {
+  error: unknown;
+  existingEmailMethod?: string;
+}): AuthErrorResponse => {
   if (
+    error instanceof Error &&
     typeof error === "object" &&
     error !== null &&
     "code" in error &&
     "message" in error
   ) {
     const firebaseError = error as AuthError | FirestoreError;
-    const message = error.message as string;
-    console.log(message.includes("auth/existing-unverified-email"));
-    return message.includes("auth/existing-unverified-email")
+    //const message = error.message as string;
+    //console.log(message.includes("auth/existing-unverified-email"));
+    return error.message.includes("auth/existing-unverified-email")
       ? { ...firebaseError, code: "auth/existing-unverified-email" }
+      : existingEmailMethod === "google.com"
+      ? { ...firebaseError, code: "auth/email-used-with-google" }
       : { ...firebaseError };
   }
 

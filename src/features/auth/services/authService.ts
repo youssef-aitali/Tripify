@@ -4,6 +4,7 @@ import {
   applyActionCode,
   confirmPasswordReset,
   createUserWithEmailAndPassword,
+  fetchSignInMethodsForEmail,
   sendEmailVerification,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
@@ -19,6 +20,7 @@ import {
   registerNewUser,
 } from "@/features/auth/utils/authUtils";
 import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimation";
+import { toast } from "sonner";
 
 export const signUpWithEmailAndPassword = async (
   email: string,
@@ -35,9 +37,9 @@ export const signUpWithEmailAndPassword = async (
     const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
 
     if (isEmailUsed) {
-      throw {
+      /*   throw {
         code: "auth/email-already-in-use",
-      };
+      }; */
     }
 
     await registerNewUser(user);
@@ -45,7 +47,22 @@ export const signUpWithEmailAndPassword = async (
 
     return { user };
   } catch (error) {
-    return handleAuthErrors(error);
+    if (
+      error instanceof Error &&
+      "code" in error &&
+      error.code === "auth/email-already-in-use"
+    ) {
+      const methods = await fetchSignInMethodsForEmail(auth, email);
+      if (methods.includes("google.com")) {
+        console.log("Google account exists");
+        /* toast(
+          "An account with this email already exists using Google Sign-In. Please continue with Google to sign up!"
+        ); */
+        return handleAuthErrors({ error, existingEmailMethod: methods[0] });
+      } else {
+        return handleAuthErrors({ error });
+      }
+    }
   }
 };
 
@@ -64,7 +81,7 @@ export const loginWithEmailAndPassword = async (
     return { user };
   } catch (error) {
     console.log(error);
-    return handleAuthErrors(error);
+    return handleAuthErrors({ error });
   }
 };
 
@@ -80,12 +97,13 @@ export const signInWithGoogle = async () => {
         code: "auth/email-already-in-use",
       };
     }
- */
+    */
+
     await registerNewUser(user);
 
     return { user };
   } catch (error) {
-    return handleAuthErrors(error);
+    return handleAuthErrors({ error });
   }
 };
 
@@ -104,7 +122,7 @@ export const sendResetPasswordEmail = async (email: string) => {
   try {
     await sendPasswordResetEmail(auth, email);
   } catch (error) {
-    return handleAuthErrors(error);
+    return handleAuthErrors({ error });
   }
 };
 
@@ -124,7 +142,7 @@ export const setNewPassword = async (
   try {
     await confirmPasswordReset(auth, actionCode, newPassword);
   } catch (error) {
-    return handleAuthErrors(error);
+    return handleAuthErrors({ error });
   }
 };
 
@@ -132,7 +150,7 @@ export const sendVerificationEmail = async () => {
   try {
     await sendEmailVerification(auth.currentUser!);
   } catch (error) {
-    return handleAuthErrors(error);
+    return handleAuthErrors({ error });
   }
 };
 
@@ -141,7 +159,7 @@ export const verifyEmail = async (actionCode: string) => {
     await applyActionCode(auth, actionCode);
     await auth.currentUser?.reload();
   } catch (error) {
-    return handleAuthErrors(error);
+    return handleAuthErrors({ error });
   }
 };
 

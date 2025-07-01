@@ -23,7 +23,6 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -35,6 +34,7 @@ import type { LogInDialogProps } from "@/features/authTypes";
 import { IconBrandGoogleFilled } from "@tabler/icons-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ROUTE_PATHS } from "@/routes/routePaths";
+import TFormMessage from "@/components/custom/TFormMessage";
 
 const formSchema = z.object({
   email: z
@@ -141,25 +141,23 @@ const LogInDialog = ({
             <CardDescription>Log in with your Google account</CardDescription>
           </CardHeader>
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
-                <div className="grid gap-4">
-                  <div className="flex flex-col gap-2">
-                    <TButton
-                      className="w-full"
-                      onClick={handleGoogleSignIn}
-                      disabled={googleAuthLoading}
-                    >
-                      <IconBrandGoogleFilled stroke={2} />
-                      Log In with Google
-                    </TButton>
-                  </div>
-                  <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                    <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                      Or continue with
-                    </span>
-                  </div>
-                  <div className="grid gap-4 text-sm">
+            <div className="flex flex-col gap-4">
+              <TButton
+                className="w-full"
+                onClick={handleGoogleSignIn}
+                disabled={googleAuthLoading}
+              >
+                <IconBrandGoogleFilled stroke={2} />
+                Log In with Google
+              </TButton>
+              <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                  Or continue with
+                </span>
+              </div>
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} noValidate>
+                  <div className="flex flex-col gap-4 text-sm">
                     <FormField
                       control={form.control}
                       name="email"
@@ -173,7 +171,7 @@ const LogInDialog = ({
                               {...field}
                             />
                           </FormControl>
-                          <FormMessage />
+                          <TFormMessage />
                         </FormItem>
                       )}
                     />
@@ -195,11 +193,10 @@ const LogInDialog = ({
                           <FormControl>
                             <Input type="password" {...field} />
                           </FormControl>
-                          <FormMessage />
+                          <TFormMessage />
                         </FormItem>
                       )}
                     />
-
                     <TButton
                       type="submit"
                       className="w-full mt-2"
@@ -208,20 +205,20 @@ const LogInDialog = ({
                       Log In
                     </TButton>
                   </div>
-                  <div className="text-center text-sm">
-                    Don't have an account?{" "}
-                    <TButton
-                      variant="link"
-                      className="font-semibold"
-                      onClick={switchToSignUpDialogHandler}
-                      disabled={emailAuthLoading || googleAuthLoading}
-                    >
-                      Sign Up
-                    </TButton>
-                  </div>
-                </div>
-              </form>
-            </Form>
+                </form>
+              </Form>
+              <div className="text-center text-sm">
+                Don't have an account?{" "}
+                <TButton
+                  variant="link"
+                  className="font-semibold"
+                  onClick={switchToSignUpDialogHandler}
+                  disabled={emailAuthLoading || googleAuthLoading}
+                >
+                  Sign Up
+                </TButton>
+              </div>
+            </div>
           </CardContent>
         </Card>
       </DialogContent>

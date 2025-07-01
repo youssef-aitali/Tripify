@@ -6,7 +6,6 @@ import {
   setNewPassword,
   signInWithGoogle,
   signUpWithEmailAndPassword,
-  //signUpWithGoogle,
 } from "@/features/auth/services/authService";
 
 import { getFirebaseErrorMessage } from "@/features/auth/utils/authUtils";
@@ -58,8 +57,6 @@ export const useAuth = () => {
       "emailAuth"
     );
 
-  //const googleSignUp = () => handleAuthFlow(signUpWithGoogle, "googleAuth");
-
   const googleSignIn = () => handleAuthFlow(signInWithGoogle, "googleAuth");
 
   const sendPasswordResetEmail = (email: string) =>
@@ -79,7 +76,6 @@ export const useAuth = () => {
 
   return {
     emailSignUp,
-    //googleSignUp,
     emailLogIn,
     googleSignIn,
     sendPasswordResetEmail,
