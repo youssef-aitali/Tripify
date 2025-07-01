@@ -18,17 +18,16 @@ import type { AuthErrorResponse } from "@/features/authTypes";
 
 export const getFirebaseErrorMessage = (code: string) => {
   switch (code) {
-    case "auth/email-already-in-use":
-      return "An account already exists with this email. Did you mean to sign in?";
     case "auth/existing-unverified-email":
       return `Verify the existing email to add Google Sign-In!`;
-    case "auth/email-used-with-google":
+    case "auth/email-already-in-use-with-password":
+      return "An account already exists with this email. Did you mean to sign in?";
+    case "auth/email-already-in-use-with-google.com":
       return `This email is already signed up with Google. Please sign in, or use a different email!`;
-    case "auth/weak-password":
-      return "Password should be at least 6 characters!";
     case "auth/invalid-email":
       return "Please enter a valid email!";
     case "auth/invalid-credential":
+    case "auth/wrong-password":
       return "Invalid login details. Check your credentials and try again!";
     case "auth/requires-recent-login":
       return "Please sign in again before changing your password!";
@@ -83,7 +82,22 @@ export const registerNewUser = async (user: User) => {
   });
 };
 
-export const handleAuthErrors = ({
+export const handleAuthErrors = (
+  error: unknown,
+  existingMethods?: string[]
+) => {
+  const firebaseError = error as AuthError | FirestoreError;
+  if (existingMethods?.[0]) {
+    console.log(existingMethods[0]);
+    return {
+      ...firebaseError,
+      code: `auth/email-already-in-use-with-${existingMethods[0]}`,
+    };
+  }
+  return firebaseError;
+};
+
+/* export const handleAuthErrors = ({
   error,
   existingEmailMethod,
 }: {
@@ -105,28 +119,12 @@ export const handleAuthErrors = ({
       : existingEmailMethod === "google.com"
       ? { ...firebaseError, code: "auth/email-used-with-google" }
       : { ...firebaseError };
-  }
-
-  /*  if (
-    typeof error === "object" &&
-    error !== null &&
-    "message" in error &&
-    "code" in error &&
-    error.message === "auth/existing-unverified-email"
-  ) {
-    console.log("here");
-
-    return {
-      code: error.message,
-    };
-
-    // handle other known custom errors here similarly if needed
-  } */
+  } 
 
   return {
     code: "auth/unknown-error",
   };
-};
+};*/
 
 export const getUserProfile = async (userId: string) => {
   const userDocRef = doc(db, "users", userId);
