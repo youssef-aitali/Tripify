@@ -39,32 +39,43 @@ import { setGlobalOptions } from "firebase-functions/v2";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { Timestamp } from "firebase-admin/firestore";
-import { beforeUserCreated } from "firebase-functions/v2/identity";
+import { beforeUserSignedIn } from "firebase-functions/v2/identity";
 import { HttpsError } from "firebase-functions/v2/https";
 
 initializeApp();
 
-export const beforeUserCreation = beforeUserCreated(async (event) => {
+export const beforeUserSignIn = beforeUserSignedIn(async (event) => {
   const user = event.data;
+
+  logger.info("user: ", user);
+  logger.info("user.email: ", user?.email);
   logger.info(
-    Boolean(user && user.email && event.eventType.includes("google.com"))
+    "is sign up method Google: ",
+    event.eventType.includes("google.com")
   );
-  if (user && user.email && event.eventType.includes("google.com")) {
+  if (user?.email && event.eventType.includes("google.com")) {
     try {
       const existingUser = await admin.auth().getUserByEmail(user.email);
-      logger.log("EXISTING USER =====> ", existingUser);
-      if (!existingUser?.emailVerified) {
-        logger.info(
-          `User with email ${user.email} has an existing unverified account: `,
-          existingUser
-        );
+      const providers = existingUser.providerData.map(
+        (provider) => provider.providerId
+      );
 
-        const httperror = new HttpsError(
-          "failed-precondition",
-          "auth/existing-unverified-email"
-        );
+      if (providers.length === 1 && providers.includes("password")) {
+        if (!existingUser?.emailVerified) {
+          logger.info(
+            `User with email ${user.email} has an existing unverified account: `,
+            existingUser
+          );
 
-        throw httperror;
+          const httpError = new HttpsError(
+            "failed-precondition",
+            "auth/existing-unverified-email"
+          );
+
+          throw httpError;
+        } else {
+          logger.info("Allow sign in and Inform user about accounts linking");
+        }
       }
     } catch (error) {
       if (
