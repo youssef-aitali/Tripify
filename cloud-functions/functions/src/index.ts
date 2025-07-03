@@ -39,20 +39,21 @@ import { setGlobalOptions } from "firebase-functions/v2";
 import { format } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 import { Timestamp } from "firebase-admin/firestore";
-import { beforeUserSignedIn } from "firebase-functions/v2/identity";
+import { beforeUserCreated } from "firebase-functions/v2/identity";
 import { HttpsError } from "firebase-functions/v2/https";
 
 initializeApp();
 
-export const beforesignin = beforeUserSignedIn(async (event) => {
+export const beforeUserCreation = beforeUserCreated(async (event) => {
   const user = event.data;
-  logger.log(user);
-
+  logger.info(
+    Boolean(user && user.email && event.eventType.includes("google.com"))
+  );
   if (user && user.email && event.eventType.includes("google.com")) {
     try {
       const existingUser = await admin.auth().getUserByEmail(user.email);
-
-      if (existingUser && !existingUser.emailVerified) {
+      logger.log("EXISTING USER =====> ", existingUser);
+      if (!existingUser?.emailVerified) {
         logger.info(
           `User with email ${user.email} has an existing unverified account: `,
           existingUser
