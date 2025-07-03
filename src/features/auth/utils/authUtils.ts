@@ -88,7 +88,6 @@ export const handleAuthErrors = (
 ) => {
   const firebaseError = error as AuthError | FirestoreError;
   if (existingMethods?.[0]) {
-    console.log(existingMethods[0]);
     return {
       ...firebaseError,
       code: `auth/email-already-in-use-with-${existingMethods[0]}`,

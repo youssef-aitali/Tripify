@@ -77,6 +77,7 @@ export const beforeUserCreation = beforeUserCreated(async (event) => {
         throw error;
       }
       // No existing user, allow sign-in
+      logger.info("No existing user, allow sign-in");
       return;
     }
   }

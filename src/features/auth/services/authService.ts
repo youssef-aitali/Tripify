@@ -33,9 +33,9 @@ export const signUpWithEmailAndPassword = async (
     );
     const user = userCredential.user;
 
-    const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
+    /*const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
 
-    /*  if (isEmailUsed) {
+      if (isEmailUsed) {
          throw {
         code: "auth/email-already-in-use",
       };
