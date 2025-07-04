@@ -47,12 +47,6 @@ initializeApp();
 export const beforeUserSignIn = beforeUserSignedIn(async (event) => {
   const user = event.data;
 
-  logger.info("user: ", user);
-  logger.info("user.email: ", user?.email);
-  logger.info(
-    "is sign up method Google: ",
-    event.eventType.includes("google.com")
-  );
   if (user?.email && event.eventType.includes("google.com")) {
     try {
       const existingUser = await admin.auth().getUserByEmail(user.email);
@@ -74,7 +68,22 @@ export const beforeUserSignIn = beforeUserSignedIn(async (event) => {
 
           throw httpError;
         } else {
-          logger.info("Allow sign in and Inform user about accounts linking");
+          logger.info(
+            "Allow sign in and send message to fronetnd to inform user about accounts linking"
+          );
+
+          await admin
+            .firestore()
+            .collection(`users/${user.uid}/notifications`)
+            .add({
+              type: "ACCOUNT_LINKED",
+              provider: "google.com",
+              email: user?.email,
+              timestamp: admin.firestore.FieldValue.serverTimestamp(),
+              read: false,
+              message:
+                "Your email account has been successfully linked 🎉 Welcome back.",
+            });
         }
       }
     } catch (error) {
@@ -82,11 +91,12 @@ export const beforeUserSignIn = beforeUserSignedIn(async (event) => {
         typeof error === "object" &&
         error !== null &&
         "message" in error &&
-        error.message === "auth/existing-unverified-email"
+        error?.message === "auth/existing-unverified-email"
       ) {
         // Rethrow other admin.auth errors to fail sign-in
         throw error;
       }
+
       // No existing user, allow sign-in
       logger.info("No existing user, allow sign-in");
       return;
