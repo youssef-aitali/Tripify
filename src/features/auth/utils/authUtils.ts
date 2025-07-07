@@ -1,9 +1,5 @@
-import { auth, db } from "@/lib/firebaseConfig";
-import {
-  fetchSignInMethodsForEmail,
-  type AuthError,
-  type User,
-} from "firebase/auth";
+import { db } from "@/lib/firebaseConfig";
+import { type AuthError, type User } from "firebase/auth";
 import {
   collection,
   doc,
@@ -14,7 +10,6 @@ import {
   setDoc,
   where,
 } from "firebase/firestore";
-import type { AuthErrorResponse } from "@/features/authTypes";
 
 export const getFirebaseErrorMessage = (code: string) => {
   switch (code) {
@@ -87,43 +82,21 @@ export const handleAuthErrors = (
   existingMethods?: string[]
 ) => {
   const firebaseError = error as AuthError | FirestoreError;
+
   if (existingMethods?.[0]) {
     return {
       ...firebaseError,
       code: `auth/email-already-in-use-with-${existingMethods[0]}`,
     };
+  } else if (firebaseError.message.includes("auth/existing-unverified-email")) {
+    return {
+      ...firebaseError,
+      code: "auth/existing-unverified-email",
+    };
+  } else {
+    return firebaseError;
   }
-  return firebaseError;
 };
-
-/* export const handleAuthErrors = ({
-  error,
-  existingEmailMethod,
-}: {
-  error: unknown;
-  existingEmailMethod?: string;
-}): AuthErrorResponse => {
-  if (
-    error instanceof Error &&
-    typeof error === "object" &&
-    error !== null &&
-    "code" in error &&
-    "message" in error
-  ) {
-    const firebaseError = error as AuthError | FirestoreError;
-    //const message = error.message as string;
-    //console.log(message.includes("auth/existing-unverified-email"));
-    return error.message.includes("auth/existing-unverified-email")
-      ? { ...firebaseError, code: "auth/existing-unverified-email" }
-      : existingEmailMethod === "google.com"
-      ? { ...firebaseError, code: "auth/email-used-with-google" }
-      : { ...firebaseError };
-  } 
-
-  return {
-    code: "auth/unknown-error",
-  };
-};*/
 
 export const getUserProfile = async (userId: string) => {
   const userDocRef = doc(db, "users", userId);

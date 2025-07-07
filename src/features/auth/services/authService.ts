@@ -33,34 +33,15 @@ export const signUpWithEmailAndPassword = async (
     );
     const user = userCredential.user;
 
-    /*const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
-
-      if (isEmailUsed) {
-         throw {
-        code: "auth/email-already-in-use",
-      };
-    } */
+    playConfettiAnimation();
 
     await registerNewUser(user);
     await sendVerificationEmail();
 
     return { user };
   } catch (error) {
-    console.log(error);
     const usedMethodsForEmail = await fetchSignInMethodsForEmail(auth, email);
     return handleAuthErrors(error, usedMethodsForEmail);
-    /*  if (
-      error instanceof Error &&
-      "code" in error &&
-      error.code === "auth/email-already-in-use"
-    ) {
-      const methods = await fetchSignInMethodsForEmail(auth, email);
-      if (methods.includes("google.com")) {
-        return handleAuthErrors({ error, existingEmailMethod: methods[0] });
-      } else {
-        return handleAuthErrors({ error });
-      }
-    } */
   }
 };
 
@@ -78,7 +59,6 @@ export const loginWithEmailAndPassword = async (
 
     return { user };
   } catch (error) {
-    console.log(error);
     return handleAuthErrors(error);
   }
 };
@@ -88,33 +68,18 @@ export const signInWithGoogle = async () => {
     const userCredential = await signInWithPopup(auth, googleProvider);
     const user = userCredential.user;
 
-    /* const isEmailUsed = await isUserEmailAlreadyUsed(user.email!);
+    const isUserExists = await isUserDocAlreadyExists(user.uid!);
 
-    if (isEmailUsed) {
-      throw {
-        code: "auth/email-already-in-use",
-      };
+    if (!isUserExists) {
+      await registerNewUser(user);
+      playConfettiAnimation();
     }
-    */
-
-    await registerNewUser(user);
 
     return { user };
   } catch (error) {
     return handleAuthErrors(error);
   }
 };
-
-/* export const signInWithGoogle = async () => {
-  try {
-    const userCredential = await signInWithPopup(auth, googleProvider);
-    const user = userCredential.user;
-
-    return { user };
-  } catch (error) {
-    return handleAuthErrors(error);
-  }
-}; */
 
 export const sendResetPasswordEmail = async (email: string) => {
   try {

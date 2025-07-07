@@ -34,7 +34,6 @@ import type { SignUpDialogProps } from "@/features/authTypes";
 import { IconBrandGoogleFilled } from "@tabler/icons-react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { ROUTE_PATHS } from "@/routes/routePaths";
-import { playConfettiAnimation } from "@/features/auth/utils/playConfettiAnimation";
 import TFormMessage from "@/components/custom/TFormMessage";
 
 const formSchema = z
@@ -84,7 +83,6 @@ const SignUpDialog = ({
     const result = await googleSignIn();
     if (result.success) {
       onSignUpDialogOpenChange(false);
-      playConfettiAnimation();
       navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
@@ -98,7 +96,6 @@ const SignUpDialog = ({
     const result = await emailSignUp(email, password);
     if (result.success) {
       onSignUpDialogOpenChange(false);
-      playConfettiAnimation();
       navigate(ROUTE_PATHS.DASHBOARD);
     } else {
       toast.error(result.errorMessage);
