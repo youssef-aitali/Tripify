@@ -54,37 +54,22 @@ export const beforeUserSignIn = beforeUserSignedIn(async (event) => {
         (provider) => provider.providerId
       );
 
-      if (providers.length === 1 && providers.includes("password")) {
-        if (!existingUser?.emailVerified) {
-          logger.info(
-            `User with email ${user.email} has an existing unverified account: `,
-            existingUser
-          );
+      if (
+        providers.length === 1 &&
+        providers.includes("password") &&
+        !existingUser?.emailVerified
+      ) {
+        logger.info(
+          `User with email ${user.email} has an existing unverified account: `,
+          existingUser
+        );
 
-          const httpError = new HttpsError(
-            "failed-precondition",
-            "auth/existing-unverified-email"
-          );
+        const httpError = new HttpsError(
+          "failed-precondition",
+          "auth/existing-unverified-email"
+        );
 
-          throw httpError;
-        } else {
-          logger.info(
-            "Allow sign in and send message to fronetnd to inform user about accounts linking"
-          );
-
-          await admin
-            .firestore()
-            .collection(`users/${user.uid}/notifications`)
-            .add({
-              type: "ACCOUNT_LINKED",
-              provider: "google.com",
-              email: user?.email,
-              timestamp: admin.firestore.FieldValue.serverTimestamp(),
-              read: false,
-              message:
-                "Your email account has been successfully linked 🎉 Welcome back.",
-            });
-        }
+        throw httpError;
       }
     } catch (error) {
       if (
