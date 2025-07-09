@@ -119,16 +119,16 @@ const AccountPage = () => {
       }),
     };
 
-    await updateUserData(currentUser!, updatedUserData as AuthUser);
-
-    //setUserData(await getUserProfile(currentUser!.uid));
-
     setSeletectedPreviewPhoto(undefined);
     form.reset({
       fullname,
       username,
       email,
     });
+
+    await updateUserData(currentUser!, updatedUserData as AuthUser);
+
+    //setUserData(await getUserProfile(currentUser!.uid));
   };
 
   const cancelAccountUpdates = () => {
@@ -159,8 +159,14 @@ const AccountPage = () => {
         <AccountLoadingSkeleton />
       </div>
     );
-
-  console.log(currentUser?.providerData[0]);
+  console.log(
+    "render cancel button? ",
+    Boolean((isDirty || selectedPreviewPhoto) && !isSubmitting)
+  );
+  console.log("is Dirty? ", isDirty);
+  console.log("selectedPreviewPhoto: ", selectedPreviewPhoto);
+  console.log("is Submitting? ", isSubmitting);
+  console.log("-----------------------------");
 
   return (
     <div className="flex flex-col gap-4">
@@ -237,7 +243,9 @@ const AccountPage = () => {
                       {...field}
                     />
                   </FormControl>
-                  {currentUser?.providerData[0].providerId === "google.com" && (
+                  {currentUser?.providerData
+                    .map((provider) => provider.providerId)
+                    .includes("google.com") && (
                     <FormDescription className="text-xs ml-auto">
                       Managed by Google
                     </FormDescription>
