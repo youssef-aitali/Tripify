@@ -54,7 +54,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuTrigger asChild>
               <IconBell
                 stroke={2}
-                className="text-cyan-900/90 hover:text-cyan-900 cursor-pointer"
+                className="text-tprimary hover:text-cyan-900 cursor-pointer"
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-fit" align="end">
