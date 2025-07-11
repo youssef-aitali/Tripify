@@ -24,12 +24,12 @@ const firestoreLanguageDetector: LanguageDetectorAsyncModule = {
 
     // 2. Fallback to Firestore (only if authenticated)
     if (auth.currentUser) {
-      console.log("user is authenticated: ");
       try {
         const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
         const firestoreLang = userDoc.data()?.preferences.language;
         if (firestoreLang) {
           callback(firestoreLang);
+          localStorage.setItem("i18nextLng", firestoreLang);
           return;
         }
       } catch (error) {

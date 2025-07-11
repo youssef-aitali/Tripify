@@ -21,7 +21,7 @@ const TButton = ({ className, variant, ...props }: ButtonProps) => {
         variant === "ghost" && "hover:bg-gray-200/50",
         variant !== "link" &&
           variant !== "ghost" &&
-          "bg-cyan-900/90 hover:bg-cyan-900 text-white",
+          "bg-tprimary hover:bg-tprimary-hover text-white",
         className
       )}
       onKeyDown={handleKeyDown}

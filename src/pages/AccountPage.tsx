@@ -127,8 +127,6 @@ const AccountPage = () => {
     });
 
     await updateUserData(currentUser!, updatedUserData as AuthUser);
-
-    //setUserData(await getUserProfile(currentUser!.uid));
   };
 
   const cancelAccountUpdates = () => {
@@ -143,14 +141,10 @@ const AccountPage = () => {
 
     currentUser &&
       (await toggleUserDeletionMark(currentUser.uid, deletionDate));
-    //currentUser && (await markUserForDeletion(currentUser.uid, deletionDate));
-    //setUserData(await getUserProfile(currentUser!.uid));
   };
 
   const handleCancelDeletion = async () => {
     currentUser && (await toggleUserDeletionMark(currentUser.uid, null));
-    //currentUser && (await cancelUserDeletionMark(currentUser.uid));
-    //setUserData(await getUserProfile(currentUser!.uid));
   };
 
   if (!userData)
@@ -159,14 +153,6 @@ const AccountPage = () => {
         <AccountLoadingSkeleton />
       </div>
     );
-  console.log(
-    "render cancel button? ",
-    Boolean((isDirty || selectedPreviewPhoto) && !isSubmitting)
-  );
-  console.log("is Dirty? ", isDirty);
-  console.log("selectedPreviewPhoto: ", selectedPreviewPhoto);
-  console.log("is Submitting? ", isSubmitting);
-  console.log("-----------------------------");
 
   return (
     <div className="flex flex-col gap-4">
