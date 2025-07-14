@@ -18,7 +18,7 @@ const TButton = ({ className, variant, ...props }: ButtonProps) => {
       className={cn(
         "cursor-pointer",
         variant === "link" && "p-0 hover:underline font-normal h-[14px]",
-        variant === "ghost" && "hover:bg-gray-200/50",
+        variant === "ghost" && "hover:bg-tprimary hover:text-white",
         variant !== "link" &&
           variant !== "ghost" &&
           "bg-tprimary hover:bg-tprimary-hover text-white",

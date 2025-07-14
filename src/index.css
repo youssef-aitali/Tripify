@@ -41,25 +41,27 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --color-tprimary: var(--tprimary);
   --color-tprimary-hover: var(--tprimary-hover);
+  --color-tsecondary: var(--tsecondary);
 }
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
+  --background: oklch(0.9636 0.005 165.01);
   --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
+  --card: oklch(0.9636 0.005 165.01);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
   --primary: oklch(0.205 0 0);
-  --tprimary: oklch(0.398 0.07 227.392 / 90%);
-  --tprimary-hover: oklch(0.398 0.07 227.392);
+  --tprimary: oklch(0.4089 0.0612 156.08);
+  --tprimary-hover: oklch(0.4089 0.0612 156.08/90%);
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
+  --tsecondary: oklch(0.7882 0.0968 156.87);
   --secondary-foreground: oklch(0.205 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
+  --accent: oklch(0.6591 0.1467 152.99);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
@@ -81,21 +83,22 @@
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.1631 0.0077 163.85);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.145 0 0);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
   --primary: oklch(0.922 0 0);
-  --tprimary: oklch(0.7 0.07 227.392);
-  --tprimary-hover: oklch(0.45 0.09 227.392);
+  --tprimary: oklch(0.5245 0.1011 154.3);
+  --tprimary-hover: oklch(0.5245 0.1011 154.3/90%);
   --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
+  --secondary: oklch(0.8314 0.0539 158.65);
+  --tsecondary: oklch(0.8314 0.0539 158.65);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
   --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
+  --accent: oklch(0.7511 0.147 154.31);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
@@ -125,7 +128,8 @@
   }
 }
 
-input::selection,
+/* input::selection,
 textarea::selection {
   background: oklch(0.398 0.07 227.392 / 90%);
 }
+ */

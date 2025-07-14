@@ -12,7 +12,7 @@ const TNavLink = ({ label }: { label: string }) => {
       <NavLink
         to={routePath}
         className={({ isActive }) =>
-          isActive ? "text-tprimary underline" : "text-primary"
+          isActive ? "text-accent underline" : "text-primary"
         }
       >
         {label}
