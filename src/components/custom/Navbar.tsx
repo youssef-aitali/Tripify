@@ -24,7 +24,6 @@ import { logOut } from "@/features/auth/services/authService";
 import NavbarItemSkeleton from "@/components/custom/NavbarItemSkeleton";
 import TButton from "@/components/custom/TButton";
 import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
-import Tripifylogo from "@/assets/logo.svg";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATHS } from "@/routes/routePaths";
 import Logo from "@/components/custom/Logo";
