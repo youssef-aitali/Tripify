@@ -27,6 +27,7 @@ import { useAuthUser } from "@/features/auth/hooks/useAuthUser";
 import Tripifylogo from "@/assets/logo.svg";
 import { Link, useNavigate } from "react-router";
 import { ROUTE_PATHS } from "@/routes/routePaths";
+import Logo from "@/components/custom/Logo";
 
 const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
   const [isSignUpDialogOpen, setIsSignUpDialogOpen] = useState(false);
@@ -45,7 +46,8 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
 
   return (
     <div className="flex justify-between items-center h-16 border-b-1 border-gray-200 px-[20%]">
-      <img className="w-24" src={Tripifylogo} alt="Tripify logo" />
+      {/* <img className="w-24" src={Tripifylogo} alt="Tripify logo" /> */}
+      <Logo className="w-24 text-tprimary" />
       {isCurrentUserLoading ? (
         <NavbarItemSkeleton />
       ) : currentUser ? (
@@ -54,7 +56,7 @@ const Navbar = ({ isLogInDialogOpen, setIsLogInDialogOpen }: OutletProps) => {
             <DropdownMenuTrigger asChild>
               <IconBell
                 stroke={2}
-                className="text-tprimary hover:text-tsecondary cursor-pointer"
+                className="text-tprimary hover:text-accent cursor-pointer"
               />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-fit" align="end">
