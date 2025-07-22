@@ -64,7 +64,7 @@ export const createUserData = (user: User) => {
     photoURL: user.photoURL,
     preferences: {
       //language: "en",
-      appearance: "Light",
+      appearance: "system",
       notifications: true,
     },
     createdAt: new Date(),

@@ -1,7 +1,4 @@
-import {
-  createUserData,
-  getUserProfile,
-} from "@/features/auth/utils/authUtils";
+import { createUserData } from "@/features/auth/utils/authUtils";
 import { auth } from "@/lib/firebaseConfig";
 import { onAuthStateChanged, type User } from "firebase/auth";
 import { useEffect, useState, type ReactNode } from "react";
